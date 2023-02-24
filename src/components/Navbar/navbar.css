@@ -1,0 +1,43 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.navbar .navLinks {
+  display: flex;
+  align-items: center;
+  position: relative !important;
+}
+.navbar .MuiListItem-root {
+  margin-left: 24px !important;
+  position: relative !important;
+  cursor: pointer;
+}
+.navbar .profileBox {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative !important;
+}
+.navbar .profileBox img {
+  width: 100%;
+  object-fit: cover;
+  height: 100%;
+}
+
+.notifications .head {
+  padding: 24px 0;
+  border-bottom: 1px solid #3a606e;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notifications .head span {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  color: #3a606e;
+}

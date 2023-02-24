@@ -1,0 +1,31 @@
+.sidebar {
+  padding: 16px;
+  height: 100%;
+}
+.sidebar * {
+  box-sizing: border-box !important;
+  text-decoration: none;
+}
+.sidebar > a {
+  background: linear-gradient(355.55deg, #214b5a -74.99%, #082631 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 40px;
+  text-align: center;
+  display: block;
+  margin-bottom: 40px !important;
+}
+.sidebar .active {
+  background: linear-gradient(180deg, #2e6073 0%, #214b5a 100%) !important;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.12) !important;
+}
+.sidebar .active .MuiTypography-root{
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+}
+.sidebar .active img{
+  filter: saturate(0%) brightness(350%) !important;
+}

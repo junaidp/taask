@@ -1,0 +1,149 @@
+import React from "react";
+import { createTheme } from "@mui/material";
+
+const initialTheme = createTheme();
+
+export const mainTheme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 576,
+      md: 768,
+      lg: 992,
+      xl: 1200,
+    },
+  },
+
+  components: {
+    MuiList: {
+      styleOverrides: {
+        root: {
+          ".MuiButtonBase-root": {
+            padding: "14px 16px",
+            borderRadius: "12px",
+          },
+          ".MuiTypography-root": {
+            fontSize: "14px",
+            fontWeight: "400",
+            fontStyle: "normal",
+            letterSpacing: "0.01em",
+            color: "#214B5A",
+          },
+        },
+      },
+    },
+    MuiTable: {
+      styleOverrides: {
+        root: {
+          ".MuiTableHead-root .MuiTableCell-root": {
+            fontWeight: "600 !important",
+            fontStyle: "normal",
+            letterSpacing: "0.01em",
+            color: "#152428",
+            fontSize: "14px",
+            padding: "16px 0",
+            borderBottom: "1px solid #3A606E",
+          },
+
+          ".MuiTableCell-root": {
+            fontSize: "14px",
+            fontWeight: "400",
+            fontStyle: "normal",
+            letterSpacing: "0.01em",
+            color: "#152428",
+            padding: "16px 0",
+            borderBottom: "1px solid #EFF1F1",
+          },
+        },
+      },
+    },
+    MuiMenu: {
+      styleOverrides: {
+        root: {
+          ".MuiPaper-root": {
+            background: "#FFFFFF",
+            borderRadius: "16px",
+            padding: "0 24px",
+            boxShadow: " 0px 4px 15px rgba(58, 96, 110, 0.15)",
+            top: "65px !important",
+          },
+          ".MuiMenu-list": {
+            padding: "0",
+          },
+          ".MuiMenu-list .MuiMenuItem-root": {
+            padding: "16px  0",
+            borderBottom: "1px solid #EBEBEB",
+            background: "#FFFFFF",
+            borderRadius: "0",
+            fontSize: "14px",
+            fontWeight: "400",
+            fontStyle: "normal",
+            color: "#152428",
+          },
+          ".MuiMenu-list .MuiMenuItem-root:hover": {
+            borderBottom: "1px solid #3A606E !important",
+          },
+        },
+      },
+    },
+    MuiPagination: {
+      styleOverrides: {
+        root: {
+          ".MuiPagination-ul": {
+            justifyContent: "space-between",
+          },
+          ".MuiPaginationItem-root": {
+            width: "24px",
+            minWidth: "24px",
+            height: "24px",
+            borderRadius: "5px",
+            padding: 0,
+            background: "#FFFFFF",
+            border: " 1px solid #3A606E",
+            fontStyle: "normal",
+            fontWeight: 400,
+            fontSize: 14,
+            color: "#3A606E",
+          },
+          ".MuiButtonBase-root.Mui-selected": {
+            backgroundColor: "#A0ECD0 !important",
+            border: " 1px solid transparent",
+          },
+          ".MuiPaginationItem-icon": {
+            width: "35px !important",
+            height: "35px !important",
+          },
+        },
+      },
+    },
+  },
+  typography: {
+    fontFamily: ["Nunito", "sans-serif"].join(","),
+    h1: {
+      fontStyle: "normal",
+      fontWeight: 700,
+      fontSize: 32,
+      color: "#152428",
+      letterSpacing: "0.01em",
+    },
+    h2: {
+      fontStyle: "normal",
+      fontWeight: 600,
+      fontSize: 18,
+      color: "#1C3035",
+    },
+    h4: {
+      fontStyle: "normal",
+      fontWeight: 500,
+      fontSize: 16,
+      color: "#152428",
+    },
+    h6: {
+      fontStyle: "normal",
+      fontWeight: 600,
+      fontSize: 18,
+      color: "#1C3035",
+    },
+  },
+  palette: {},
+});
