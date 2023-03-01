@@ -16,6 +16,7 @@ import {
 
 // Images and icons
 import NotificationIcon from "../../assets/icons/notification.svg";
+import HelpIcon from "../../assets/icons/help.svg";
 import SettingIcon from "../../assets/icons/setting.svg";
 import UserImg from "../../assets/Images/user.png";
 
@@ -106,6 +107,9 @@ const Navbar = ({ activePage }) => {
           </ListItem>
           <ListItem disablePadding>
             <img src={SettingIcon} alt="img not found" />
+          </ListItem>
+          <ListItem disablePadding>
+            <img src={HelpIcon} alt="img not found" />
           </ListItem>
           <ListItem disablePadding>
             <Box className="profileHead">

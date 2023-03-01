@@ -1,0 +1,119 @@
+.customer .customerPart1 {
+  padding-right: 15px !important;
+}
+.customer .customerPart2 {
+  padding-left: 15px !important;
+}
+.customer .customTableHead{
+    margin-bottom: 26px !important;
+}
+.customer .inputGroup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 26px !important;
+}
+.customer .inputGroup * {
+  box-sizing: border-box !important;
+}
+.customer .inputGroup .inputHead {
+  width: 48% !important;
+}
+.customer .inputHead {
+  width: 100% !important;
+}
+.customer .inputHead label {
+  margin-bottom: 8px !important;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #152428;
+  display: block;
+}
+.customer .CustomerNotes {
+  display: flex;
+  align-items: center;
+}
+.customer .CustomerNotes img {
+  display: inline-block;
+  transform: translate(16px, 2px);
+  cursor: pointer;
+}
+.customer .inputHead textarea {
+  width: 100%;
+  height: 168px;
+  background: #ffffff;
+  border: 1px solid #3a606e;
+  box-shadow: 4px 2px 15px rgba(58, 96, 110, 0.06);
+  border-radius: 8px;
+  resize: unset !important;
+  padding: 16px;
+  outline: none;
+}
+
+.customer .quickAccess {
+  background: #ffffff !important;
+  box-shadow: 0px 4px 15px rgba(58, 96, 110, 0.15) !important;
+  border-radius: 16px !important;
+  padding: 24px !important;
+  height: 100%;
+}
+.customer .quickAccess .heading {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #373f41;
+  margin-bottom: 24px !important;
+}
+
+.customer .quickAccess .heading img {
+  display: inline-block;
+  transform: translate(16px, 2px);
+  cursor: pointer;
+}
+
+.customer .quickAccess .MuiOutlinedInput-root {
+  padding: 13px 16px !important;
+}
+.customer .quickAccess label {
+  margin-bottom: 16px !important;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #214b5a;
+  display: flex;
+  align-items: center;
+}
+.customer .quickAccess label img {
+  display: block;
+  margin-right: 8px !important;
+  cursor: pointer;
+}
+.customer .quickAccess .inputHead {
+  margin-bottom: 24px !important;
+}
+.customer .quickAccess .btn {
+  width: 100%;
+  background: linear-gradient(180deg, #2e6073 0%, #214b5a 100%);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 12px;
+  border: none;
+  cursor: pointer;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #ffffff;
+  margin-bottom: 26px !important;
+}
+.customer .quickAccess textarea{
+    height: 120px !important;
+}

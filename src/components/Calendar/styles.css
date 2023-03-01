@@ -70,7 +70,9 @@
   z-index: 1 !important;
   max-width: 70% !important;
   justify-content: center !important;
+  align-items: center !important;
   margin: 0 auto !important;
+  transform: translateY(6px) !important;
 }
 .calender .css-31ca4x-MuiPickersFadeTransitionGroup-root {
   width: 70% !important;

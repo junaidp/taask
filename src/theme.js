@@ -15,6 +15,42 @@ export const mainTheme = createTheme({
   },
 
   components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          ".MuiOutlinedInput-root": {
+            background: "#FFFFFF",
+            border: "1px solid #3A606E",
+            boxShadow: "4px 2px 15px rgba(58, 96, 110, 0.06)",
+            borderRadius: "8px",
+            padding: "16px 16px",
+            color: "#3A606E",
+            fontSize: "14px",
+            fontWeight: "400",
+            fontStyle: "normal",
+          },
+          ".MuiOutlinedInput-input": {
+            padding: "0",
+            height: "unset",
+            border: "unset",
+          },
+          input: {
+            "::placeholder": {
+              color: "#3A606E",
+              fontSize: "14px",
+              fontWeight: "400",
+              fontStyle: "normal",
+              opacity: "100%",
+            },
+          },
+          ".MuiOutlinedInput-notchedOutline": {
+            padding: "0",
+            height: "unset",
+            border: "unset",
+          },
+        },
+      },
+    },
     MuiList: {
       styleOverrides: {
         root: {
@@ -54,6 +90,7 @@ export const mainTheme = createTheme({
             padding: "16px 0",
             borderBottom: "1px solid #EFF1F1",
           },
+        
         },
       },
     },
@@ -65,7 +102,6 @@ export const mainTheme = createTheme({
             borderRadius: "16px",
             padding: "0 24px",
             boxShadow: " 0px 4px 15px rgba(58, 96, 110, 0.15)",
-            top: "65px !important",
           },
           ".MuiMenu-list": {
             padding: "0",

@@ -8,7 +8,8 @@ html {
   align-items: top !important;
   height: 100% !important;
   padding: 16px;
-  overflow: hidden;
+  overflow-y: auto !important;
+  overflow-x: visible !important;
 }
 .dashboard * {
   box-sizing: border-box !important;
@@ -30,7 +31,8 @@ html {
 .dashboard .TabsContent {
   padding: 32px 0;
   flex: 1;
-  overflow: auto;
+  overflow-y: auto !important;
+  overflow-x: visible !important;
 }
 .dashboard .TabsContent::-webkit-scrollbar {
   display: none;

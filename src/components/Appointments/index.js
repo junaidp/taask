@@ -1,5 +1,5 @@
 import * as React from "react";
-import "./UpcomingMeetings.css";
+import "./Appointments.css";
 
 // Mui imports
 import {
@@ -13,21 +13,12 @@ import {
   Paper,
   Typography,
   Pagination,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  FormControlLabel,
-  FormGroup,
-  Checkbox,
-  TextField,
   PaginationItem,
 } from "@mui/material";
 
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 // images
-import Img1 from "../../assets/Images/user.png";
 import FilterImg from "../../assets/icons/filter.svg";
 import SearchImg from "../../assets/icons/search.svg";
 import JohnImg from "../../assets/Images/john.png";
@@ -35,23 +26,29 @@ import MariahImg from "../../assets/Images/Mariah.png";
 
 let data = [
   {
-    photoUrl: JohnImg,
-    clientName: "John Doe",
+    title: "John Doe",
+    time: '09:30 PM',
     dueDate: "01/02/2023",
   },
   {
-    photoUrl: MariahImg,
-    clientName: "Mariah Betts",
+    title: "Mariah Betts",
+    time: '12:39 AM',
     dueDate: "01/02/2023",
   },
   {
-    photoUrl: JohnImg,
-    clientName: "John Doe",
+    title: "John Doe",
+    time: '09:30 PM',
     dueDate: "01/02/2023",
   },
+  {
+    title: "Mariah Betts",
+    time: '12:39 AM',
+    dueDate: "01/02/2023",
+  },
+ 
 ];
 
-const UpcomingMeetings = () => {
+const Appointments = () => {
   const [page, setPage] = React.useState("");
 
   const handleChange = (event) => {
@@ -60,11 +57,11 @@ const UpcomingMeetings = () => {
   return (
     <TableContainer
       component={Paper}
-      className="TableContainer upComingMeetings"
+      className="TableContainer AppointmentsCout"
     >
       <Box className="topHead">
         <Box>
-          <Typography variant="h2">Upcoming Meetings</Typography>
+          <Typography variant="h2">Upcoming Appointments</Typography>
         </Box>
         <Box>
           <span>
@@ -72,13 +69,16 @@ const UpcomingMeetings = () => {
           </span>
         </Box>
       </Box>
-      <Table aria-label="caption table" className="upComingMeetingsTable">
+      <Table aria-label="caption table" className="AppointmentsTable">
         <TableHead>
           <TableRow>
             <TableCell>
-              Client Name <img src={FilterImg} className="filterImg" />
+              Title <img src={FilterImg} className="filterImg" />
             </TableCell>
 
+            <TableCell>
+              Time <img src={FilterImg} className="filterImg" />
+            </TableCell>
             <TableCell>
               Due Date <img src={FilterImg} className="filterImg" />
             </TableCell>
@@ -89,12 +89,10 @@ const UpcomingMeetings = () => {
             <TableRow key={item.clientName}>
               <TableCell component="th" scope="row">
                 <Box className="userprofile">
-                  <span>
-                    <img src={item.photoUrl} alt="img not found" />
-                  </span>
-                  {item.clientName}
+                  {item.title}
                 </Box>
               </TableCell>
+              <TableCell>{item.time}</TableCell>
               <TableCell>{item.dueDate}</TableCell>
             </TableRow>
           ))}
@@ -128,4 +126,4 @@ const UpcomingMeetings = () => {
   );
 };
 
-export default UpcomingMeetings;
+export default Appointments;

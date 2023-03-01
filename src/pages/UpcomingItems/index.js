@@ -5,25 +5,25 @@ import "./home.css";
 import { Box, Grid } from "@mui/material";
 
 // components
-import UpcomingTaskTable from "../../components/UpcomingTaskTable";
+import UpcomingItemsTable from "../../components/UpcomingItemsTable";
 import Calendar from "../../components/Calendar";
-import UpcomingMeetings from "../../components/UpcomingMeetings";
+import Appointments from "../../components/Appointments";
 
 
-const Home = () => {
+const UpcomingItems = () => {
   return (
     <Box className="home">
       <Grid container>
         <Grid item xs={8} className="part1">
-          <UpcomingTaskTable />
+          <UpcomingItemsTable />
         </Grid>
         <Grid item xs={4} className="part2">
           <Calendar />
-          <UpcomingMeetings />
+          <Appointments />
         </Grid>
       </Grid>
     </Box>
   );
 };
 
-export default Home;
+export default UpcomingItems;
