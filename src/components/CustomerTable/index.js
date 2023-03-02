@@ -96,7 +96,7 @@ const CustomerTable = () => {
         <TableBody>
           {data.map((item) => (
             <TableRow key={item.clientName}>
-              <TableCell align="center">0{item.id}</TableCell>
+              <TableCell>{item.id < 10 ? `0${item.id}` : item.id}</TableCell>
               <TableCell component="th" scope="row">
                 <Box className="userprofile">{item.name}</Box>
               </TableCell>

@@ -11,8 +11,8 @@
 }
 
 .customerTableCout .MuiTableRow-root .MuiTableCell-root:first-child {
-  max-width: 70px !important;
-  width: 70px !important;
+  max-width: 60px !important;
+  width: 60px !important;
 }
 .customerTableCout .MuiTableBody-root .MuiTableRow-root:last-child .MuiTableCell-root{
   border-bottom: unset !important;

@@ -32,7 +32,7 @@ const Sidebar = ({ setActivePage }) => {
     const paths = [
       "/",
       "/Customer",
-      "/lifecycle",
+      "/Portfolio",
       "/Customer Tasks",
       "/Projects",
       "/Resources",
@@ -41,16 +41,10 @@ const Sidebar = ({ setActivePage }) => {
     const index = paths.indexOf(location.pathname);
     return index === -1 ? 0 : index;
   }
-  useEffect(() => {
-    const activeIndexFromStorage = localStorage.getItem("activeIndex");
-    if (activeIndexFromStorage !== null) {
-      setActiveIndex(parseInt(activeIndexFromStorage));
-    }
-  }, []);
+
   const addActiveClass = (index) => {
     setActiveIndex(index);
-    localStorage.setItem("activeIndex", index);
-    setActivePage(
+    let activePageName =
       index == 0
         ? "Upcoming Items"
         : index == 1
@@ -60,14 +54,24 @@ const Sidebar = ({ setActivePage }) => {
         : index === 3
         ? "Customer Tasks"
         : index === 4
-        ? "Projects"
+        ? "Ad-hoc Projects"
         : index === 5
         ? "Resources"
         : index === 6
         ? "Snapshots"
-        : "UpcomingItemsTable"
-    );
+        : "UpcomingItemsTable";
+    localStorage.setItem("activeIndex", index);
+    localStorage.setItem("activeIndexName", activePageName);
+    setActivePage(activePageName);
   };
+  useEffect(() => {
+    const activeIndexFromStorage = localStorage.getItem("activeIndex");
+    const activeIndexNameFromStorage = localStorage.getItem("activeIndexName");
+    if (activeIndexFromStorage !== null) {
+      setActiveIndex(parseInt(activeIndexFromStorage));
+      setActivePage(activeIndexNameFromStorage);
+    }
+  }, []);
   return (
     <Box className="sidebar">
       <a href="#">
@@ -144,7 +148,7 @@ const Sidebar = ({ setActivePage }) => {
               <ListItemIcon>
                 <img src={ProjectsIcon} alt="Img not found" />
               </ListItemIcon>
-              <ListItemText primary="Projects" />
+              <ListItemText primary="Ad-hoc Projects" />
             </ListItemButton>
           </ListItem>
         </Link>

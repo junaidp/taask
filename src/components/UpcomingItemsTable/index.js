@@ -182,7 +182,7 @@ const UpcomingItemsTable = () => {
         <TableBody>
           {data.map((item) => (
             <TableRow key={item.clientName}>
-              <TableCell>{item.id}</TableCell>
+              <TableCell>{item.id < 10 ? `0${item.id}` : item.id}</TableCell>
               <TableCell component="th" scope="row">
                 <Box className="userprofile">
                   <span>

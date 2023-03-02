@@ -10,7 +10,7 @@ import Navigation from "./components/Navigation";
 import { Box } from "@mui/material";
 
 const App = () => {
-  const [activePage, setActivePage] = useState("Upcoming Items")
+  const [activePage, setActivePage] = useState(" ")
   return (
     <Box className="dashboard">
       <Box className="SidebarHead">

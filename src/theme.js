@@ -167,6 +167,7 @@ export const mainTheme = createTheme({
       fontWeight: 600,
       fontSize: 18,
       color: "#1C3035",
+      marginBottom: '8px !important'
     },
     h4: {
       fontStyle: "normal",
