@@ -137,12 +137,14 @@ const currencies = [
   },
 ];
 
-const UpcomingItemsTable = () => {
+const UpcomingItemsTable = ({tasksData}) => {
   const [page, setPage] = React.useState("");
 
   const handleChange = (event) => {
     setPage(event.target.value);
   };
+
+  console.log(tasksData, "allData")
 
   return (
     <TableContainer component={Paper} className="UpcomingItemsCout">

@@ -1,6 +1,13 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import "./customer.css";
+import * as Yup from "yup";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // Mui imports
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import {
   Box,
   Grid,
@@ -9,23 +16,20 @@ import {
   InputLabel,
   FormGroup,
   MenuItem,
+  Toast,
 } from "@mui/material";
-import dayjs from "dayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-// import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
-
 // Images
 import CalenderIcon from "../../assets/icons/calender.svg";
 import CustomerNotes from "../../assets/icons/CustomerNotes.svg";
 import AttachmentIcon from "../../assets/icons/Attachment.svg";
 import LinksIcon from "../../assets/icons/Links.svg";
-
 // conponent
+import { useFormik } from "formik";
 import CustomerTable from "../../components/CustomerTable";
+import CustomerServices from "../../APIs/Customer";
+import Loader from "../../components/Loader";
 
 let CustomCalendarIcon = (props) => {
   return <img src={CalenderIcon} alt="" {...props} />;
@@ -61,183 +65,283 @@ const getDay = (day) => {
 
 const customerOption = [
   {
-    value: "Customer Stage",
-    label: "Customer Stage",
+    value: "PreBoarding",
+    label: "Pre-Boarding",
   },
   {
-    value: "option 2",
-    label: "option 2",
+    value: "Onboaring",
+    label: "Onboaring",
   },
   {
-    value: "option 3",
-    label: "option 3",
+    value: "Contract",
+    label: "Contract",
+  },
+  {
+    value: "Renewal",
+    label: "Renewal",
+  },
+  {
+    value: "Adoption",
+    label: "Adoption",
+  },
+  {
+    value: "Growth",
+    label: "Growth",
   },
 ];
 let Customer = () => {
   const [value, setValue] = React.useState(dayjs("2023-12-02"));
+  const [loading, setLoading] = useState(false)
+  const customerValitadion = Yup.object().shape({
+    name: Yup.string().required(),
+  });
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      category: "",
+      name: "",
+      location: "",
+      website: "",
+      customerstage: "",
+      customersince: "",
+      customernotes: "",
+      contacts: [
+        {
+          emailaddress: "test@gmil.com",
+          id: "",
+          jobtitle: "test Job",
+          location: "string",
+          name: "string",
+        },
+      ],
+    },
+    validationSchema: customerValitadion,
+  });
+  const handleSave = async () => {
+    const data = formik?.values;
+    setLoading(true);
+    await CustomerServices.savecustomer(data).then((res) => {
+      if (res?.includes("saved")) {
+        setLoading(false);
+        toast.success("customer successfully saved!", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
+      }
+    });
+  };
+
   return (
     <Box className="customer">
+      <Box className="customer">
+        <ToastContainer />
+        <Loader loaderValue={loading} />
+      </Box>
       <Grid container>
         <Grid item xs={8} className="customerPart1">
-          <form action="">
-            <Box className="inputGroup">
-              <FormGroup className="inputHead">
-                <label htmlFor="Name" className="Name">
-                  Name
-                </label>
-                <TextField
-                  variant="outlined"
-                  id="Name"
-                  fullWidth
-                  placeholder="John Doe"
-                />
-              </FormGroup>
-              <FormGroup className="inputHead">
-                <label htmlFor="Category" className="Category">
-                  Category
-                </label>
-                <TextField
-                  variant="outlined"
-                  id="Category"
-                  fullWidth
-                  placeholder="Lorem Ipsum"
-                />
-              </FormGroup>
-            </Box>
-            <Box className="inputGroup">
-              <FormGroup className="inputHead">
-                <label htmlFor="Customer Stage" className="CustomerSince">
-                  Customer Since
-                </label>
-                <LocalizationProvider
-                  dateAdapter={AdapterDayjs}
-                  className="customerCalander"
-                >
-                  <DatePicker
-                    orientation="portrait"
-                    displayStaticWrapperAs="desktop"
-                    openTo="day"
-                    value={value}
-                    shouldDisableDate={isWeekend}
-                    showToolbar={false}
-                    components={{
-                      OpenPickerIcon: CustomCalendarIcon,
-                      RightArrowButton: ArrowRightRoundedIcon,
-                      LeftArrowButton: ArrowLeftRoundedIcon,
-                    }}
-                    onChange={(newValue) => {
-                      setValue(newValue);
-                    }}
-                    showDaysOutsideCurrentMonth
-                    dayOfWeekFormatter={(day) => getDay(day)}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                </LocalizationProvider>
-              </FormGroup>
-              <FormGroup className="inputHead">
-                <label htmlFor="CustomerStage" className="CustomerStage">
-                  Customer Stage
-                </label>
-                <TextField
-                  id="CustomerStage"
-                  select
-                  placeholder="Contract"
-                  defaultValue="Customer Stage"
-                >
-                  {customerOption.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </FormGroup>
-            </Box>
-
-            <Box className="inputGroup">
-              <FormGroup className="inputHead">
-                <label htmlFor="Location" className="Location">
-                  Location
-                </label>
-                <TextField
-                  variant="outlined"
-                  id="Location"
-                  fullWidth
-                  placeholder="Lorem Ipsum"
-                />
-              </FormGroup>
-              <FormGroup className="inputHead">
-                <label htmlFor="Website" className="Website">
-                  Website
-                </label>
-                <TextField
-                  variant="outlined"
-                  id="Website"
-                  fullWidth
-                  placeholder="www.loremipsum.com"
-                />
-              </FormGroup>
-            </Box>
-            <Box className="customTableHead">
-              <CustomerTable />
-            </Box>
+          <Box className="inputGroup">
             <FormGroup className="inputHead">
-              <label htmlFor="CustomerNotes" className="CustomerNotes">
-                Customer Notes
-                <img src={CustomerNotes} alt="img not found" />
+              <label htmlFor="Name" className="Name">
+                Name
               </label>
-              <textarea
-                name="CustomerNotes"
-                placeholder="Lorem Ipsum"
-              ></textarea>
+              <TextField
+                {...{
+                  formik,
+                  title: "Name",
+                  name: "name",
+                  placeholder: "John Doe",
+                  checkValidation: true,
+                  value: formik?.values?.name,
+                }}
+                onChange={(e) => {
+                  formik.setFieldValue("name", e.target.value);
+                }}
+              />
             </FormGroup>
-          </form>
+            <FormGroup className="inputHead">
+              <label htmlFor="Category" className="Category">
+                Category
+              </label>
+              <TextField
+                {...{
+                  formik,
+                  title: "Category",
+                  name: "category",
+                  placeholder: "lorem lpsum",
+                  checkValidation: true,
+                  value: formik?.values?.category,
+                }}
+                onChange={(e) => {
+                  formik.setFieldValue("category", e.target.value);
+                }}
+              />
+            </FormGroup>
+          </Box>
+          <Box className="inputGroup">
+            <FormGroup className="inputHead">
+              <label htmlFor="Customer Since" className="CustomerSince">
+                Customer Since
+              </label>
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                className="customerCalander"
+              >
+                <DatePicker
+                  orientation="portrait"
+                  displayStaticWrapperAs="desktop"
+                  openTo="day"
+                  value={value}
+                  shouldDisableDate={isWeekend}
+                  showToolbar={false}
+                  components={{
+                    OpenPickerIcon: CustomCalendarIcon,
+                    RightArrowButton: ArrowRightRoundedIcon,
+                    LeftArrowButton: ArrowLeftRoundedIcon,
+                  }}
+                  onChange={(newValue) => {
+                    setValue(newValue);
+                    formik.setFieldValue("customersince", newValue);
+                  }}
+                  showDaysOutsideCurrentMonth
+                  dayOfWeekFormatter={(day) => getDay(day)}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </FormGroup>
+            <FormGroup className="inputHead">
+              <label htmlFor="CustomerStage" className="CustomerStage">
+                Customer Stage
+              </label>
+              <TextField
+                select
+                defaultValue="PreBoarding"
+                {...{
+                  formik,
+                  title: "Customer Stage",
+                  name: "customerstage",
+                  checkValidation: true,
+                  value: formik?.values?.customerstage,
+                }}
+                onChange={(e) => {
+                  formik.setFieldValue("customerstage", e.target.value);
+                }}
+              >
+                {customerOption.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FormGroup>
+          </Box>
+
+          <Box className="inputGroup">
+            <FormGroup className="inputHead">
+              <label htmlFor="Location" className="Location">
+                Location
+              </label>
+              <TextField
+                {...{
+                  formik,
+                  title: "Location",
+                  name: "location",
+                  placeholder: "Lorem Ipsum",
+                  checkValidation: true,
+                  value: formik?.values?.location,
+                }}
+                onChange={(e) => {
+                  formik.setFieldValue("location", e.target.value);
+                }}
+              />
+            </FormGroup>
+            <FormGroup className="inputHead">
+              <label htmlFor="Website" className="Website">
+                Website
+              </label>
+              <TextField
+                {...{
+                  formik,
+                  title: "Website",
+                  name: "website",
+                  placeholder: "www.loremipsum.com",
+                  checkValidation: true,
+                  value: formik?.values?.website,
+                }}
+                onChange={(e) => {
+                  formik.setFieldValue("website", e.target.value);
+                }}
+              />
+            </FormGroup>
+          </Box>
+          <Box className="customTableHead">
+            <CustomerTable />
+          </Box>
+          <FormGroup className="inputHead">
+            <label htmlFor="CustomerNotes" className="CustomerNotes">
+              Customer Notes
+              <img src={CustomerNotes} alt="img not found" />
+            </label>
+            <textarea
+              {...{
+                formik,
+                title: "CustomerNotes",
+                name: "customernotes",
+                placeholder: "Lorem Ipsum",
+                checkValidation: true,
+                value: formik?.values?.customernotes,
+              }}
+              onChange={(e) => {
+                formik.setFieldValue("customernotes", e.target.value);
+              }}
+            ></textarea>
+          </FormGroup>
         </Grid>
         <Grid item xs={4} className="customerPart2">
           <Box className="quickAccess">
             <h6 className="heading">
               Quick Access <img src={CustomerNotes} alt="img not found" />
             </h6>
-            <form>
-              <FormGroup className="inputHead">
-                <label htmlFor="Attachment" className="Attachment">
-                  <img src={AttachmentIcon} alt="img not found" />
-                  Attachment
-                </label>
-                <TextField
-                  variant="outlined"
-                  id="Attachment"
-                  fullWidth
-                  placeholder="Description"
-                />
-              </FormGroup>
-              <FormGroup className="inputHead">
-                <label htmlFor="Links" className="Links">
-                  <img src={LinksIcon} alt="img not found" />
-                  Links
-                </label>
-                <TextField
-                  variant="outlined"
-                  id="Links"
-                  fullWidth
-                  placeholder="www.link.com"
-                />
-              </FormGroup>
-              <FormGroup className="inputHead">
-                <TextField
-                  variant="outlined"
-                  id="Description"
-                  fullWidth
-                  placeholder="Description"
-                />
-              </FormGroup>
-              <button className="btn">Save</button>
-              <FormGroup className="inputHead">
-                <label htmlFor="Notes" className="Notes">
-                  Notes
-                </label>
-                <textarea name="Notes" placeholder="Lorem Ipsum"></textarea>
-              </FormGroup>
-            </form>
+            <FormGroup className="inputHead">
+              <label htmlFor="Attachment" className="Attachment">
+                <img src={AttachmentIcon} alt="img not found" />
+                Attachment
+              </label>
+              <TextField
+                variant="outlined"
+                id="Attachment"
+                fullWidth
+                placeholder="Description"
+              />
+            </FormGroup>
+            <FormGroup className="inputHead">
+              <label htmlFor="Links" className="Links">
+                <img src={LinksIcon} alt="img not found" />
+                Links
+              </label>
+              <TextField
+                variant="outlined"
+                id="Links"
+                fullWidth
+                placeholder="www.link.com"
+              />
+            </FormGroup>
+            <FormGroup className="inputHead">
+              <TextField
+                variant="outlined"
+                id="Description"
+                fullWidth
+                placeholder="Description"
+              />
+            </FormGroup>
+            <button className="btn" onClick={handleSave}>
+              Save
+            </button>
+            <FormGroup className="inputHead">
+              <label htmlFor="Notes" className="Notes">
+                Notes
+              </label>
+              <textarea name="Notes" placeholder="Lorem Ipsum"></textarea>
+            </FormGroup>
           </Box>
         </Grid>
       </Grid>
