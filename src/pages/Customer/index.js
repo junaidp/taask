@@ -214,7 +214,6 @@ let Customer = () => {
               </label>
               <TextField
                 select
-                defaultValue="PreBoarding"
                 {...{
                   formik,
                   title: "Customer Stage",
@@ -224,6 +223,19 @@ let Customer = () => {
                 }}
                 onChange={(e) => {
                   formik.setFieldValue("customerstage", e.target.value);
+                }}
+                InputProps={{
+                  placeholder: "Select a customer stage",
+                  disableUnderline: true,
+                }}
+                SelectProps={{
+                  displayEmpty: true,
+                  renderValue: (value) => {
+                    if (!value) {
+                      return <p>Customer Stage</p>;
+                    }
+                    return value;
+                  },
                 }}
               >
                 {customerOption.map((option) => (

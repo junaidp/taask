@@ -20,6 +20,22 @@ html{
 }
 
 /* **************** */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  border-radius: 30px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: whitesmoke;
+  border-radius: 30px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #313131;
+  border-radius: 30px;
+}
+
 /* some global styles for calender */
 .css-1yllih9-MuiPaper-root-MuiPickersPopper-paper {
   background: #ffffff !important;

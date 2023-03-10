@@ -11,7 +11,6 @@ const CustomerServices = {
         }
     },
     savecustomer : async (data) =>{
-        console.log(data, "appppp")
         try{
             return await Service.post({
                 url : "/api/customer/savecustomer",

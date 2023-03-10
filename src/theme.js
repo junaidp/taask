@@ -90,7 +90,48 @@ export const mainTheme = createTheme({
             padding: "16px 0",
             borderBottom: "1px solid #EFF1F1",
           },
-        
+        },
+      },
+    },
+    MuiDataGrid: {
+      styleOverrides: {
+        root: {
+          border: "unset",
+          "& .MuiDataGrid-cell:focus": {
+            outline: "none",
+          },
+          "& .MuiDataGrid-columnHeaderTitleContainerContent": {
+            fontWeight: "600 !important",
+            fontStyle: "normal",
+            letterSpacing: "0.01em",
+            color: "#152428",
+            fontSize: "14px",
+            padding: "16px 0",
+          },
+          "& .MuiDataGrid-cell": {
+            fontSize: "14px",
+            fontWeight: "400",
+            fontStyle: "normal",
+            letterSpacing: "0.01em",
+            color: "#152428",
+            padding: "16px 10px",
+            borderBottom: "1px solid #EBEBEB",
+            height: "64px !important",
+            minHeight: "64px !important",
+          },
+          ".MuiDataGrid-columnHeaders": {
+            borderBottom: "1px solid #373F41 !important",
+          },
+          ".MuiDataGrid-row": {
+            height: "64px !important",
+            minHeight: "64px !important",
+          },
+          ".MuiDataGrid-row:hover": {
+            background: "#f4fffb !important",
+          },
+          ".MuiDataGrid-row.Mui-selected": {
+            background: "#f4fffb !important",
+          },
         },
       },
     },
@@ -167,7 +208,7 @@ export const mainTheme = createTheme({
       fontWeight: 600,
       fontSize: 18,
       color: "#1C3035",
-      marginBottom: '8px !important'
+      marginBottom: "8px !important",
     },
     h4: {
       fontStyle: "normal",
