@@ -34,6 +34,8 @@ import FilterImg from "../../assets/icons/filter.svg";
 import SearchImg from "../../assets/icons/search.svg";
 import FilterMenuImg from "../../assets/icons/filterMenu.svg";
 
+import moment from "moment"
+
 let data = [
   {
     id: 1,
@@ -145,6 +147,7 @@ const UpcomingItemsTable = ({tasksData}) => {
   };
 
 
+
   return (
     <TableContainer component={Paper} className="UpcomingItemsCout">
       <Box className="topHead">
@@ -181,20 +184,20 @@ const UpcomingItemsTable = ({tasksData}) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((item) => (
+          {tasksData.map((item, index) => (
             <TableRow key={item.clientName}>
-              <TableCell>{item.id < 10 ? `0${item.id}` : item.id}</TableCell>
+              <TableCell sx={{width: 70}}>{index + 1 < 10 ? `0${index + 1}` : index + 1}</TableCell>
               <TableCell component="th" scope="row">
                 <Box className="userprofile">
-                  <span>
+                  {/* <span>
                     <img src={item.photoUrl} alt="img not found" />
-                  </span>
-                  {item.clientName}
+                  </span> */}
+                  {item.customer.name}
                 </Box>
               </TableCell>
-              <TableCell>{item.task}</TableCell>
+              <TableCell>{item.taskName}</TableCell>
               <TableCell>{item.time}</TableCell>
-              <TableCell align="right">{item.dueDate}</TableCell>
+              <TableCell align="right">{moment(item.dueDate).format("DD/MM/YYYY")}</TableCell>
             </TableRow>
           ))}
         </TableBody>

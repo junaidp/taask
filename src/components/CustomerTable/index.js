@@ -65,7 +65,7 @@ let data = [
   },
 ];
 
-const CustomerTable = () => {
+const CustomerTable = ({allContacts}) => {
   return (
     <TableContainer component={Paper} className="customerTableCout">
       <Box className="topHead">
@@ -94,9 +94,9 @@ const CustomerTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((item) => (
-            <TableRow key={item.clientName}>
-              <TableCell>{item.id < 10 ? `0${item.id}` : item.id}</TableCell>
+          {allContacts.map((item, index) => (
+            <TableRow>
+              <TableCell>{index + 1 < 10 ? `0${index + 1}` : index + 1}</TableCell>
               <TableCell component="th" scope="row">
                 <Box className="userprofile">{item.name}</Box>
               </TableCell>

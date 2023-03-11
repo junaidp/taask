@@ -23,6 +23,7 @@ html {
 }
 .dashboard .ContentHead {
   flex: 1;
+  width: 80%;
   padding: 0 30px;
   height: 100%;
   display: flex;

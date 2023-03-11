@@ -14,7 +14,7 @@ import CustomerServices from "../../APIs/Customer";
 
 const UpcomingItems = () => {
   const [allTasks, setAllTask] = useState([])
-
+  const [allMeetings, setAllMeetings] = useState([])
   const getMyTasks = async () =>{
     await CustomerServices.getAllTasks().then((res)=>{
        if(res){
@@ -22,9 +22,18 @@ const UpcomingItems = () => {
       }
     })
   }
+
+  const getMyMeetings = async () =>{
+    await CustomerServices.getAllMettings().then((res)=>{
+       if(res){
+        setAllMeetings(res)
+      }
+    })
+  }
   
   useEffect(() => {
     getMyTasks()
+    getMyMeetings()
   }, [])
 
   return (
@@ -35,7 +44,7 @@ const UpcomingItems = () => {
         </Grid>
         <Grid item xs={4} className="part2">
           <Calendar />
-          <Appointments />
+          <Appointments allMeetings={allMeetings} />
         </Grid>
       </Grid>
     </Box>

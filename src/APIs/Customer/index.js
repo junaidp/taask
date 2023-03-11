@@ -20,6 +20,24 @@ const CustomerServices = {
             throw error;
         }
     },
+    getAllMettings : async () =>{
+        try{
+            return await Service.get(
+                "/api/meeting/getAllMeetings"
+            );
+        }catch(error){
+            throw error;
+        }
+    },
+    getAllContacts : async () =>{
+        try{
+            return await Service.get(
+                "/api/contacts/getAllContacts"
+            );
+        }catch(error){
+            throw error;
+        }
+    },
 
 };
 

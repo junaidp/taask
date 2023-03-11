@@ -91,7 +91,8 @@ const customerOption = [
 ];
 let Customer = () => {
   const [value, setValue] = React.useState(dayjs("2023-12-02"));
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [allContacts, setAllContacts] = useState([]);
   const customerValitadion = Yup.object().shape({
     name: Yup.string().required(),
   });
@@ -130,6 +131,18 @@ let Customer = () => {
       }
     });
   };
+
+  const getMyContacts = async () => {
+    await CustomerServices.getAllContacts().then((res) => {
+      if (res) {
+        setAllContacts(res);
+      }
+    });
+  };
+
+  useEffect(() => {
+    getMyContacts();
+  }, []);
 
   return (
     <Box className="customer">
@@ -286,7 +299,7 @@ let Customer = () => {
             </FormGroup>
           </Box>
           <Box className="customTableHead">
-            <CustomerTable />
+            <CustomerTable allContacts={allContacts} />
           </Box>
           <FormGroup className="inputHead">
             <label htmlFor="CustomerNotes" className="CustomerNotes">

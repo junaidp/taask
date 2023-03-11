@@ -23,6 +23,7 @@ import FilterImg from "../../assets/icons/filter.svg";
 import SearchImg from "../../assets/icons/search.svg";
 import JohnImg from "../../assets/Images/john.png";
 import MariahImg from "../../assets/Images/Mariah.png";
+import moment from "moment";
 
 let data = [
   {
@@ -48,7 +49,7 @@ let data = [
  
 ];
 
-const Appointments = () => {
+const Appointments = ({allMeetings}) => {
   const [page, setPage] = React.useState("");
 
   const handleChange = (event) => {
@@ -85,15 +86,15 @@ const Appointments = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((item) => (
-            <TableRow key={item.clientName}>
+          {allMeetings?.map((item, index) => (
+            <TableRow>
               <TableCell component="th" scope="row">
                 <Box className="userprofile">
-                  {item.title}
+                  {item.meetingName}
                 </Box>
               </TableCell>
               <TableCell>{item.time}</TableCell>
-              <TableCell>{item.dueDate}</TableCell>
+              <TableCell>{moment(item.dueDate).format("DD/MM/YYYY")}</TableCell>
             </TableRow>
           ))}
         </TableBody>
