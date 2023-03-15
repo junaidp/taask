@@ -611,7 +611,7 @@ const Projects = (props) => {
     },
   ];
   return (
-    <Box className="customerTasks projects">
+    <Box className="projects">
       <Box className="topHead">
         <Box>
           <span>
@@ -626,7 +626,7 @@ const Projects = (props) => {
         </Box>
       </Box>
 
-      <Box className="zx1">
+      <Box className="projectsMain">
         <DataGrid
           rows={tableData}
           columns={columns}
@@ -634,10 +634,10 @@ const Projects = (props) => {
           autoHeight
           disableRowSelectionOnClick
           hideFooterPagination
-          className="zx"
+          className="projectTable"
         />
       </Box>
-      <Box className="CustomerTaskFooter">
+      <Box className="projectFooter">
         <Box className="entries">
           <span>Showing 1 to 10 of 9,225 entries</span>
         </Box>

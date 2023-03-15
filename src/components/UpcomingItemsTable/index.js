@@ -146,8 +146,6 @@ const UpcomingItemsTable = ({tasksData}) => {
     setPage(event.target.value);
   };
 
-
-
   return (
     <TableContainer component={Paper} className="UpcomingItemsCout">
       <Box className="topHead">

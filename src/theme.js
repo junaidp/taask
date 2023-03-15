@@ -210,6 +210,14 @@ export const mainTheme = createTheme({
       color: "#1C3035",
       marginBottom: "8px !important",
     },
+    
+    h3: {
+      fontStyle: "normal",
+      fontWeight: 700,
+      fontSize: 18,
+      color: "#373F41",
+      textTransform: 'capitalize'
+    },
     h4: {
       fontStyle: "normal",
       fontWeight: 500,

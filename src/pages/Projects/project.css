@@ -262,8 +262,8 @@
 
 .SaveBtn {
   height: 40px !important;
-  max-width: 354px !important;
-  width: 354px !important;
+  max-width: 65% !important;
+  width: 65% !important;
   background: linear-gradient(180deg, #2e6073 0%, #214b5a 100%) !important;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.12) !important;
   border-radius: 8px !important;
@@ -291,7 +291,7 @@
   display: none !important;
 }
 
-.projects .CustomerTaskFooter {
+.projects .projectFooter {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -305,65 +305,65 @@
   font-size: 14px;
   color: #3a606e;
 }
-.projects .CustomerTaskFooter .PaginationHead {
+.projects .projectFooter .PaginationHead {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.CustomerTaskFooter .paginationBox {
+.projectFooter .paginationBox {
   width: 200px;
 }
-.CustomerTaskFooter
+.projectFooter
   .paginationBox
   .MuiPagination-ul
   li:first-child
   .MuiPaginationItem-root {
   border: unset !important;
 }
-.CustomerTaskFooter
+.projectFooter
   .paginationBox
   .MuiPagination-ul
   li:last-child
   .MuiPaginationItem-root {
   border: unset !important;
 }
-.CustomerTaskFooter .selectPageBox {
+.projectFooter .selectPageBox {
   width: 94px;
   margin-left: 16px !important;
 }
-.CustomerTaskFooter .selectPageBox .MuiSelect-select {
+.projectFooter .selectPageBox .MuiSelect-select {
   padding: 0 16px !important;
   height: 24px !important;
   border: 1px solid #373f41 !important;
 }
-.CustomerTaskFooter .selectPageBox .MuiSelect-select.Mui-selected {
+.projectFooter .selectPageBox .MuiSelect-select.Mui-selected {
   border: 1px solid #373f41 !important;
 }
 
-.CustomerTaskFooter .selectPageBox .MuiFormControl-root {
+.projectFooter .selectPageBox .MuiFormControl-root {
   position: relative !important;
 }
-.CustomerTaskFooter .selectPageBox .MuiInputBase-root {
+.projectFooter .selectPageBox .MuiInputBase-root {
   font-style: normal !important;
   font-weight: 400 !important;
   font-size: 14px !important;
   color: #152428 !important;
 }
-.CustomerTaskFooter .selectPageBox .MuiSelect-select .MuiOutlinedInput-input {
+.projectFooter .selectPageBox .MuiSelect-select .MuiOutlinedInput-input {
   border-radius: 5px !important;
   outline: none !important;
 }
-.CustomerTaskFooter .GotoBox {
+.projectFooter .GotoBox {
   width: 91px;
   margin-left: 16px !important;
 }
-.CustomerTaskFooter .GotoBox .MuiFormGroup-root {
+.projectFooter .GotoBox .MuiFormGroup-root {
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: space-between !important;
   align-items: center;
 }
-.CustomerTaskFooter .GotoBox .MuiInputBase-input {
+.projectFooter .GotoBox .MuiInputBase-input {
   width: 40px !important;
   padding: 0 10px !important;
   border: 1px solid #3a606e !important;
@@ -374,7 +374,7 @@
   height: 24px !important;
   color: #152428 !important;
 }
-.CustomerTaskFooter .GotoBox .MuiInputBase-input.Mui-selected {
+.projectFooter .GotoBox .MuiInputBase-input.Mui-selected {
   background-color: white !important;
 }
 .css-zffor1-MuiButtonBase-root-MuiMenuItem-root.Mui-selected:hover {
@@ -383,17 +383,16 @@
 .css-zffor1-MuiButtonBase-root-MuiMenuItem-root.Mui-selected {
   background-color: transparent !important;
 }
-.CustomerTaskFooter .GotoBox .label {
+.projectFooter .GotoBox .label {
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
   color: #3a606e;
 }
-.CustomerTaskFooter .MuiOutlinedInput-root {
+.projectFooter .MuiOutlinedInput-root {
   padding: 0 !important;
   border: unset !important;
 }
-/* ************************************************************* */
 .projectModel .MuiPaper-root {
   max-width: 834px !important;
   width: 834px !important;
@@ -471,11 +470,11 @@
   margin-left: 16px !important;
   display: inline-block;
 }
-.zx1 {
+.projectsMain {
   width: 100% !important;
   overflow-x: scroll !important;
 }
-.zx {
+.projectTable {
   min-width: 1466px !important;
   max-width: 100% !important;
 }
