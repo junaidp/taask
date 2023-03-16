@@ -23,6 +23,7 @@ import ResourcesIcon from "../../assets/icons/Resources.svg";
 import ReportingIcon from "../../assets/icons/Reporting.svg";
 import CustomerTasks from "../../assets/icons/Customer Tasks.svg";
 import Snapshots from "../../assets/icons/Snapshots.svg";
+import Integrations from "../../assets/icons/Integrations.svg"
 
 const Sidebar = ({ setActivePage }) => {
   const location = useLocation();
@@ -37,6 +38,7 @@ const Sidebar = ({ setActivePage }) => {
       "/Projects",
       "/Resources",
       "/Snapshots",
+      "/Integrations",
     ];
     const index = paths.indexOf(location.pathname);
     return index === -1 ? 0 : index;
@@ -59,6 +61,8 @@ const Sidebar = ({ setActivePage }) => {
         ? "Resources"
         : index === 6
         ? "Snapshots"
+        : index === 7
+        ? "Integrations"
         : "UpcomingItemsTable";
     localStorage.setItem("activeIndex", index);
     localStorage.setItem("activeIndexName", activePageName);
@@ -179,6 +183,21 @@ const Sidebar = ({ setActivePage }) => {
                 <img src={Snapshots} alt="Img not found" />
               </ListItemIcon>
               <ListItemText primary="Snapshots" />
+            </ListItemButton>
+          </ListItem>
+        </Link>
+
+        <Link to="/integrations">
+          <ListItem disablePadding>
+            <ListItemButton
+              variant="soft"
+              className={activeIndex === 7 ? "active" : ""}
+              onClick={() => addActiveClass(7)}
+            >
+              <ListItemIcon>
+                <img src={Integrations} alt="Img not found" />
+              </ListItemIcon>
+              <ListItemText primary="Integrations" />
             </ListItemButton>
           </ListItem>
         </Link>

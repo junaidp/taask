@@ -224,6 +224,13 @@ export const mainTheme = createTheme({
       fontSize: 16,
       color: "#152428",
     },
+    h5: {
+      fontStyle: "normal",
+      fontWeight: "600 !important",
+      fontSize: "14px !important",
+      color: "#214B5A !important",
+      letterSpacing: "0.01em !important",
+    },
     h6: {
       fontStyle: "normal",
       fontWeight: 600,
