@@ -269,7 +269,7 @@ const Snapshots = () => {
               </Box>
               <Box className="snapContent">
                 <List className="snapList snapListTypeTwo">
-                  <h6>Assigned Tasks</h6>
+                  <h6>Tasks You Assigned</h6>
                   {assignedTasksData.map((item) => (
                     <ListItem disablePadding>
                       <p>{item.status}</p>
@@ -283,7 +283,7 @@ const Snapshots = () => {
                 </List>
 
                 <List className="snapList snapListTypeTwo">
-                  <h6>Received Tasks</h6>
+                  <h6>asks assigned to you</h6>
                   {receivedTasksData.map((item) => (
                     <ListItem disablePadding>
                       <p>{item.status}</p>
