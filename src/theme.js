@@ -23,7 +23,7 @@ export const mainTheme = createTheme({
             border: "1px solid #3A606E",
             boxShadow: "4px 2px 15px rgba(58, 96, 110, 0.06)",
             borderRadius: "8px",
-            padding: "16px 16px",
+            padding: "14px 16px",
             color: "#3A606E",
             fontSize: "14px",
             fontWeight: "400",
@@ -143,6 +143,7 @@ export const mainTheme = createTheme({
             borderRadius: "16px",
             padding: "0 24px",
             boxShadow: " 0px 4px 15px rgba(58, 96, 110, 0.15)",
+            maxHeight: "400px"
           },
           ".MuiMenu-list": {
             padding: "0",
