@@ -379,7 +379,7 @@ let Customer = () => {
   };
 
   const handleLinksSubmit = () => {
-    setLinks([
+    setLinks([  
       ...Links,
       {
         link: link,

@@ -17,9 +17,20 @@ import {
   Avatar,
   ListItemIcon,
   Pagination,
-  PaginationItem
+  PaginationItem,
+  Menu,
+  OutlinedInput,
+  InputLabel,
+  FormControl,
+  ListItemText,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import * as Yup from "yup";
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
 import EastRoundedIcon from "@mui/icons-material/EastRounded";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
@@ -36,9 +47,36 @@ import DeleteIcon from "../../assets/icons/delete.svg";
 import DoneIcon from "../../assets/icons/done.svg";
 import ToDoIcon from "../../assets/icons/toDo.svg";
 import PlusIcon from "../../assets/icons/plus.svg";
+import CalenderIcon from "../../assets/icons/calender.svg";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+let CustomCalendarIcon = (props) => {
+  return <img src={CalenderIcon} alt="" {...props} />;
+};
+const getDay = (day) => {
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  let weekDay;
+  if (day == "Su") {
+    weekDay = dayNames[0];
+  } else if (day == "Mo") {
+    weekDay = dayNames[1];
+  } else if (day == "Tu") {
+    weekDay = dayNames[2];
+  } else if (day == "We") {
+    weekDay = dayNames[3];
+  } else if (day == "Th") {
+    weekDay = dayNames[4];
+  } else if (day == "Fr") {
+    weekDay = dayNames[5];
+  } else if (day == "Sa") {
+    weekDay = dayNames[6];
+  } else {
+    weekDay = "";
+  }
+  return weekDay;
+};
 
 const AssignTaskColumn = (props) => {
   const { rows } = props;
@@ -107,7 +145,7 @@ const rows = [
     },
     CustomerStage: "Contract",
     CustomerTask: "New task",
-    DueDate: "01/02/2023",
+    DueDate: "01/12/2023",
     AssignTask: "AssignTask",
     Status: "todo",
     Action: "",
@@ -120,7 +158,7 @@ const rows = [
     },
     CustomerStage: "Adoption",
     CustomerTask: "New task",
-    DueDate: "01/02/2023",
+    DueDate: "01/04/2023",
     AssignTask: "AssignTask",
     Status: "doing",
     Action: "",
@@ -133,7 +171,7 @@ const rows = [
     },
     CustomerStage: "Contract",
     CustomerTask: "New task",
-    DueDate: "01/02/2023",
+    DueDate: "01/06/2023",
     AssignTask: "AssignTask",
     Status: "done",
     Action: "",
@@ -146,7 +184,7 @@ const rows = [
     },
     CustomerStage: "Adoption",
     CustomerTask: "New task",
-    DueDate: "01/02/2023",
+    DueDate: "01/09/2023",
     AssignTask: "AssignTask",
     Status: "doing",
     Action: "",
@@ -159,7 +197,7 @@ const rows = [
     },
     CustomerStage: "Contract",
     CustomerTask: "New task",
-    DueDate: "01/02/2023",
+    DueDate: "01/08/2023",
     AssignTask: "AssignTask",
     Status: "done",
     Action: "",
@@ -249,12 +287,68 @@ const pages = [
   },
 ];
 
-
+const customers = [
+  {
+    PhotoUrl: MariahImg,
+    customerName: "Mariah Betts",
+  },
+  {
+    PhotoUrl: JohnImg,
+    customerName: "John Doe",
+  },
+  {
+    PhotoUrl: MariahImg,
+    customerName: "Mariah Betts",
+  },
+  {
+    PhotoUrl: JohnImg,
+    customerName: "John Doe",
+  },
+];
 const CustomerTasks = (props) => {
+  const [value, setValue] = React.useState(dayjs("2023-12-02"));
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [file, setFile] = useState(null);
   const [tableData, setTableData] = useState(rows);
+
+  const [selectAll, setSelectAll] = useState(false);
+  const [filteredCustomers, setFilteredCustomers] = useState(customers);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open1 = Boolean(anchorEl);
+  const [openArchive, setOpenArchive] = React.useState(false);
+
+  const handleArchiveClose = () => {
+    setOpenArchive(false);
+  };
+  const handleArchiveOpen = () => {
+    setOpenArchive(true);
+  };
+  const handleClick1 = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose1 = () => {
+    setAnchorEl(null);
+  };
+
+  const handleSelectAll = (event) => {
+    setSelectAll(event.target.checked);
+  };
+  const handleSelectCustomer = (event) => {
+    // handle individual customer selection
+  };
+
+  const handleFilterChange = (event) => {
+    const { value } = event.target;
+    if (!value) {
+      setFilteredCustomers(customers);
+      return;
+    }
+    const filtered = customers.filter((customer) =>
+      customer.customerName.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredCustomers(filtered);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -277,6 +371,18 @@ const CustomerTasks = (props) => {
     };
     const updatedItems = tableData?.filter((item) => item.id !== row?.id);
     updatedItems?.unshift(newRow);
+    setTableData(updatedItems);
+  };
+  const onDateChange = (newValue, row) => {
+    let value = newValue;
+    console.log(value, "value");
+    const newRow = {
+      ...row?.row,
+      DueDate: value,
+    };
+    const updatedItems = tableData?.filter((item) => item.id !== row?.id);
+    updatedItems?.unshift(newRow);
+    console.log(updatedItems, "sjhdksj");
     setTableData(updatedItems);
   };
   const statusOptions = [
@@ -369,12 +475,41 @@ const CustomerTasks = (props) => {
       sortable: false,
       disableColumnMenu: true,
       flex: 1,
+
       renderHeader: () => (
         <React.Fragment>
           <span>Due Date</span>
           <img src={FilterImg} className="filterImg" />
         </React.Fragment>
       ),
+      renderCell: (params) => {
+        console.log(params, "kjshdjk");
+        return (
+          <FormGroup className="customertaskDatePicker">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                orientation="portrait"
+                displayStaticWrapperAs="desktop"
+                openTo="day"
+                value={params.value}
+                showToolbar={false}
+                components={{
+                  OpenPickerIcon: CustomCalendarIcon,
+                  RightArrowButton: ArrowRightRoundedIcon,
+                  LeftArrowButton: ArrowLeftRoundedIcon,
+                }}
+                onChange={(newValue) => {
+                  setValue(newValue);
+                  onDateChange(newValue, params);
+                }}
+                showDaysOutsideCurrentMonth
+                dayOfWeekFormatter={(day) => getDay(day)}
+                renderInput={(params) => <TextField {...params} className="" />}
+              />
+            </LocalizationProvider>
+          </FormGroup>
+        );
+      },
     },
     {
       field: "AssignTask",
@@ -408,7 +543,6 @@ const CustomerTasks = (props) => {
             defaultValue={params.value}
             className="StatusHead"
             onChange={(e) => onStatusChange(e, params)}
-            
           >
             <p className="para">Status</p>
             {statusOptions.map((option) => (
@@ -445,12 +579,103 @@ const CustomerTasks = (props) => {
       align: "right",
     },
   ];
+
+  // const [selectedRowData, setSelectedRowData] = useState([]);
+
+  // const handleSelectionChange = (selectionModel) => {
+  //   const selectedIDs = new Set(selectionModel);
+  //   const selectedRows = rows.filter((row) =>
+  //     selectedIDs.has(row.id.toString())
+  //   );
+  //   setSelectedRowData(selectedRows);
+  //   console.log(selectedRowData);
+  // };
+
   return (
     <Box className="customerTasks">
       <Box className="topHead">
         <Box>
+          <Button
+            className="btn"
+            id="basic-button"
+            aria-controls={open1 ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open1 ? "true" : undefined}
+            onClick={handleClick1}
+          >
+            <img src={PlusIcon} alt="not found" /> New Customer
+          </Button>
+          {/* <span>
+            <img src={DeleteIcon} alt="not found" />
+          </span> */}
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open1}
+            onClose={handleClose1}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+            className="selectCustomerMenu"
+            PaperProps={{
+              elevation: 0,
+              sx: {
+                overflow: "visible",
+                filter: "drop-shadow(0px 4px 15px rgba(58, 96, 110, 0.15))",
+                width: "300px",
+                "&:before": {
+                  content: '""',
+                  display: "block",
+                  position: "absolute",
+                  top: 0,
+                  right: 10,
+                  width: 32,
+                  borderRadius: "4px",
+                  height: 32,
+                  bgcolor: "background.paper",
+                  transform: "translateY(-5px) rotate(45deg)",
+                  zIndex: 0,
+                },
+              },
+            }}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          >
+            <h3>Select Customer(s)</h3>
+            <TextField
+              variant="outlined"
+              fullWidth
+              onChange={handleFilterChange}
+            />
+            <FormControl sx={{ width: 300 }} className="selectCustomer">
+              <MenuItem value={"selectAll"}>
+                <Checkbox checked={selectAll} onChange={handleSelectAll} />
+                <ListItemText primary={"Select All"} />
+              </MenuItem>
+              {filteredCustomers.map((user) => (
+                <MenuItem value={user.customerName}>
+                  <Checkbox
+                    checked={selectAll}
+                    onChange={handleSelectCustomer}
+                  />
+                  <Avatar
+                    src={user.PhotoUrl}
+                    alt={user.PhotoUrl}
+                    className="avatar"
+                  />
+                  <ListItemText primary={user.customerName} />
+                </MenuItem>
+              ))}
+            </FormControl>
+          </Menu>
+        </Box>
+        <Box>
           <span>
-            <img src={CelenderFilterIcon} />
+            <img
+              src={CelenderFilterIcon}
+              title="Archive"
+              onClick={() => handleArchiveOpen()}
+            />
           </span>
           <span>
             <img src={SearchImg} />
@@ -468,8 +693,9 @@ const CustomerTasks = (props) => {
         autoHeight
         disableRowSelectionOnClick
         hideFooterPagination
+        // onSelectionModelChange={handleSelectionChange}
       />
-       <Box className="CustomerTaskFooter">
+      <Box className="CustomerTaskFooter">
         <Box className="entries">
           <span>Showing 1 to 10 of 9,225 entries</span>
         </Box>
@@ -554,10 +780,10 @@ const CustomerTasks = (props) => {
                 Customer Stage <span>{selectedRow?.CustomerStage}</span>
               </h6>
             </Box>
-            <Box className="actionsHead">
+            {/* <Box className="actionsHead">
               <img src={ToDoIcon} />
               <img src={DeleteIcon} className="DeleteIcon" />
-            </Box>
+            </Box> */}
             <Box className="badgesHead">
               <Badge badgeContent={""} className="toDoBadge"></Badge>
               <Badge badgeContent={""} className="doingBadge"></Badge>
@@ -589,7 +815,7 @@ const CustomerTasks = (props) => {
                   id="taskTitle"
                   className="taskTitleInput"
                 />
-                <span>
+                <span title="Complete">
                   <img src={ToDoIcon} />
                 </span>
               </Box>
@@ -736,6 +962,34 @@ const CustomerTasks = (props) => {
             }}
           >
             <Button className="SaveBtn">save</Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+
+      {/* model 2 */}
+      <Dialog
+        open={openArchive}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleArchiveClose}
+        aria-describedby="alert-dialog-slide-description"
+        className="ArchiveModel"
+      >
+        <DialogTitle className="titleHead">Archived</DialogTitle>
+        <DialogContent>
+          <Box>
+            {tableData?.map((item) => {
+              if (item?.Status === "done") {
+                return (
+                  <Box className="ArchiveContent">
+                    <h4>{item.Customer.name}</h4>
+                    <span>
+                      <img src={DoneIcon} alt="not found" />
+                    </span>
+                  </Box>
+                );
+              }
+            })}
           </Box>
         </DialogContent>
       </Dialog>
