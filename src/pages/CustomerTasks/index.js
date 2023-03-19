@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./customerTask.css";
+
+import moment from "moment";
 import {
   Box,
   Typography,
@@ -30,6 +32,8 @@ import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
+import { DesktopTimePicker } from "@mui/x-date-pickers/DesktopTimePicker";
 
 import EastRoundedIcon from "@mui/icons-material/EastRounded";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
@@ -48,6 +52,8 @@ import DoneIcon from "../../assets/icons/done.svg";
 import ToDoIcon from "../../assets/icons/toDo.svg";
 import PlusIcon from "../../assets/icons/plus.svg";
 import CalenderIcon from "../../assets/icons/calender.svg";
+import RemainderIcon from "../../assets/icons/Remainder.svg";
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -307,22 +313,40 @@ const customers = [
 ];
 const CustomerTasks = (props) => {
   const [value, setValue] = React.useState(dayjs("2023-12-02"));
+  const [eventReminder, setEventReminder] = React.useState(dayjs("2023-5-3"));
+  const [dateReminder, setDateReminder] = React.useState(dayjs("2023-5-11"));
+  const [timeReminder, setTimeReminder] = React.useState(
+    dayjs("2022-04-17T15:30")
+  );
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [file, setFile] = useState(null);
   const [tableData, setTableData] = useState(rows);
-
   const [selectAll, setSelectAll] = useState(false);
   const [filteredCustomers, setFilteredCustomers] = useState(customers);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open1 = Boolean(anchorEl);
   const [openArchive, setOpenArchive] = React.useState(false);
+  const [openReminder, setOpenReminder] = React.useState(false);
+  const [addRemainderOpen, setAddRemainderOpen] = React.useState(false);
 
   const handleArchiveClose = () => {
     setOpenArchive(false);
   };
   const handleArchiveOpen = () => {
     setOpenArchive(true);
+  };
+  const handleReminderClose = () => {
+    setOpenReminder(false);
+  };
+  const handleReminderOpen = () => {
+    setOpenReminder(true);
+  };
+  const handleaddRemainderClose = () => {
+    setAddRemainderOpen(false);
+  };
+  const handleaddRemainderOpen = () => {
+    setAddRemainderOpen(true);
   };
   const handleClick1 = (event) => {
     setAnchorEl(event.currentTarget);
@@ -567,13 +591,18 @@ const CustomerTasks = (props) => {
         </React.Fragment>
       ),
       renderCell: (row) => (
-        <React.Fragment>
+        <React.Fragment className="actionHead">
           {row?.row?.Status === "done" ? (
             <img src={DoneIcon} />
           ) : (
             <img src={ToDoIcon} />
           )}
           <img src={DeleteIcon} className="DeleteIcon" />
+          <img
+            src={RemainderIcon}
+            className="RemainderIcon"
+            onClick={() => handleReminderOpen()}
+          />
         </React.Fragment>
       ),
       align: "right",
@@ -991,6 +1020,113 @@ const CustomerTasks = (props) => {
               }
             })}
           </Box>
+        </DialogContent>
+      </Dialog>
+
+      {/* model 3*/}
+      <Dialog
+        open={openReminder}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleReminderClose}
+        aria-describedby="alert-dialog-slide-description"
+        className="ArchiveModel ReminderModel"
+      >
+        <DialogTitle className="titleHead">Reminder</DialogTitle>
+        <DialogContent>
+          <Box>
+            <FormGroup className="ReminderDatePicker">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <StaticDatePicker
+                  orientation="portrait"
+                  displayStaticWrapperAs="desktop"
+                  openTo="day"
+                  value={eventReminder}
+                  showToolbar={false}
+                  components={{
+                    OpenPickerIcon: CustomCalendarIcon,
+                    RightArrowButton: ArrowRightRoundedIcon,
+                    LeftArrowButton: ArrowLeftRoundedIcon,
+                  }}
+                  onChange={(newValue) => {
+                    setEventReminder(newValue);
+                  }}
+                  showDaysOutsideCurrentMonth
+                  dayOfWeekFormatter={(day) => getDay(day)}
+                />
+              </LocalizationProvider>
+            </FormGroup>
+            <Box className="remainderHead">
+              <h6 onClick={() => handleaddRemainderOpen()}>
+                <img src={PlusIcon} alt="not found" />
+                Add Remainder
+              </h6>
+            </Box>
+            <Box className="remainderHead">
+              <h6>
+                <img src={RemainderIcon} alt="not found" />
+                <span>{dateReminder.format("DD/MM/YYYY")}</span>
+              </h6>
+              <h6>{timeReminder.format("hh:mm A")}</h6>
+            </Box>
+          </Box>
+        </DialogContent>
+      </Dialog>
+      {/* model 4*/}
+      <Dialog
+        open={addRemainderOpen}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleaddRemainderClose}
+        aria-describedby="alert-dialog-slide-description"
+        className="ArchiveModel ReminderModel reminderdateAndTime "
+      >
+        <DialogContent>
+          <Box>
+            <h6>Set Date</h6>
+            <FormGroup className="inputGroup">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  orientation="portrait"
+                  displayStaticWrapperAs="desktop"
+                  openTo="day"
+                  value={dateReminder}
+                  showToolbar={false}
+                  components={{
+                    OpenPickerIcon: CustomCalendarIcon,
+                    RightArrowButton: ArrowRightRoundedIcon,
+                    LeftArrowButton: ArrowLeftRoundedIcon,
+                  }}
+                  onChange={(newValue) => {
+                    setDateReminder(newValue);
+                  }}
+                  showDaysOutsideCurrentMonth
+                  dayOfWeekFormatter={(day) => getDay(day)}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </FormGroup>
+          </Box>
+          <Box>
+            <h6>Set Date</h6>
+            <FormGroup className="inputGroup">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopTimePicker
+                  value={timeReminder}
+                  components={{
+                    // OpenPickerIcon: CustomCalendarIcon,
+                    RightArrowButton: ArrowRightRoundedIcon,
+                    LeftArrowButton: ArrowLeftRoundedIcon,
+                  }}
+                  onChange={(newValue) => {
+                    setTimeReminder(newValue);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </FormGroup>
+          </Box>
+          <Button className="reminderBtn">save</Button>
         </DialogContent>
       </Dialog>
     </Box>

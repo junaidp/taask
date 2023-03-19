@@ -79,8 +79,10 @@
   border: unset !important;
 }
 .customerTasks .DeleteIcon,
-.customerTaskModel .DeleteIcon {
+.customerTaskModel .DeleteIcon,
+.RemainderIcon {
   margin-left: 14px !important;
+  cursor: pointer;
 }
 .customerTasks .customerTaskBtn {
   display: flex;
@@ -260,7 +262,8 @@
 }
 
 .customerTaskModel .SaveBtn,
-.customerTasks .btn {
+.customerTasks .btn,
+.reminderBtn {
   height: 40px !important;
   max-width: 354px !important;
   width: 354px !important;
@@ -275,11 +278,16 @@
   font-weight: 600 !important;
   letter-spacing: 0.01em !important;
 }
+.reminderBtn {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin-top: 20px !important;
+}
 .customerTasks .btn {
-  width: 150px!important;
+  width: 150px !important;
   font-size: 12px !important;
 }
-.customerTasks .btn img{
+.customerTasks .btn img {
   margin-right: 8px !important;
   filter: saturate(0%) brightness(350%) !important;
 }
@@ -400,24 +408,26 @@
   padding: 0 !important;
   border: unset !important;
 }
-.selectCustomer{
+.selectCustomer {
   max-height: 260px !important;
   overflow: auto !important;
 }
-.customertaskDatePicker .MuiOutlinedInput-root{
+.customertaskDatePicker .MuiOutlinedInput-root {
   background: transparent !important;
   border: none !important;
   box-shadow: unset !important;
 }
- .ArchiveModel .MuiPaper-root {
+.ArchiveModel .MuiPaper-root {
   max-width: 400px !important;
   width: 400px !important;
+
   background: #ffffff;
   box-shadow: 4px 2px 15px rgba(55, 63, 65, 0.06) !important;
   border-radius: 10px !important;
   padding: 20px !important;
 }
-.ArchiveModel .titleHead{
+.ArchiveModel .titleHead,
+.reminderdateAndTime h6 {
   border-bottom: 1px solid #3a606e !important;
   text-align: center;
   font-style: normal !important;
@@ -425,12 +435,12 @@
   font-size: 18px !important;
   text-transform: capitalize;
   color: #1c3035;
-  padding: 0 0 4px !important; 
+  padding: 0 0 4px !important;
 }
-.ArchiveModel .MuiDialogContent-root{
+.ArchiveModel .MuiDialogContent-root {
   padding: 0 !important;
 }
-.ArchiveModel .ArchiveContent{
+.ArchiveModel .ArchiveContent {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -438,10 +448,38 @@
   padding-bottom: 10px;
   border-bottom: 1px solid #3a606e36 !important;
 }
-.ArchiveModel .ArchiveContent h4{
+.ArchiveModel .ArchiveContent h4 {
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
   text-transform: capitalize;
   color: #1c3035;
+}
+.ReminderDatePicker .css-epd502 {
+  width: 100% !important;
+}
+.ReminderDatePicker .MuiCalendarPicker-root {
+  width: 100% !important;
+}
+
+.ReminderModel .remainderHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-top: 1px solid #3a606e;
+}
+.ReminderModel .remainderHead h6 {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  color: #214b5a;
+}
+.ReminderModel .remainderHead h6 img {
+  margin-right: 8px !important;
+  transform: translateY(3px);
+  cursor: pointer;
+}
+.reminderdateAndTime .inputGroup {
+  padding: 16px 0 !important;
 }

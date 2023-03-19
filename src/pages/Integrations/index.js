@@ -103,8 +103,7 @@ const Integrations = () => {
           sx: {
             overflow: "visible",
             filter: "drop-shadow(0px 4px 15px rgba(58, 96, 110, 0.15))",
-            transform: "translateX(30px)",
-            width: "402px",
+            width: "300px",
             "&:before": {
               content: '""',
               display: "block",
@@ -125,7 +124,7 @@ const Integrations = () => {
       >
         <h3>Select Customer(s)</h3>
         <TextField variant="outlined" fullWidth onChange={handleFilterChange} />
-        <FormControl sx={{ width: 300 }}>
+        <FormControl sx={{ width: 300 }} className="selectCustomer">
           <MenuItem value={"selectAll"}>
             <Checkbox checked={selectAll} onChange={handleSelectAll} />
             <ListItemText primary={"Select All"} />

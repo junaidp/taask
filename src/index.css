@@ -104,3 +104,22 @@ html {
   display: none !important;
   opacity: 0 !important;
 }
+.MuiClock-root{
+  padding: 20px 0 !important;
+}
+.MuiClockPicker-arrowSwitcher{
+  right: 2px !important;
+  top: 1px !important;
+}
+.MuiPickersArrowSwitcher-spacer{
+  display: none !important;
+}
+.MuiClockPointer-thumb{
+  border-color: #275465 !important;
+}
+.MuiClockPointer-root,.MuiClock-pin{
+  background-color: #275465 !important;
+}
+.MuiClock-clock{
+  background: #f4fffb !important;
+}
