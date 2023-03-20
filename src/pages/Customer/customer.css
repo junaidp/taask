@@ -1,6 +1,9 @@
 .customer .customerPart1 {
   padding-right: 15px !important;
 }
+.customer {
+  padding-right: 10px !important;
+}
 .customer .customerPart2 {
   padding-left: 15px !important;
 }

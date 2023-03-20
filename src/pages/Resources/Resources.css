@@ -1,6 +1,9 @@
 .resources * {
   box-sizing: border-box !important;
 }
+.resources {
+  padding-right: 10px;
+}
 .resources .resourcesTopHead {
   display: flex;
   justify-content: space-between;

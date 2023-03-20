@@ -36,5 +36,5 @@ html {
   overflow-x: visible !important;
 }
 .dashboard .TabsContent::-webkit-scrollbar {
-  display: none;
+  /* display: none; */
 }

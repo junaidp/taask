@@ -330,6 +330,8 @@ const CustomerTasks = (props) => {
   const [openReminder, setOpenReminder] = React.useState(false);
   const [addRemainderOpen, setAddRemainderOpen] = React.useState(false);
 
+  const [selectedFields, setSelectedFields] = useState([])
+
   const handleArchiveClose = () => {
     setOpenArchive(false);
   };
@@ -414,7 +416,57 @@ const CustomerTasks = (props) => {
     { value: "doing", label: "Doing" },
     { value: "done", label: "Done" },
   ];
+
+  // for select all
+  const onSelectAll =(e)=>{
+    if(e.target.checked === true){
+      const allIds = tableData?.map((item)=>{
+        return item?.id
+      })
+      setSelectedFields(allIds)
+      
+    }else {
+      setSelectedFields([])
+    }
+  }
+  // for single select
+  const onSelectField =(e , id)=>{
+    if(e.target.checked === true){
+      if(selectedFields.includes(id)){
+        setSelectedFields(selectedFields)
+      }
+      setSelectedFields(oldArray => [...oldArray, id]);
+    }else {
+      setSelectedFields([])
+      const newIds = selectedFields.filter((item)=>{
+        if(item !== id ){
+          return item
+        }
+      })
+
+      setSelectedFields(newIds)
+    }
+  }
+  
+
   const columns = [
+    {
+      field: "selection",
+      headerName: "check",
+      width: 70,
+      sortable: false,
+      disableColumnMenu: true,
+      renderHeader: () => (
+        <React.Fragment>
+          <Checkbox checked={selectedFields?.length == tableData?.length} onChange={onSelectAll}/>
+        </React.Fragment>
+      ),
+      renderCell: (params) => (
+        <React.Fragment>
+          <Checkbox checked={selectedFields?.includes(params?.row?.id)} onChange={(e)=>onSelectField(e, params?.row?.id)}/>
+        </React.Fragment>
+      ),
+    },
     {
       field: "id",
       headerName: "ID",
@@ -609,19 +661,9 @@ const CustomerTasks = (props) => {
     },
   ];
 
-  // const [selectedRowData, setSelectedRowData] = useState([]);
-
-  // const handleSelectionChange = (selectionModel) => {
-  //   const selectedIDs = new Set(selectionModel);
-  //   const selectedRows = rows.filter((row) =>
-  //     selectedIDs.has(row.id.toString())
-  //   );
-  //   setSelectedRowData(selectedRows);
-  //   console.log(selectedRowData);
-  // };
-
   return (
-    <Box className="customerTasks">
+   <Box className="customerTaskPage">
+     <Box className="customerTasks">
       <Box className="topHead">
         <Box>
           <Button
@@ -634,9 +676,13 @@ const CustomerTasks = (props) => {
           >
             <img src={PlusIcon} alt="not found" /> New Customer
           </Button>
-          {/* <span>
+          {
+            selectedFields?.length === tableData?.length? (
+              <span>
             <img src={DeleteIcon} alt="not found" />
-          </span> */}
+          </span>
+            ):(null)
+          }
           <Menu
             id="basic-menu"
             anchorEl={anchorEl}
@@ -718,7 +764,7 @@ const CustomerTasks = (props) => {
       <DataGrid
         rows={tableData}
         columns={columns}
-        checkboxSelection
+        // checkboxSelection
         autoHeight
         disableRowSelectionOnClick
         hideFooterPagination
@@ -1130,6 +1176,7 @@ const CustomerTasks = (props) => {
         </DialogContent>
       </Dialog>
     </Box>
+   </Box>
   );
 };
 

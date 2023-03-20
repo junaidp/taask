@@ -32,7 +32,7 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #313131;
+  background: #285768;
   border-radius: 30px;
 }
 .Toastify__toast {

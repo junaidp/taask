@@ -163,7 +163,8 @@ const Portfolio = () => {
     setPage(event.target.value);
   };
   return (
-    <TableContainer component={Paper} className="portfolioCout">
+  <Box className="portfolio">
+      <TableContainer component={Paper} className="portfolioCout">
       <Box className="topHead">
         <Box>
           <Typography variant="h2">Portfolio</Typography>
@@ -282,6 +283,7 @@ const Portfolio = () => {
         </Box>
       </Box>
     </TableContainer>
+  </Box>
   );
 };
 

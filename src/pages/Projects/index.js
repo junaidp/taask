@@ -611,7 +611,9 @@ const Projects = (props) => {
     },
   ];
   return (
-    <Box className="projects">
+  
+    <Box className="project">
+        <Box className="projects">
       <Box className="topHead">
         <Box>
           <span>
@@ -989,6 +991,7 @@ const Projects = (props) => {
           </Box>
         </DialogContent>
       </Dialog>
+    </Box>
     </Box>
   );
 };

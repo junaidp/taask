@@ -6,6 +6,9 @@
   width: 100% !important;
   max-width: 100% !important;
 }
+.project {
+  padding-right: 10px;
+}
 .projects .topHead {
   display: flex !important;
   justify-content: flex-end !important;
