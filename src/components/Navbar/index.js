@@ -12,6 +12,8 @@ import {
   Fade,
   ListItemText,
   Tooltip,
+  Button,
+  Popover,
 } from "@mui/material";
 
 // Images and icons
@@ -19,6 +21,7 @@ import NotificationIcon from "../../assets/icons/notification.svg";
 import HelpIcon from "../../assets/icons/help.svg";
 import SettingIcon from "../../assets/icons/setting.svg";
 import UserImg from "../../assets/Images/user.png";
+import IImg from "../../assets/icons/i.svg";
 
 const fakeNotifications = [
   { id: 1, message: "Lorem ipsum dolor sit amet." },
@@ -28,6 +31,19 @@ const fakeNotifications = [
 ];
 
 const Navbar = ({ activePage }) => {
+  const [anchorElPopover, setAnchorElPopover] = React.useState(null);
+
+  const handleClickPopover = (event) => {
+    setAnchorElPopover(event.currentTarget);
+  };
+
+  const handleClosePopover = () => {
+    setAnchorElPopover(null);
+  };
+
+  const openPopover = Boolean(anchorElPopover);
+  const id = openPopover ? "simple-popover" : undefined;
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -48,7 +64,15 @@ const Navbar = ({ activePage }) => {
   return (
     <Box className="navbarHead">
       <nav className="navbar">
-        <Typography variant="h1">{activePage}</Typography>
+        <Typography variant="h1">
+          {activePage === "Resources" || activePage === "Integrations" ? (
+            <>
+              {activePage} <img src={IImg} onClick={handleClickPopover} />
+            </>
+          ) : (
+            activePage
+          )}
+        </Typography>
         <List className="navLinks">
           <ListItem disablePadding className="NotificationsHead">
             <Tooltip title="Notifications">
@@ -74,7 +98,7 @@ const Navbar = ({ activePage }) => {
                   overflow: "visible",
                   filter: "drop-shadow(0px 4px 15px rgba(58, 96, 110, 0.15))",
                   transform: "translateX(30px)",
-                  width: '402px',
+                  width: "402px",
                   "&:before": {
                     content: '""',
                     display: "block",
@@ -93,15 +117,17 @@ const Navbar = ({ activePage }) => {
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-                <Box className="head">
-                  <Typography variant="h6">Notifications</Typography>
-                  <span>Mark all as read</span>
-                </Box>
+              <Box className="head">
+                <Typography variant="h6">Notifications</Typography>
+                <span>Mark all as read</span>
+              </Box>
               {fakeNotifications.map((item) => (
                 <MenuItem onClick={handleClose1}>{item.message}</MenuItem>
               ))}
-              <Box sx={{padding: "24px"}}>
-                <Typography variant="h6" sx={{textAlign: 'center'}}>View All</Typography>
+              <Box sx={{ padding: "24px" }}>
+                <Typography variant="h6" sx={{ textAlign: "center" }}>
+                  View All
+                </Typography>
               </Box>
             </Menu>
           </ListItem>
@@ -161,6 +187,25 @@ const Navbar = ({ activePage }) => {
             </Box>
           </ListItem>
         </List>
+        <Popover
+          id={id}
+          open={openPopover}
+          anchorEl={anchorElPopover}
+          onClose={handleClosePopover}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          className="navbarPopover"
+        >
+          <Typography sx={{ p: 2 }} className="navbarPopoverHeading">
+            {activePage === "Resources"
+              ? "Here you can store templates, copies of regularly used emails, important documents."
+              : activePage === "Integrations"
+              ? "Please filter for customer(s) to view related information"
+              : null}
+          </Typography>
+        </Popover>
       </nav>
     </Box>
   );

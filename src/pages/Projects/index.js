@@ -18,14 +18,27 @@ import {
   ListItemIcon,
   Pagination,
   PaginationItem,
+  Menu,
+  FormControl,
+  ListItemText,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import * as Yup from "yup";
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
+import { DesktopTimePicker } from "@mui/x-date-pickers/DesktopTimePicker";
 import EastRoundedIcon from "@mui/icons-material/EastRounded";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
+import { v4 as uuidv4 } from 'uuid';
+
 // images
 import DummiAvatar from "../../assets/icons/dummiAvatar.svg";
+import CalenderIcon from "../../assets/icons/calender.svg";
 import CelenderFilterIcon from "../../assets/icons/calenderFilter.svg";
 import CloseIcon from "../../assets/icons/close.svg";
 import JohnImg from "../../assets/Images/john.png";
@@ -37,9 +50,35 @@ import DeleteIcon from "../../assets/icons/delete.svg";
 import DoneIcon from "../../assets/icons/done.svg";
 import ToDoIcon from "../../assets/icons/toDo.svg";
 import PlusIcon from "../../assets/icons/plus.svg";
+import RemainderIcon from "../../assets/icons/Remainder.svg";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+let CustomCalendarIcon = (props) => {
+  return <img src={CalenderIcon} alt="" {...props} />;
+};
+const getDay = (day) => {
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  let weekDay;
+  if (day == "Su") {
+    weekDay = dayNames[0];
+  } else if (day == "Mo") {
+    weekDay = dayNames[1];
+  } else if (day == "Tu") {
+    weekDay = dayNames[2];
+  } else if (day == "We") {
+    weekDay = dayNames[3];
+  } else if (day == "Th") {
+    weekDay = dayNames[4];
+  } else if (day == "Fr") {
+    weekDay = dayNames[5];
+  } else if (day == "Sa") {
+    weekDay = dayNames[6];
+  } else {
+    weekDay = "";
+  }
+  return weekDay;
+};
 
 const AssignTaskColumn = (props) => {
   const { rows } = props;
@@ -110,7 +149,7 @@ const rows = [
       name: "John Doe",
     },
     CustomerStage: "Contract",
-    CustomerTask: "New task",
+    ProjectTask: "New task",
     DueDate: "01/02/2023",
     AssignTask: "AssignTask",
     Status: "todo",
@@ -126,7 +165,7 @@ const rows = [
       name: "Mariah Betts",
     },
     CustomerStage: "Adoption",
-    CustomerTask: "New task",
+    ProjectTask: "New task",
     DueDate: "01/02/2023",
     AssignTask: "AssignTask",
     Status: "doing",
@@ -142,7 +181,7 @@ const rows = [
       name: "John Doe",
     },
     CustomerStage: "Contract",
-    CustomerTask: "New task",
+    ProjectTask: "New task",
     DueDate: "01/02/2023",
     AssignTask: "AssignTask",
     Status: "done",
@@ -158,7 +197,7 @@ const rows = [
       name: "Mariah Betts",
     },
     CustomerStage: "Adoption",
-    CustomerTask: "New task",
+    ProjectTask: "New task",
     DueDate: "01/02/2023",
     AssignTask: "AssignTask",
     Status: "doing",
@@ -174,7 +213,7 @@ const rows = [
       name: "John Doe",
     },
     CustomerStage: "Contract",
-    CustomerTask: "New task",
+    ProjectTask: "New task",
     DueDate: "01/02/2023",
     AssignTask: "AssignTask",
     Status: "done",
@@ -190,7 +229,7 @@ const rows = [
       name: "Mariah Betts",
     },
     CustomerStage: "Adoption",
-    CustomerTask: "New task",
+    ProjectTask: "New task",
     DueDate: "01/02/2023",
     AssignTask: "AssignTask",
     Status: "doing",
@@ -206,7 +245,7 @@ const rows = [
       name: "John Doe",
     },
     CustomerStage: "Contract",
-    CustomerTask: "New task",
+    ProjectTask: "New task",
     DueDate: "01/02/2023",
     AssignTask: "AssignTask",
     Status: "done",
@@ -222,7 +261,7 @@ const rows = [
       name: "Mariah Betts",
     },
     CustomerStage: "Adoption",
-    CustomerTask: "New task",
+    ProjectTask: "New task",
     DueDate: "01/02/2023",
     AssignTask: "AssignTask",
     Status: "doing",
@@ -238,7 +277,7 @@ const rows = [
       name: "John Doe",
     },
     CustomerStage: "Contract",
-    CustomerTask: "New task",
+    ProjectTask: "New task",
     DueDate: "01/02/2023",
     AssignTask: "AssignTask",
     Status: "done",
@@ -254,7 +293,7 @@ const rows = [
       name: "Mariah Betts",
     },
     CustomerStage: "Adoption",
-    CustomerTask: "New task",
+    ProjectTask: "New task",
     DueDate: "01/02/2023",
     AssignTask: "AssignTask",
     Status: "doing",
@@ -284,6 +323,28 @@ const statusOptions = [
   { value: "doing", label: "Doing" },
   { value: "done", label: "Done" },
 ];
+const customers = [
+  {
+    id: 1,
+    PhotoUrl: MariahImg,
+    customerName: "Mariah Betts",
+  },
+  {
+    id: 2,
+    PhotoUrl: JohnImg,
+    customerName: "John Doe",
+  },
+  {
+    id: 3,
+    PhotoUrl: MariahImg,
+    customerName: "Mariah Betts",
+  },
+  {
+    id: 4,
+    PhotoUrl: JohnImg,
+    customerName: "John Doe",
+  },
+];
 const RelatedCustomerOptions = [
   { value: "allCustomer", label: "All Customer" },
   { value: "contractCustomer", label: "Contract Customer" },
@@ -294,14 +355,34 @@ const RelatedCustomerOptions = [
   { value: "multiSelectOption", label: "Multi-Select Option" },
 ];
 const Projects = (props) => {
+  const [value, setValue] = React.useState(dayjs("2023-12-02"));
+  const [eventReminder, setEventReminder] = React.useState(dayjs("2023-5-3"));
+  const [dateReminder, setDateReminder] = React.useState(dayjs("2023-5-11"));
+  const [timeReminder, setTimeReminder] = React.useState(
+    dayjs("2022-04-17T15:30")
+  );
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
-  const [projectName, setProjectName] = useState('');
-  const [resources, setResources] = useState('');
+  const [projectName, setProjectName] = useState("");
+  const [resources, setResources] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [file, setFile] = useState(null);
   const [tableData, setTableData] = useState(rows);
+
+  const [openReminder, setOpenReminder] = React.useState(false);
+  const [addRemainderOpen, setAddRemainderOpen] = React.useState(false);
+
+  const [openArchive, setOpenArchive] = React.useState(false);
+
+  const [selectedFields, setSelectedFields] = useState([]);
+  const [newTaskCustomers, setNewTaskCustomers] = useState([]);
+
+  const [selectAll, setSelectAll] = useState(false);
+  const [filteredCustomers, setFilteredCustomers] = useState(customers);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open3 = Boolean(anchorEl);
+  const [subtasks, setSubtasks] = useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -341,7 +422,7 @@ const Projects = (props) => {
     updatedItems?.unshift(newRow);
     setTableData(updatedItems);
   };
-  const handleProjectNameChange= (event) => {
+  const handleProjectNameChange = (event) => {
     setProjectName(event.target.value);
   };
   const updateProjectName = () => {
@@ -353,7 +434,7 @@ const Projects = (props) => {
     setTableData(updatedItems);
     setOpen1(false);
   };
-  const handleResourcesChange= (event) => {
+  const handleResourcesChange = (event) => {
     setResources(event.target.value);
   };
   const updateResources = () => {
@@ -365,8 +446,167 @@ const Projects = (props) => {
     setTableData(updatedItems);
     setOpen2(false);
   };
+  const onDateChange = (newValue, row) => {
+    let value = newValue;
+    console.log(value, "value");
+    const newRow = {
+      ...row?.row,
+      DueDate: value,
+    };
+    const updatedItems = tableData?.filter((item) => item.id !== row?.id);
+    updatedItems?.unshift(newRow);
+    console.log(updatedItems, "sjhdksj");
+    setTableData(updatedItems);
+  };
+
+  const handleReminderClose = () => {
+    setOpenReminder(false);
+  };
+  const handleReminderOpen = () => {
+    setOpenReminder(true);
+  };
+  const handleaddRemainderClose = () => {
+    setAddRemainderOpen(false);
+  };
+  const handleaddRemainderOpen = () => {
+    setAddRemainderOpen(true);
+  };
+  const handleArchiveClose = () => {
+    setOpenArchive(false);
+  };
+  const handleArchiveOpen = () => {
+    setOpenArchive(true);
+  };
+  const handleClick1 = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose1 = () => {
+    setAnchorEl(null);
+  };
+
+  const handleSelectAll = (event) => {
+    setSelectAll(event.target.checked);
+    if (event.target.checked === true) {
+      const allIDs = filteredCustomers?.map((item) => {
+        return item?.id;
+      });
+      setNewTaskCustomers(allIDs);
+    } else {
+      setNewTaskCustomers([]);
+    }
+  };
+  const handleSelectCustomer = (e, id) => {
+    if (e.target.checked === true) {
+      setNewTaskCustomers((oldState) => [...oldState, id]);
+    } else {
+      // setSelectedFields([])
+      const newIds = newTaskCustomers.filter((item) => {
+        if (item !== id) {
+          return item;
+        }
+      });
+
+      setNewTaskCustomers(newIds);
+    }
+  };
+
+  console.log(filteredCustomers, "filteredCustomers");
+
+  const handleFilterChange = (event) => {
+    const { value } = event.target;
+    if (!value) {
+      setFilteredCustomers(customers);
+      return;
+    }
+    const filtered = customers.filter((customer) =>
+      customer.customerName.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredCustomers(filtered);
+  };
+  // for select all
+  const onSelectAll = (e) => {
+    if (e.target.checked === true) {
+      const allIds = tableData?.map((item) => {
+        return item?.id;
+      });
+      setSelectedFields(allIds);
+    } else {
+      setSelectedFields([]);
+    }
+  };
+  // for single select
+  const onSelectField = (e, id) => {
+    if (e.target.checked === true) {
+      if (selectedFields.includes(id)) {
+        setSelectedFields(selectedFields);
+      }
+      setSelectedFields((oldArray) => [...oldArray, id]);
+    } else {
+      setSelectedFields([]);
+      const newIds = selectedFields.filter((item) => {
+        if (item !== id) {
+          return item;
+        }
+      });
+
+      setSelectedFields(newIds);
+    }
+  };
+
+  const handleSubtaskClick = () => {
+    const obj = {
+      id : uuidv4(),
+      label : "",
+      active : false
+    }
+    setSubtasks((oldState)=> [...oldState, obj])
+  };
+
+  const handleTaskLabelChange = (e, index) =>{
+    setSubtasks(subtasks.map((obj, i) => {
+      if (i === index) {
+        return {...obj, label: e.target.value};
+      }
+      return obj;
+    }));
+  }
+
+  const onTaskActiveChange = (e, index) =>{
+    setSubtasks(subtasks.map((obj, i) => {
+      if (i === index) {
+        return {...obj, active: !obj?.active};
+      }
+      return obj;
+    }));
+  }
+
+
+  console.log(subtasks,"subtaskssubtaskssubtasks" )
 
   const columns = [
+    {
+      field: "selection",
+      headerName: "check",
+      width: 40,
+      sortable: false,
+      disableColumnMenu: true,
+      renderHeader: () => (
+        <React.Fragment>
+          <Checkbox
+            checked={selectedFields?.length == tableData?.length}
+            onChange={onSelectAll}
+          />
+        </React.Fragment>
+      ),
+      renderCell: (params) => (
+        <React.Fragment>
+          <Checkbox
+            checked={selectedFields?.includes(params?.row?.id)}
+            onChange={(e) => onSelectField(e, params?.row?.id)}
+          />
+        </React.Fragment>
+      ),
+    },
     {
       field: "id",
       headerName: "ID",
@@ -453,14 +693,14 @@ const Projects = (props) => {
           onClick={() => handleClickOpenResources(params)}
           className="customerTaskBtn"
         >
-             {params?.row?.Resources === "" ? (
+          {params?.row?.Resources === "" ? (
             <>
-              <img src={PlusIcon} alt="not found" />Resources
+              <img src={PlusIcon} alt="not found" />
+              Resources
             </>
           ) : (
             <>{params.value}</>
           )}
-          
         </span>
       ),
     },
@@ -497,14 +737,14 @@ const Projects = (props) => {
       ),
     },
     {
-      field: "CustomerTask",
-      headerName: "Customer Task",
+      field: "ProjectTask",
+      headerName: "Project Task",
       sortable: false,
       disableColumnMenu: true,
       flex: 1,
       renderHeader: () => (
         <React.Fragment>
-          <span>Customer Task</span>
+          <span>Project Task</span>
           <img src={FilterImg} className="filterImg" />
         </React.Fragment>
       ),
@@ -525,7 +765,7 @@ const Projects = (props) => {
               <Badge badgeContent={""} className="doneBadge tableBadge"></Badge>
             )}
           </Box>
-          <img src={PlusIcon} alt="not found" /> New task
+          <img src={PlusIcon} alt="not found" /> New Project Task
         </span>
       ),
     },
@@ -541,6 +781,33 @@ const Projects = (props) => {
           <img src={FilterImg} className="filterImg" />
         </React.Fragment>
       ),
+      renderCell: (params) => {
+        return (
+          <FormGroup className="customertaskDatePicker">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                orientation="portrait"
+                displayStaticWrapperAs="desktop"
+                openTo="day"
+                value={params.value}
+                showToolbar={false}
+                components={{
+                  OpenPickerIcon: CustomCalendarIcon,
+                  RightArrowButton: ArrowRightRoundedIcon,
+                  LeftArrowButton: ArrowLeftRoundedIcon,
+                }}
+                onChange={(newValue) => {
+                  setValue(newValue);
+                  onDateChange(newValue, params);
+                }}
+                showDaysOutsideCurrentMonth
+                dayOfWeekFormatter={(day) => getDay(day)}
+                renderInput={(params) => <TextField {...params} className="" />}
+              />
+            </LocalizationProvider>
+          </FormGroup>
+        );
+      },
     },
     {
       field: "AssignTask",
@@ -605,393 +872,591 @@ const Projects = (props) => {
             <img src={ToDoIcon} />
           )}
           <img src={DeleteIcon} className="DeleteIcon" />
+          <img
+            src={RemainderIcon}
+            className="RemainderIcon"
+            onClick={() => handleReminderOpen()}
+          />
         </React.Fragment>
       ),
       align: "right",
     },
   ];
+  console.log(selectedFields?.length === tableData?.length, "dsadsadasd");
   return (
-  
     <Box className="project">
-        <Box className="projects">
-      <Box className="topHead">
-        <Box>
-          <span>
-            <img src={CelenderFilterIcon} />
-          </span>
-          <span>
-            <img src={SearchImg} />
-          </span>
-          <span>
-            <img src={FilterMenuImg} />
-          </span>
-        </Box>
-      </Box>
-
-      <Box className="projectsMain">
-        <DataGrid
-          rows={tableData}
-          columns={columns}
-          checkboxSelection
-          autoHeight
-          disableRowSelectionOnClick
-          hideFooterPagination
-          className="projectTable"
-        />
-      </Box>
-      <Box className="projectFooter">
-        <Box className="entries">
-          <span>Showing 1 to 10 of 9,225 entries</span>
-        </Box>
-        <Box className="PaginationHead">
-          <Box className="paginationBox">
-            <Pagination
-              count={10}
-              siblingCount={0}
-              variant="outlined"
-              shape="rounded"
-              renderItem={(item) => (
-                <PaginationItem
-                  slots={{
-                    previous: ArrowLeftRoundedIcon,
-                    next: ArrowRightRoundedIcon,
-                  }}
-                  {...item}
-                />
-              )}
-            />
-          </Box>
-          <Box
-            className="selectPageBox"
-            component="form"
-            sx={{
-              "& .MuiTextField-root": { width: "100%" },
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <TextField
-              id="outlined-select-currency"
-              select
-              defaultValue="1page"
+      <Box className="projects">
+        <Box className="topHead">
+          <Box>
+            <Button
+              className="btn"
+              id="basic-button"
+              aria-controls={open3 ? "basic-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open3 ? "true" : undefined}
+              onClick={handleClick1}
             >
-              {pages.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
+              <img src={PlusIcon} alt="not found" /> New Project Task
+            </Button>
+            {selectedFields?.length === tableData?.length ? (
+              <span>
+                <img src={DeleteIcon} alt="not found" />
+              </span>
+            ) : null}
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open3}
+              onClose={handleClose1}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+              className="selectCustomerMenu"
+              PaperProps={{
+                elevation: 0,
+                sx: {
+                  overflow: "visible",
+                  filter: "drop-shadow(0px 4px 15px rgba(58, 96, 110, 0.15))",
+                  width: "300px",
+                  "&:before": {
+                    content: '""',
+                    display: "block",
+                    position: "absolute",
+                    top: 0,
+                    right: 10,
+                    width: 32,
+                    borderRadius: "4px",
+                    height: 32,
+                    bgcolor: "background.paper",
+                    transform: "translateY(-5px) rotate(45deg)",
+                    zIndex: 0,
+                  },
+                },
+              }}
+              transformOrigin={{ horizontal: "right", vertical: "top" }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            >
+              <h3>Select Customer(s)</h3>
+              <TextField
+                variant="outlined"
+                fullWidth
+                onChange={handleFilterChange}
+              />
+              <FormControl sx={{ width: 300 }} className="selectCustomer">
+                <MenuItem value={"selectAll"}>
+                  <Checkbox
+                    checked={
+                      newTaskCustomers?.length === filteredCustomers?.length
+                    }
+                    onChange={handleSelectAll}
+                  />
+                  <ListItemText primary={"Select All"} />
                 </MenuItem>
-              ))}
-            </TextField>
+                {filteredCustomers.map((user) => (
+                  <MenuItem value={user.customerName}>
+                    <Checkbox
+                      checked={newTaskCustomers?.includes(user?.id)}
+                      onChange={(e) => handleSelectCustomer(e, user?.id)}
+                    />
+                    <Avatar
+                      src={user.PhotoUrl}
+                      alt={user.PhotoUrl}
+                      className="avatar"
+                    />
+                    <ListItemText primary={user.customerName} />
+                  </MenuItem>
+                ))}
+              </FormControl>
+            </Menu>
           </Box>
-          <Box className="GotoBox">
-            <FormGroup>
-              <label htmlFor="page" className="label">
-                go to
-              </label>
-              <TextField variant="outlined" id="page" />
-            </FormGroup>
+          <Box>
+            <span>
+              <img
+                src={CelenderFilterIcon}
+                title="Archive"
+                onClick={() => handleArchiveOpen()}
+              />
+            </span>
+            <span>
+              <img src={SearchImg} />
+            </span>
+            <span>
+              <img src={FilterMenuImg} />
+            </span>
           </Box>
         </Box>
-      </Box>
 
-      <Dialog
-        open={open1}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleCloseProjectName}
-        aria-describedby="alert-dialog-slide-description"
-        className="projectModel"
-      >
-        <DialogTitle className="titleHead">
-          Project Name
-          <img
-            src={CloseIcon}
-            alt="not found"
-            onClick={handleCloseProjectName}
+        <Box className="projectsMain">
+          <DataGrid
+            rows={tableData}
+            columns={columns}
+            // checkboxSelection
+            autoHeight
+            disableRowSelectionOnClick
+            hideFooterPagination
+            className="projectTable"
           />
-        </DialogTitle>
-        <DialogContent>
-          <Box
-            className="ProjectNameHead"
-            sx={{
-              paddingTop: "24px",
-            }}
-          >
-            <FormGroup className="inputHead">
-              <label htmlFor="ProjectName" className="ProjectName">
-                Project Name
-              </label>
-              <textarea name="ProjectName" placeholder="Lorem ipsum"  onChange={handleProjectNameChange}></textarea>
-            </FormGroup>
+        </Box>
+        <Box className="projectFooter">
+          <Box className="entries">
+            <span>Showing 1 to 10 of 9,225 entries</span>
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              paddingTop: "24px",
-            }}
-          >
-            <Button className="SaveBtn" onClick={updateProjectName}>
-              save
-            </Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
-      <Dialog
-        open={open2}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleCloseResources}
-        aria-describedby="alert-dialog-slide-description"
-        className="projectModel"
-      >
-        <DialogTitle className="titleHead">
-          Resources
-          <img src={CloseIcon} alt="not found" onClick={handleCloseResources} />
-        </DialogTitle>
-        <DialogContent>
-          <Box
-            className="ProjectNameHead"
-            sx={{
-              paddingTop: "24px",
-            }}
-          >
-            <FormGroup className="inputHead">
-              <label htmlFor="Resources" className="Resources">
-                Resources
-              </label>
-              <textarea name="Resources" placeholder="Lorem ipsum" onChange={handleResourcesChange}></textarea>
-            </FormGroup>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              paddingTop: "24px",
-            }}
-          >
-            <Button className="SaveBtn" onClick={updateResources}>save</Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
-
-      {/* new task */}
-      <Dialog
-        open={open}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
-        className="ProjectTaskModel"
-      >
-        <DialogTitle className="titleHead">task</DialogTitle>
-        <DialogContent>
-          <Box className="topHead">
-            <Box>
-              <h6>
-                Customer ID
-                <span>
-                  {selectedRow?.id < 10
-                    ? `0${selectedRow?.id}`
-                    : selectedRow?.id}
-                </span>
-              </h6>
-            </Box>
-            <Box>
-              <h6>
-                Customer Name <span>{selectedRow?.Customer?.name}</span>
-              </h6>
-            </Box>
-            <Box>
-              <h6>
-                Customer Stage <span>{selectedRow?.CustomerStage}</span>
-              </h6>
-            </Box>
-            <Box className="actionsHead">
-              <img src={ToDoIcon} />
-              <img src={DeleteIcon} className="DeleteIcon" />
-            </Box>
-            <Box className="badgesHead">
-              <Badge badgeContent={""} className="toDoBadge"></Badge>
-              <Badge badgeContent={""} className="doingBadge"></Badge>
-              <Badge badgeContent={""} className="doneBadge"></Badge>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              paddingTop: "24px",
-            }}
-          >
-            <FormGroup className="inputHead">
-              <label htmlFor="taskTitle" className="taskTitle">
-                Task Title
-              </label>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>
-                  <Checkbox />
-                </span>
-                <TextField
-                  fullWidth
-                  placeholder="Lorem Ipsum"
-                  id="taskTitle"
-                  className="taskTitleInput"
-                />
-                <span>
-                  <img src={ToDoIcon} />
-                </span>
-              </Box>
-            </FormGroup>
-            <FormGroup className="inputHead">
-              <label htmlFor="taskDescription" className="taskDescription">
-                Task Description
-              </label>
-              <textarea
-                name="taskDescription"
-                placeholder="Lorem Ipsum"
-              ></textarea>
-            </FormGroup>
-          </Box>
-
-          <Box
-            sx={{
-              paddingTop: "24px",
-              paddingBottom: "8px",
-              borderTop: "1px solid #EBEBEB",
-              borderBottom: "1px solid #EBEBEB",
-            }}
-            className="SubtaskHead"
-          >
-            <h5>
-              <img src={PlusIcon} alt="not found" />
-              Subtask
-            </h5>
-            <FormGroup className="inputHead">
-              <label htmlFor="Subtask1" className="Subtask1">
-                Subtask 1
-              </label>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>
-                  <Checkbox />
-                </span>
-                <TextField
-                  fullWidth
-                  placeholder="Lorem Ipsum"
-                  id="Subtask1"
-                  className="taskTitleInput"
-                />
-                <span>
-                  <img src={ToDoIcon} />
-                </span>
-              </Box>
-            </FormGroup>
-            <FormGroup className="inputHead">
-              <label htmlFor="Subtask2" className="Subtask2">
-                Subtask 2
-              </label>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>
-                  <Checkbox />
-                </span>
-                <TextField
-                  fullWidth
-                  placeholder="Lorem Ipsum"
-                  id="Subtask2"
-                  className="taskTitleInput"
-                />
-                <span>
-                  <img src={ToDoIcon} />
-                </span>
-              </Box>
-            </FormGroup>
-            <FormGroup className="inputHead">
-              <label htmlFor="Subtask3" className="Subtask3">
-                Subtask 3
-              </label>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>
-                  <Checkbox />
-                </span>
-                <TextField
-                  fullWidth
-                  placeholder="Lorem Ipsum"
-                  id="Subtask3"
-                  className="taskTitleInput"
-                />
-                <span>
-                  <img src={ToDoIcon} />
-                </span>
-              </Box>
-            </FormGroup>
-          </Box>
-          <Box
-            sx={{
-              paddingTop: "24px",
-            }}
-            className="AttachmentHead"
-          >
-            <FormGroup className="inputHead">
-              <label htmlFor="Attachment" className="Attachment">
-                Attachment
-              </label>
-              <Box className="uploadFileHead">
-                <TextField
-                  fullWidth
-                  placeholder="Lorem Ipsum"
-                  value={file?.name}
-                  id="Attachment"
-                />
-                <Button
-                  variant="contained"
-                  component="label"
-                  className="uploadFileBtn"
-                >
-                  Upload
-                  <input
-                    hidden
-                    accept="image/*"
-                    multiple
-                    type="file"
-                    onChange={onUpload}
+          <Box className="PaginationHead">
+            <Box className="paginationBox">
+              <Pagination
+                count={10}
+                siblingCount={0}
+                variant="outlined"
+                shape="rounded"
+                renderItem={(item) => (
+                  <PaginationItem
+                    slots={{
+                      previous: ArrowLeftRoundedIcon,
+                      next: ArrowRightRoundedIcon,
+                    }}
+                    {...item}
                   />
-                </Button>
+                )}
+              />
+            </Box>
+            <Box
+              className="selectPageBox"
+              component="form"
+              sx={{
+                "& .MuiTextField-root": { width: "100%" },
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <TextField
+                id="outlined-select-currency"
+                select
+                defaultValue="1page"
+              >
+                {pages.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
+            <Box className="GotoBox">
+              <FormGroup>
+                <label htmlFor="page" className="label">
+                  go to
+                </label>
+                <TextField variant="outlined" id="page" />
+              </FormGroup>
+            </Box>
+          </Box>
+        </Box>
+
+        <Dialog
+          open={open1}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleCloseProjectName}
+          aria-describedby="alert-dialog-slide-description"
+          className="projectModel"
+        >
+          <DialogTitle className="titleHead">
+            Project Name
+            <img
+              src={CloseIcon}
+              alt="not found"
+              onClick={handleCloseProjectName}
+            />
+          </DialogTitle>
+          <DialogContent>
+            <Box
+              className="ProjectNameHead"
+              sx={{
+                paddingTop: "24px",
+              }}
+            >
+              <FormGroup className="inputHead">
+                <label htmlFor="ProjectName" className="ProjectName">
+                  Project Name
+                </label>
+                <textarea
+                  name="ProjectName"
+                  placeholder="Lorem ipsum"
+                  onChange={handleProjectNameChange}
+                ></textarea>
+              </FormGroup>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                paddingTop: "24px",
+              }}
+            >
+              <Button className="SaveBtn" onClick={updateProjectName}>
+                save
+              </Button>
+            </Box>
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={open2}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleCloseResources}
+          aria-describedby="alert-dialog-slide-description"
+          className="projectModel"
+        >
+          <DialogTitle className="titleHead">
+            Resources
+            <img
+              src={CloseIcon}
+              alt="not found"
+              onClick={handleCloseResources}
+            />
+          </DialogTitle>
+          <DialogContent>
+            <Box
+              className="ProjectNameHead"
+              sx={{
+                paddingTop: "24px",
+              }}
+            >
+              <FormGroup className="inputHead">
+                <label htmlFor="Resources" className="Resources">
+                  Resources
+                </label>
+                <textarea
+                  name="Resources"
+                  placeholder="Lorem ipsum"
+                  onChange={handleResourcesChange}
+                ></textarea>
+              </FormGroup>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                paddingTop: "24px",
+              }}
+            >
+              <Button className="SaveBtn" onClick={updateResources}>
+                save
+              </Button>
+            </Box>
+          </DialogContent>
+        </Dialog>
+
+        {/* new task */}
+        <Dialog
+          open={open}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleClose}
+          aria-describedby="alert-dialog-slide-description"
+          className="ProjectTaskModel"
+        >
+          <DialogTitle className="titleHead">Project task </DialogTitle>
+          <DialogContent>
+            <Box className="topHead">
+              <Box>
+                <h6>
+                  Customer ID
+                  <span>
+                    {selectedRow?.id < 10
+                      ? `0${selectedRow?.id}`
+                      : selectedRow?.id}
+                  </span>
+                </h6>
               </Box>
-            </FormGroup>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              paddingTop: "40px",
-            }}
-          >
-            <Button className="SaveBtn">save</Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
-    </Box>
+              <Box>
+                <h6>
+                  Customer Name <span>{selectedRow?.Customer?.name}</span>
+                </h6>
+              </Box>
+              <Box>
+                <h6>
+                  Customer Stage <span>{selectedRow?.CustomerStage}</span>
+                </h6>
+              </Box>
+              <Box className="actionsHead">
+                <img src={ToDoIcon} />
+                <img src={DeleteIcon} className="DeleteIcon" />
+              </Box>
+              <Box className="badgesHead">
+                <Badge badgeContent={""} className="toDoBadge"></Badge>
+                <Badge badgeContent={""} className="doingBadge"></Badge>
+                <Badge badgeContent={""} className="doneBadge"></Badge>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                paddingTop: "24px",
+              }}
+            >
+              <FormGroup className="inputHead">
+                <label htmlFor="taskTitle" className="taskTitle">
+                  Task Title
+                </label>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span>
+                    <Checkbox />
+                  </span>
+                  <TextField
+                    fullWidth
+                    placeholder="Lorem Ipsum"
+                    id="taskTitle"
+                    className="taskTitleInput"
+                  />
+                  <span>
+                    <img src={ToDoIcon} />
+                  </span>
+                </Box>
+              </FormGroup>
+              <FormGroup className="inputHead">
+                <label htmlFor="taskDescription" className="taskDescription">
+                  Task Description
+                </label>
+                <textarea
+                  name="taskDescription"
+                  placeholder="Lorem Ipsum"
+                ></textarea>
+              </FormGroup>
+            </Box>
+
+            <Box
+              sx={{
+                paddingTop: "24px",
+                paddingBottom: "8px",
+                borderTop: "1px solid #EBEBEB",
+                borderBottom: "1px solid #EBEBEB",
+              }}
+              className="SubtaskHead"
+            >
+              <h5 onClick={handleSubtaskClick}>
+                <img src={PlusIcon} alt="not found" />
+                Subtask
+              </h5>
+              {subtasks?.map((task, index) => {
+                return (
+                  <FormGroup className="inputHead" key={task?.id}>
+                    <label htmlFor="Subtask1" className="Subtask1">
+                      Subtask {index + 1}
+                    </label>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <span>
+                        <Checkbox />
+                      </span>
+                      <TextField
+                        fullWidth
+                        placeholder="Lorem Ipsum"
+                        id="Subtask1"
+                        className="taskTitleInput"
+                        onChange={(e)=> handleTaskLabelChange(e, index)}
+                      />
+                      <span>
+                        {task?.active === true ? (
+                          <img src={DoneIcon} onClick={(e) => onTaskActiveChange(e, index)}/>
+                        ) : (
+                          <img src={ToDoIcon} onClick={(e) => onTaskActiveChange(e, index)}/>
+                        )}
+                      </span>
+                    </Box>
+                  </FormGroup>
+                );
+              })}
+            </Box>
+            <Box
+              sx={{
+                paddingTop: "24px",
+              }}
+              className="AttachmentHead"
+            >
+              <FormGroup className="inputHead">
+                <label htmlFor="Attachment" className="Attachment">
+                  Attachment
+                </label>
+                <Box className="uploadFileHead">
+                  <TextField
+                    fullWidth
+                    placeholder="Lorem Ipsum"
+                    value={file?.name}
+                    id="Attachment"
+                  />
+                  <Button
+                    variant="contained"
+                    component="label"
+                    className="uploadFileBtn"
+                  >
+                    Upload
+                    <input
+                      hidden
+                      accept="image/*"
+                      multiple
+                      type="file"
+                      onChange={onUpload}
+                    />
+                  </Button>
+                </Box>
+              </FormGroup>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                paddingTop: "40px",
+              }}
+            >
+              <Button className="SaveBtn">save</Button>
+            </Box>
+          </DialogContent>
+        </Dialog>
+        {/* model 2 */}
+        <Dialog
+          open={openArchive}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleArchiveClose}
+          aria-describedby="alert-dialog-slide-description"
+          className="ArchiveModel"
+        >
+          <DialogTitle className="titleHead">Archived</DialogTitle>
+          <DialogContent>
+            <Box>
+              {tableData?.map((item) => {
+                if (item?.Status === "done") {
+                  return (
+                    <Box className="ArchiveContent">
+                      <h4>{item.Customer.name}</h4>
+                      <span>
+                        <img src={DoneIcon} alt="not found" />
+                      </span>
+                    </Box>
+                  );
+                }
+              })}
+            </Box>
+          </DialogContent>
+        </Dialog>
+
+        {/* model 3*/}
+        <Dialog
+          open={openReminder}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleReminderClose}
+          aria-describedby="alert-dialog-slide-description"
+          className="ArchiveModel ReminderModel"
+        >
+          <DialogTitle className="titleHead">Reminder</DialogTitle>
+          <DialogContent>
+            <Box>
+              <FormGroup className="ReminderDatePicker">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <StaticDatePicker
+                    orientation="portrait"
+                    displayStaticWrapperAs="desktop"
+                    openTo="day"
+                    value={eventReminder}
+                    showToolbar={false}
+                    components={{
+                      OpenPickerIcon: CustomCalendarIcon,
+                      RightArrowButton: ArrowRightRoundedIcon,
+                      LeftArrowButton: ArrowLeftRoundedIcon,
+                    }}
+                    onChange={(newValue) => {
+                      setEventReminder(newValue);
+                    }}
+                    showDaysOutsideCurrentMonth
+                    dayOfWeekFormatter={(day) => getDay(day)}
+                  />
+                </LocalizationProvider>
+              </FormGroup>
+              <Box className="remainderHead">
+                <h6 onClick={() => handleaddRemainderOpen()}>
+                  <img src={PlusIcon} alt="not found" />
+                  Add Remainder
+                </h6>
+              </Box>
+              <Box className="remainderHead">
+                <h6>
+                  <img src={RemainderIcon} alt="not found" />
+                  <span>{dateReminder.format("DD/MM/YYYY")}</span>
+                </h6>
+                <h6>{timeReminder.format("hh:mm A")}</h6>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+        {/* model 4*/}
+        <Dialog
+          open={addRemainderOpen}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleaddRemainderClose}
+          aria-describedby="alert-dialog-slide-description"
+          className="ArchiveModel ReminderModel reminderdateAndTime "
+        >
+          <DialogContent>
+            <Box>
+              <h6>Set Date</h6>
+              <FormGroup className="inputGroup">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    orientation="portrait"
+                    displayStaticWrapperAs="desktop"
+                    openTo="day"
+                    value={dateReminder}
+                    showToolbar={false}
+                    components={{
+                      OpenPickerIcon: CustomCalendarIcon,
+                      RightArrowButton: ArrowRightRoundedIcon,
+                      LeftArrowButton: ArrowLeftRoundedIcon,
+                    }}
+                    onChange={(newValue) => {
+                      setDateReminder(newValue);
+                    }}
+                    showDaysOutsideCurrentMonth
+                    dayOfWeekFormatter={(day) => getDay(day)}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
+              </FormGroup>
+            </Box>
+            <Box>
+              <h6>Set Date</h6>
+              <FormGroup className="inputGroup">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DesktopTimePicker
+                    value={timeReminder}
+                    components={{
+                      // OpenPickerIcon: CustomCalendarIcon,
+                      RightArrowButton: ArrowRightRoundedIcon,
+                      LeftArrowButton: ArrowLeftRoundedIcon,
+                    }}
+                    onChange={(newValue) => {
+                      setTimeReminder(newValue);
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
+              </FormGroup>
+            </Box>
+            <Button className="reminderBtn">save</Button>
+          </DialogContent>
+        </Dialog>
+      </Box>
     </Box>
   );
 };

@@ -40,18 +40,22 @@ import Checkbox from "@mui/material/Checkbox";
 
 const customers = [
   {
+    id: 1,
     PhotoUrl: MariahImg,
     customerName: "Mariah Betts",
   },
   {
+    id: 2,
     PhotoUrl: JohnImg,
     customerName: "John Doe",
   },
   {
+    id: 3,
     PhotoUrl: MariahImg,
     customerName: "Mariah Betts",
   },
   {
+    id: 4,
     PhotoUrl: JohnImg,
     customerName: "John Doe",
   },
@@ -59,6 +63,9 @@ const customers = [
 const Integrations = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [filteredCustomers, setFilteredCustomers] = useState(customers);
+  const [selectedFields, setSelectedFields] = useState([]);
+  const [newTaskCustomers, setNewTaskCustomers] = useState([]);
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -70,10 +77,31 @@ const Integrations = () => {
 
   const handleSelectAll = (event) => {
     setSelectAll(event.target.checked);
+    if (event.target.checked === true) {
+      const allIDs = filteredCustomers?.map((item) => {
+        return item?.id;
+      });
+      setNewTaskCustomers(allIDs);
+    } else {
+      setNewTaskCustomers([]);
+    }
   };
-  const handleSelectCustomer = (event) => {
-    // handle individual customer selection
+  const handleSelectCustomer = (e, id) => {
+    if (e.target.checked === true) {
+      setNewTaskCustomers((oldState) => [...oldState, id]);
+    } else {
+      // setSelectedFields([])
+      const newIds = newTaskCustomers.filter((item) => {
+        if (item !== id) {
+          return item;
+        }
+      });
+
+      setNewTaskCustomers(newIds);
+    }
   };
+
+  console.log(filteredCustomers, "filteredCustomers");
 
   const handleFilterChange = (event) => {
     const { value } = event.target;
@@ -89,64 +117,11 @@ const Integrations = () => {
 
   return (
     <Box className="integrations">
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
-        className="selectCustomerMenu"
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: "visible",
-            filter: "drop-shadow(0px 4px 15px rgba(58, 96, 110, 0.15))",
-            width: "300px",
-            "&:before": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              top: 0,
-              right: 10,
-              width: 32,
-              borderRadius: "4px",
-              height: 32,
-              bgcolor: "background.paper",
-              transform: "translateY(-5px) rotate(45deg)",
-              zIndex: 0,
-            },
-          },
-        }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      >
-        <h3>Select Customer(s)</h3>
-        <TextField variant="outlined" fullWidth onChange={handleFilterChange} />
-        <FormControl sx={{ width: 300 }} className="selectCustomer">
-          <MenuItem value={"selectAll"}>
-            <Checkbox checked={selectAll} onChange={handleSelectAll} />
-            <ListItemText primary={"Select All"} />
-          </MenuItem>
-          {filteredCustomers.map((user) => (
-            <MenuItem value={user.customerName}>
-              <Checkbox checked={selectAll} onChange={handleSelectCustomer} />
-              <Avatar
-                src={user.PhotoUrl}
-                alt={user.PhotoUrl}
-                className="avatar"
-              />
-              <ListItemText primary={user.customerName} />
-            </MenuItem>
-          ))}
-        </FormControl>
-      </Menu>
       <Box className="topHead">
         <Box>
-          <span>
+          {/* <span>
             <img src={IImg} alt="not found" />
-          </span>
+          </span> */}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <FormGroup>
@@ -202,6 +177,65 @@ const Integrations = () => {
           </Grid>
         </Grid>
       </Box>
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+        className="selectCustomerMenu"
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: "visible",
+            filter: "drop-shadow(0px 4px 15px rgba(58, 96, 110, 0.15))",
+            width: "300px",
+            "&:before": {
+              content: '""',
+              display: "block",
+              position: "absolute",
+              top: 0,
+              right: 10,
+              width: 32,
+              borderRadius: "4px",
+              height: 32,
+              bgcolor: "background.paper",
+              transform: "translateY(-5px) rotate(45deg)",
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      >
+        <h3>Select Customer(s)</h3>
+        <TextField variant="outlined" fullWidth onChange={handleFilterChange} />
+        <FormControl sx={{ width: 300 }} className="selectCustomer">
+          <MenuItem value={"selectAll"}>
+            <Checkbox
+              checked={newTaskCustomers?.length === filteredCustomers?.length}
+              onChange={handleSelectAll}
+            />
+            <ListItemText primary={"Select All"} />
+          </MenuItem>
+          {filteredCustomers.map((user) => (
+            <MenuItem value={user.customerName}>
+              <Checkbox
+                checked={newTaskCustomers?.includes(user?.id)}
+                onChange={(e) => handleSelectCustomer(e, user?.id)}
+              />
+              <Avatar
+                src={user.PhotoUrl}
+                alt={user.PhotoUrl}
+                className="avatar"
+              />
+              <ListItemText primary={user.customerName} />
+            </MenuItem>
+          ))}
+        </FormControl>
+      </Menu>
     </Box>
   );
 };

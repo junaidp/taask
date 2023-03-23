@@ -167,7 +167,7 @@ const Portfolio = () => {
       <TableContainer component={Paper} className="portfolioCout">
       <Box className="topHead">
         <Box>
-          <Typography variant="h2">Portfolio</Typography>
+          {/* <Typography variant="h2">Portfolio</Typography> */}
         </Box>
         <Box>
           <span>

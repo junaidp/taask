@@ -138,7 +138,7 @@ export const mainTheme = createTheme({
     MuiMenu: {
       styleOverrides: {
         root: {
-          ".MuiPaper-root": {
+            ".MuiPaper-root": {
             background: "#FFFFFF",
             borderRadius: "16px",
             padding: "0 24px",

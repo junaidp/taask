@@ -121,7 +121,8 @@ const AssignTaskColumn = (props) => {
               className="AssignsImg"
             />
             <ListItemIcon>
-              <WestRoundedIcon className="AssignsIcon" />
+              {/* <WestRoundedIcon className="AssignsIcon" /> */}
+              <EastRoundedIcon className="AssignsIcon" />
             </ListItemIcon>
           </React.Fragment>
         );
@@ -295,18 +296,22 @@ const pages = [
 
 const customers = [
   {
+    id: 1,
     PhotoUrl: MariahImg,
     customerName: "Mariah Betts",
   },
   {
+    id: 2,
     PhotoUrl: JohnImg,
     customerName: "John Doe",
   },
   {
+    id: 3,
     PhotoUrl: MariahImg,
     customerName: "Mariah Betts",
   },
   {
+    id: 4,
     PhotoUrl: JohnImg,
     customerName: "John Doe",
   },
@@ -331,6 +336,7 @@ const CustomerTasks = (props) => {
   const [addRemainderOpen, setAddRemainderOpen] = React.useState(false);
 
   const [selectedFields, setSelectedFields] = useState([])
+  const [newTaskCustomers, setNewTaskCustomers] = useState([])
 
   const handleArchiveClose = () => {
     setOpenArchive(false);
@@ -359,10 +365,31 @@ const CustomerTasks = (props) => {
 
   const handleSelectAll = (event) => {
     setSelectAll(event.target.checked);
+    if(event.target.checked === true){
+      const allIDs = filteredCustomers?.map((item)=>{
+        return item?.id
+      })
+      setNewTaskCustomers(allIDs)
+    }else{
+      setNewTaskCustomers([])
+    }
   };
-  const handleSelectCustomer = (event) => {
-    // handle individual customer selection
+  const handleSelectCustomer = (e, id) => {
+    if(e.target.checked === true){
+      setNewTaskCustomers(oldState => [...oldState, id])
+    }else{
+      // setSelectedFields([])
+      const newIds = newTaskCustomers.filter((item)=>{
+        if(item !== id ){
+          return item
+        }
+      })
+
+      setNewTaskCustomers(newIds)
+    }
   };
+
+  console.log(filteredCustomers, "filteredCustomers")
 
   const handleFilterChange = (event) => {
     const { value } = event.target;
@@ -453,7 +480,7 @@ const CustomerTasks = (props) => {
     {
       field: "selection",
       headerName: "check",
-      width: 70,
+      width: 40,
       sortable: false,
       disableColumnMenu: true,
       renderHeader: () => (
@@ -559,7 +586,6 @@ const CustomerTasks = (props) => {
         </React.Fragment>
       ),
       renderCell: (params) => {
-        console.log(params, "kjshdjk");
         return (
           <FormGroup className="customertaskDatePicker">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -674,7 +700,7 @@ const CustomerTasks = (props) => {
             aria-expanded={open1 ? "true" : undefined}
             onClick={handleClick1}
           >
-            <img src={PlusIcon} alt="not found" /> New Customer
+            <img src={PlusIcon} alt="not found" /> New Customer Task
           </Button>
           {
             selectedFields?.length === tableData?.length? (
@@ -724,14 +750,14 @@ const CustomerTasks = (props) => {
             />
             <FormControl sx={{ width: 300 }} className="selectCustomer">
               <MenuItem value={"selectAll"}>
-                <Checkbox checked={selectAll} onChange={handleSelectAll} />
+                <Checkbox checked={newTaskCustomers?.length === filteredCustomers?.length} onChange={handleSelectAll} />
                 <ListItemText primary={"Select All"} />
               </MenuItem>
               {filteredCustomers.map((user) => (
                 <MenuItem value={user.customerName}>
                   <Checkbox
-                    checked={selectAll}
-                    onChange={handleSelectCustomer}
+                    checked={newTaskCustomers?.includes(user?.id)}
+                    onChange={(e) => handleSelectCustomer(e, user?.id)}
                   />
                   <Avatar
                     src={user.PhotoUrl}

@@ -11,7 +11,8 @@
 }
 .projects .topHead {
   display: flex !important;
-  justify-content: flex-end !important;
+  justify-content: space-between !important;
+  align-items: center;
 }
 .projects .topHead span {
   margin-left: 24px !important;
@@ -263,7 +264,8 @@
   color: #ffffff !important;
 }
 
-.SaveBtn {
+.SaveBtn,
+.projects .btn {
   height: 40px !important;
   max-width: 65% !important;
   width: 65% !important;
@@ -277,6 +279,14 @@
   text-transform: capitalize !important;
   font-weight: 600 !important;
   letter-spacing: 0.01em !important;
+}
+.projects .btn {
+  width: 240px !important;
+  font-size: 12px !important;
+}
+.projects .btn img {
+  margin-right: 8px !important;
+  filter: saturate(0%) brightness(350%) !important;
 }
 .projects .AssignsSelect .MuiSelect-icon {
   display: none !important;
@@ -478,6 +488,6 @@
   overflow-x: scroll !important;
 }
 .projectTable {
-  min-width: 1466px !important;
+  min-width: 1650px !important;
   max-width: 100% !important;
 }

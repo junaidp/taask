@@ -4,6 +4,9 @@
   align-items: center;
   width: 100%;
 }
+.navbar img {
+  cursor: pointer;
+}
 .navbar .navLinks {
   display: flex;
   align-items: center;
@@ -40,4 +43,17 @@
   font-weight: 400;
   font-size: 14px;
   color: #3a606e;
+}
+.navbarPopover .MuiPopover-paper{
+  background: #ffffff !important;
+  border-radius: 6px !important;
+  width: 280px !important;
+  box-shadow: 4px 2px 15px rgba(55, 63, 65, 0.211) !important;
+}
+.navbarPopover .navbarPopoverHeading {
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-size: 12px !important;
+  color: #214b5a !important;
+  padding: 8px 12px !important;
 }
