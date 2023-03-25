@@ -39,6 +39,13 @@ const CustomerServices = {
       throw error;
     }
   },
+  getAllCustomers: async () => {
+    try {
+      return await Service.get("/api/customer/getAllCustomers");
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export default CustomerServices;

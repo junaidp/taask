@@ -10,10 +10,6 @@ import {
   Typography,
   Checkbox,
 } from "@mui/material";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import IconButton from "@material-ui/core/IconButton";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useAuth } from "../../Auth";
@@ -22,12 +18,7 @@ import { useAuth } from "../../Auth";
 import Logo from "../../assets/icons/logo.svg";
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const { user, login } = useAuth();
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
   const customerValitadion = Yup.object().shape({
     name: Yup.string().required(),
   });
@@ -69,7 +60,7 @@ const Login = () => {
         <FormGroup className="inputHead">
           <TextField
             id="password-input"
-            type={showPassword ? "text" : "password"}
+            type="password"
             autoComplete="current-password"
             {...{
               formik,
@@ -81,18 +72,6 @@ const Login = () => {
             }}
             onChange={(e) => {
               formik.setFieldValue("password", e.target.value);
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              ),
             }}
           />
         </FormGroup>
