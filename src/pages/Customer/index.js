@@ -402,6 +402,7 @@ let Customer = () => {
       customerstage: "",
       customersince: "",
       customernotes: "",
+      fileId: file,
       contacts: [
         {
           emailaddress: "",
@@ -414,7 +415,7 @@ let Customer = () => {
     },
     validationSchema: customerValitadion,
   });
-
+  console.log(formik.values, "sjajdksa");
 
   const handleSave = async () => {
     const data = formik?.values;
@@ -443,10 +444,6 @@ let Customer = () => {
 
   return (
     <Box className="customer">
-      <Box className="customer">
-        <ToastContainer />
-        <Loader loaderValue={loading} />
-      </Box>
       <Grid container>
         <Grid item xs={8} className="customerPart1">
           <Box className="inputGroup">
@@ -962,6 +959,8 @@ let Customer = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <ToastContainer />
+      <Loader loaderValue={loading} />
     </Box>
   );
 };

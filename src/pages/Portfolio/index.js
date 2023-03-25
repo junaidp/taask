@@ -34,6 +34,9 @@ import FilterImg from "../../assets/icons/filter.svg";
 import SearchImg from "../../assets/icons/search.svg";
 import FilterMenuImg from "../../assets/icons/filterMenu.svg";
 
+// component
+import Loader from "../../components/Loader";
+
 // APIs Services
 import CustomerServices from "../../APIs/Customer";
 
@@ -161,6 +164,7 @@ const pages = [
 
 const Portfolio = () => {
   const [allCustomers, setAllCustomers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = React.useState("");
   const handleChange = (event) => {
     setPage(event.target.value);
@@ -170,6 +174,7 @@ const Portfolio = () => {
     await CustomerServices.getAllCustomers().then((res) => {
       if (res) {
         setAllCustomers(res);
+        setLoading(false);
       }
     });
   };
@@ -202,7 +207,7 @@ const Portfolio = () => {
                 Customer <img src={FilterImg} className="filterImg" />
               </TableCell>
               <TableCell>
-                Customer Task <img src={FilterImg} className="filterImg" />
+                Main Contact <img src={FilterImg} className="filterImg" />
               </TableCell>
               <TableCell>
                 Customer Since <img src={FilterImg} className="filterImg" />
@@ -221,7 +226,9 @@ const Portfolio = () => {
           <TableBody>
             {allCustomers.map((item, index) => (
               <TableRow key={item.clientName}>
-                <TableCell>{index + 1}</TableCell>
+                <TableCell>
+                  {index + 1 < 10 ? `0${index + 1}` : index + 1}
+                </TableCell>
                 <TableCell component="th" scope="row">
                   <Box className="userprofile">
                     {/* <span>
@@ -230,7 +237,7 @@ const Portfolio = () => {
                     {item?.name}
                   </Box>
                 </TableCell>
-                <TableCell>{item?.contacts?.emailAddress}</TableCell>
+                <TableCell>{item?.contacts?.name}</TableCell>
                 <TableCell>{item?.customerSince}</TableCell>
                 <TableCell>{item?.customerStage}</TableCell>
                 <TableCell>{item?.location}</TableCell>
@@ -295,6 +302,7 @@ const Portfolio = () => {
           </Box>
         </Box>
       </TableContainer>
+      <Loader loaderValue={loading} />
     </Box>
   );
 };

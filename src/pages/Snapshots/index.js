@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./snapshots.css";
 // Mui imports
 import { Box, Grid, List, ListItem, Typography } from "@mui/material";
-
-// sub components
+//  components
+import Loader from "../../components/Loader";
 import SnapshotHeader from "./header";
 
 // images
@@ -161,10 +161,12 @@ const totalCustomersData = [
 
 const Snapshots = () => {
   const [allSnapShot, setAllSnapShot] = useState([]);
+  const [loading, setLoading] = useState(true);
   const getSnapShot = async () => {
     await CustomerServices.getSnapShot().then((res) => {
       if (res) {
         setAllSnapShot(res);
+        setLoading(false);
       }
     });
   };
@@ -463,6 +465,7 @@ const Snapshots = () => {
           </Box>
         </Grid>
       </Grid>
+      <Loader loaderValue={loading} />
     </Box>
   );
 };
