@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import UpcomingItems from "../../pages/UpcomingItems";
 import Portfolio from "../../pages/Portfolio";
@@ -10,7 +10,6 @@ import Customer from "../../pages/Customer";
 import CustomerTasks from "../../pages/CustomerTasks";
 import Snapshots from "../../pages/Snapshots";
 import Integrations from "../../pages/Integrations";
-import Login from "../../pages/Login";
 
 const Navigation = () => {
   return (

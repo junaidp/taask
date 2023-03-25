@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
 import axios from "axios";
 
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 const baseURL = process.env.REACT_APP_BASE_URL;
@@ -29,7 +30,6 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
-
   };
 
   const value = { user, login, logout, isLoading };

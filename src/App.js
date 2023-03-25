@@ -20,7 +20,8 @@ const App = () => {
     setToken(token);
   }, [user]);
 
-  const [activePage, setActivePage] = useState(" ");
+  const [activePage, setActivePage] = useState("/upcomingItems");
+  
   return (
     <>
       {token ? (
@@ -31,7 +32,7 @@ const App = () => {
           <Box className="ContentHead">
             <Navbar activePage={activePage} />
             <Box className="TabsContent">
-              <Navigation />
+              <Navigation activePage={activePage} />
             </Box>
           </Box>
         </Box>
