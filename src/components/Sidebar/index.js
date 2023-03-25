@@ -31,7 +31,7 @@ const Sidebar = ({ setActivePage }) => {
 
   function getActiveIndex() {
     const paths = [
-      "/upcomingItems",
+      "/",
       "/Customer",
       "/Portfolio",
       "/Customer Tasks",
@@ -82,7 +82,7 @@ const Sidebar = ({ setActivePage }) => {
         <img src={Logo} alt="img not found" />
       </a>
       <List>
-        <Link to="/upcomingItems">
+        <Link to="/">
           <ListItem disablePadding>
             <ListItemButton
               variant="soft"
