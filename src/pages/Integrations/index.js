@@ -101,7 +101,6 @@ const Integrations = () => {
     }
   };
 
-  console.log(filteredCustomers, "filteredCustomers");
 
   const handleFilterChange = (event) => {
     const { value } = event.target;

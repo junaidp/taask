@@ -379,7 +379,7 @@ let Customer = () => {
   };
 
   const handleLinksSubmit = () => {
-    setLinks([  
+    setLinks([
       ...Links,
       {
         link: link,
@@ -387,13 +387,11 @@ let Customer = () => {
       },
     ]);
     setOpen2(false);
-
   };
 
   const customerValitadion = Yup.object().shape({
     name: Yup.string().required(),
   });
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -406,16 +404,18 @@ let Customer = () => {
       customernotes: "",
       contacts: [
         {
-          emailaddress: "test@gmil.com",
+          emailaddress: "",
           id: "",
-          jobtitle: "test Job",
-          location: "string",
-          name: "string",
+          jobtitle: "",
+          location: "",
+          name: "",
         },
       ],
     },
     validationSchema: customerValitadion,
   });
+
+
   const handleSave = async () => {
     const data = formik?.values;
     setLoading(true);
@@ -649,25 +649,80 @@ let Customer = () => {
               <Box className="mainContactsForm">
                 <Box className="inputGroup">
                   <FormGroup className="inputHead">
-                    <label htmlFor="S/N">S/N</label>
-                    <TextField placeholder="S/N" />
+                    <label htmlFor="Name">Name</label>
+                    <TextField
+                      {...{
+                        formik,
+                        title: "Name",
+                        name: "name",
+                        placeholder: "John Doe",
+                        checkValidation: true,
+                        value: formik?.values?.contacts.name,
+                      }}
+                      onChange={(e) => {
+                        formik.setFieldValue("contacts.0.name", e.target.value);
+                      }}
+                    />
                   </FormGroup>
                   <FormGroup className="inputHead">
-                    <label htmlFor="Name">Name</label>
-                    <TextField placeholder="John Doe" id="Name" />
+                    <label htmlFor="EmailAddress">Email Address.</label>
+                    <TextField
+                      type="email"
+                      {...{
+                        formik,
+                        title: "EmailAddress",
+                        name: "emailAddress",
+                        placeholder: "Email Address",
+                        checkValidation: true,
+                        value: formik?.values?.contacts.emailaddress,
+                      }}
+                      onChange={(e) => {
+                        formik.setFieldValue(
+                          "contacts.0.emailaddress",
+                          e.target.value
+                        );
+                      }}
+                    />
                   </FormGroup>
                 </Box>
                 <Box className="inputGroup">
                   <FormGroup className="inputHead">
                     <label htmlFor="JobTitle">Job Title</label>
-                    <TextField placeholder="Job Title" id="JobTitle" />
+                    <TextField
+                      {...{
+                        formik,
+                        title: "JobTitle",
+                        name: "jobtitle",
+                        placeholder: "Job Title",
+                        checkValidation: true,
+                        value: formik?.values?.contacts.jobtitle,
+                      }}
+                      onChange={(e) => {
+                        formik.setFieldValue(
+                          "contacts.0.jobtitle",
+                          e.target.value
+                        );
+                      }}
+                    />
                   </FormGroup>
                   <FormGroup className="inputHead">
                     <label htmlFor="location">Location</label>
                     <TextField
                       select
-                      title="Location"
-                      name="location"
+                      {...{
+                        formik,
+                        title: "Location",
+                        name: "location",
+                        placeholder: "Lorem Ipsum",
+                        checkValidation: true,
+                        value: formik?.values?.contacts.location,
+                      }}
+                      onChange={(e) => {
+                        formik.setFieldValue(
+                          "contacts.0.location",
+                          e.target.value
+                        );
+                      }}
                       InputProps={{
                         placeholder: "Select Your Country",
                         disableUnderline: true,
@@ -693,15 +748,6 @@ let Customer = () => {
                         </MenuItem>
                       ))}
                     </TextField>
-                  </FormGroup>
-                </Box>
-                <Box className="inputGroup">
-                  <FormGroup className="inputHead">
-                    <label htmlFor="EmailAddress">Email Address.</label>
-                    <TextField
-                      placeholder=" Email Address."
-                      id="EmailAddress"
-                    />
                   </FormGroup>
                 </Box>
               </Box>
@@ -731,7 +777,9 @@ let Customer = () => {
               }}
             ></textarea>
           </FormGroup>
-          <Button className="btn saveChangeBtn">Save Changes</Button>
+          <Button className="btn saveChangeBtn" onClick={handleSave}>
+            Save Changes
+          </Button>
         </Grid>
         <Grid item xs={4} className="customerPart2">
           <Box className="quickAccess">
@@ -798,9 +846,7 @@ let Customer = () => {
               </label>
               <textarea name="Notes" placeholder="Lorem Ipsum"></textarea>
             </FormGroup>
-            <Button className="btn" onClick={handleSave}>
-              Save link
-            </Button>
+            <Button className="btn">Save link</Button>
           </Box>
         </Grid>
       </Grid>

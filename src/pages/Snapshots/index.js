@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./snapshots.css";
 // Mui imports
 import { Box, Grid, List, ListItem, Typography } from "@mui/material";
@@ -11,6 +11,10 @@ import CustomerIcon from "../../assets/icons/Customer.svg";
 import ProjectsIcon from "../../assets/icons/Projects.svg";
 import CustomerTasks from "../../assets/icons/Customer Tasks.svg";
 import PortfolioIcon from "../../assets/icons/Portfolio.svg";
+
+// APIs Services
+import CustomerServices from "../../APIs/Customer";
+
 const categoryData = [
   {
     category: "Tier 1",
@@ -156,6 +160,21 @@ const totalCustomersData = [
 ];
 
 const Snapshots = () => {
+  const [allSnapShot, setAllSnapShot] = useState([]);
+  const getSnapShot = async () => {
+    await CustomerServices.getSnapShot().then((res) => {
+      if (res) {
+        setAllSnapShot(res);
+      }
+    });
+  };
+  const customerSnapShotDTO = allSnapShot.customerSnapShotDTO;
+  const projectSnapShotDTO = allSnapShot.projectSnapShotDTO;
+  const taskSnapShotDTO = allSnapShot.taskSnapShotDTO;
+  useEffect(() => {
+    getSnapShot();
+  }, []);
+
   return (
     <Box className="Snapshots">
       <Grid container rowSpacing={3}>
@@ -163,34 +182,117 @@ const Snapshots = () => {
           <Box className="snapCustomerHead">
             <SnapshotHeader name="Customer" symbol={CustomerIcon} />
             <Box className="snapContent">
-              <List className="snapList">
+              <List className="snapList snapListTypeTwo">
                 <h6>Category</h6>
-                {categoryData.map((item) => (
-                  <ListItem disablePadding>
-                    <p>{item.category}</p>
-                    <Typography variant="h5">
-                      {item.customers < 10
-                        ? `0${item.customers}`
-                        : item.customers}
-                      <span>Customers</span>
-                    </Typography>
-                  </ListItem>
-                ))}
+                <ListItem disablePadding>
+                  <p>Tier 1</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.tier1}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Tier 2</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.tier2}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Tier 3</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.tier3}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Tier 4</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.tier4}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Tier 5</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.tier5}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Tier 6</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.tier6}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Tier 7</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.tier7}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Tier 8</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.tier8}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Tier 9</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.tier9}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Tier 10</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.tier10}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
               </List>
 
               <List className="snapList snapListTypeTwo">
                 <h6>Stage</h6>
-                {stageData.map((item) => (
-                  <ListItem disablePadding>
-                    <p>{item.category}</p>
-                    <Typography variant="h5">
-                      {item.customers < 10
-                        ? `0${item.customers}`
-                        : item.customers}
-                      <span>Customers</span>
-                    </Typography>
-                  </ListItem>
-                ))}
+                <ListItem disablePadding>
+                  <p>Contract</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.contract}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Onboarding</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.onboarding}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Adoption</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.adoption}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Renewal</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.renewal}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Growth</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.growth}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
               </List>
             </Box>
           </Box>
@@ -201,33 +303,52 @@ const Snapshots = () => {
             <Box className="snapContent">
               <List className="snapList">
                 <h6>
-                  Total Projects <span>{totalProjects}</span>
+                  Total Projects{" "}
+                  <span>{projectSnapShotDTO?.totalProjects}</span>
                 </h6>
-                {totalProjectsData.map((item) => (
-                  <ListItem disablePadding>
-                    <p>{item.status}</p>
-                    <Typography variant="h5">
-                      {item.numberOftask < 10
-                        ? `0${item.numberOftask}`
-                        : item.numberOftask}
-                    </Typography>
-                  </ListItem>
-                ))}
+                <ListItem disablePadding>
+                  <p>To Do</p>
+                  <Typography variant="h5">00</Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Doing</p>
+                  <Typography variant="h5">00</Typography>
+                </ListItem>
               </List>
 
               <List className="snapList snapListTypeTwo">
-                <h6>Completed Projects</h6>
-                {completedProjects.map((item) => (
-                  <ListItem disablePadding>
-                    <p>{item.status}</p>
-                    <Typography variant="h5">
-                      {item.customers < 10
-                        ? `0${item.customers}`
-                        : item.customers}
-                      <span>Customers</span>
-                    </Typography>
-                  </ListItem>
-                ))}
+                <h6>
+                  Completed Projects
+                  <span>{projectSnapShotDTO?.completedProjects}</span>
+                </h6>
+                <ListItem disablePadding>
+                  <p>Last Day</p>
+                  <Typography variant="h5">
+                    00
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Last Year</p>
+                  <Typography variant="h5">
+                    00
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Last Week</p>
+                  <Typography variant="h5">
+                    00
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Last Month</p>
+                  <Typography variant="h5">
+                    00
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
               </List>
             </Box>
           </Box>
@@ -239,61 +360,86 @@ const Snapshots = () => {
               <Box className="snapContent">
                 <List className="snapList">
                   <h6>
-                    Active Tasks <span>{totalActiveTasks}</span>
+                    Active Tasks <span>{taskSnapShotDTO?.activeTasks}</span>
                   </h6>
-                  {activeTasksData.map((item) => (
-                    <ListItem disablePadding>
-                      <p>{item.status}</p>
-                      <Typography variant="h5">
-                        {item.numberOftask < 10
-                          ? `0${item.numberOftask}`
-                          : item.numberOftask}
-                      </Typography>
-                    </ListItem>
-                  ))}
+                  <ListItem disablePadding>
+                    <p>To Do</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <p>Doing</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
                 </List>
 
                 <List className="snapList snapListTypeTwo">
-                  <h6>Completed Tasks</h6>
-                  {completedTasksData.map((item) => (
-                    <ListItem disablePadding>
-                      <p>{item.status}</p>
-                      <Typography variant="h5">
-                        {item.numberOfTask < 10
-                          ? `0${item.numberOfTask}`
-                          : item.numberOfTask}
-                      </Typography>
-                    </ListItem>
-                  ))}
+                  <h6>
+                    Completed Tasks
+                    <span>{taskSnapShotDTO?.completedTasks}</span>
+                  </h6>
+                  <ListItem disablePadding>
+                    <p>Last Day</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <p>Last Month</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <p>Last Week</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <p>Last Year</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
                 </List>
               </Box>
               <Box className="snapContent">
                 <List className="snapList snapListTypeTwo">
-                  <h6>Tasks You Assigned</h6>
-                  {assignedTasksData.map((item) => (
-                    <ListItem disablePadding>
-                      <p>{item.status}</p>
-                      <Typography variant="h5">
-                        {item.numberOfTask < 10
-                          ? `0${item.numberOfTask}`
-                          : item.numberOfTask}
-                      </Typography>
-                    </ListItem>
-                  ))}
+                  <h6>
+                    Tasks You Assigned
+                    <span>{taskSnapShotDTO?.assignTasks}</span>
+                  </h6>
+                  <ListItem disablePadding>
+                    <p>Last Day</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <p>Last Month</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <p>Last Week</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <p>Last Year</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
                 </List>
 
                 <List className="snapList snapListTypeTwo">
-                  <h6>asks assigned to you</h6>
-                  {receivedTasksData.map((item) => (
-                    <ListItem disablePadding>
-                      <p>{item.status}</p>
-                      <Typography variant="h5">
-                        {item.numberOfTask < 10
-                          ? `0${item.numberOfTask}`
-                          : item.numberOfTask}
-                      </Typography>
-                    </ListItem>
-                  ))}
+                  <h6>
+                    asks assigned to you
+                    <span>{taskSnapShotDTO?.recievedTasks}</span>
+                  </h6>
+                  <ListItem disablePadding>
+                    <p>Last Day</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <p>Last Month</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <p>Last Week</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <p>Last Year</p>
+                    <Typography variant="h5">00</Typography>
+                  </ListItem>
                 </List>
               </Box>
             </Box>

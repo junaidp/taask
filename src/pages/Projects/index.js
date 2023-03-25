@@ -448,14 +448,12 @@ const Projects = (props) => {
   };
   const onDateChange = (newValue, row) => {
     let value = newValue;
-    console.log(value, "value");
     const newRow = {
       ...row?.row,
       DueDate: value,
     };
     const updatedItems = tableData?.filter((item) => item.id !== row?.id);
     updatedItems?.unshift(newRow);
-    console.log(updatedItems, "sjhdksj");
     setTableData(updatedItems);
   };
 
@@ -510,7 +508,6 @@ const Projects = (props) => {
     }
   };
 
-  console.log(filteredCustomers, "filteredCustomers");
 
   const handleFilterChange = (event) => {
     const { value } = event.target;
@@ -581,7 +578,6 @@ const Projects = (props) => {
   }
 
 
-  console.log(subtasks,"subtaskssubtaskssubtasks" )
 
   const columns = [
     {
@@ -882,7 +878,6 @@ const Projects = (props) => {
       align: "right",
     },
   ];
-  console.log(selectedFields?.length === tableData?.length, "dsadsadasd");
   return (
     <Box className="project">
       <Box className="projects">

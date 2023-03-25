@@ -1,5 +1,6 @@
 import React from "react";
 import "./navbar.css";
+import { useAuth } from "../../Auth";
 
 // Mui imports
 import {
@@ -22,6 +23,7 @@ import HelpIcon from "../../assets/icons/help.svg";
 import SettingIcon from "../../assets/icons/setting.svg";
 import UserImg from "../../assets/Images/user.png";
 import IImg from "../../assets/icons/i.svg";
+import {useNavigate} from "react-router-dom"
 
 const fakeNotifications = [
   { id: 1, message: "Lorem ipsum dolor sit amet." },
@@ -31,8 +33,9 @@ const fakeNotifications = [
 ];
 
 const Navbar = ({ activePage }) => {
+  const navigate = useNavigate()
   const [anchorElPopover, setAnchorElPopover] = React.useState(null);
-
+  const {logout} = useAuth()
   const handleClickPopover = (event) => {
     setAnchorElPopover(event.currentTarget);
   };
@@ -51,6 +54,11 @@ const Navbar = ({ activePage }) => {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  
+  const handleLogout = () => {
+    logout()
+    navigate("/")
   };
   const [anchorEl1, setAnchorEl1] = React.useState(null);
   const open1 = Boolean(anchorEl1);
@@ -182,7 +190,7 @@ const Navbar = ({ activePage }) => {
                 TransitionComponent={Fade}
               >
                 <MenuItem onClick={handleClose}>View Profile</MenuItem>
-                <MenuItem onClick={handleClose}>Log Out</MenuItem>
+                <MenuItem onClick={handleLogout}>Log Out</MenuItem>
               </Menu>
             </Box>
           </ListItem>

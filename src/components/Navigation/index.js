@@ -9,7 +9,8 @@ import Reporting from "../../pages/Reporting";
 import Customer from "../../pages/Customer";
 import CustomerTasks from "../../pages/CustomerTasks";
 import Snapshots from "../../pages/Snapshots";
-import Integrations from "../../pages/Integrations"
+import Integrations from "../../pages/Integrations";
+import Login from "../../pages/Login";
 
 const Navigation = () => {
   return (

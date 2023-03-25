@@ -389,7 +389,6 @@ const CustomerTasks = (props) => {
     }
   };
 
-  console.log(filteredCustomers, "filteredCustomers")
 
   const handleFilterChange = (event) => {
     const { value } = event.target;
@@ -428,14 +427,12 @@ const CustomerTasks = (props) => {
   };
   const onDateChange = (newValue, row) => {
     let value = newValue;
-    console.log(value, "value");
     const newRow = {
       ...row?.row,
       DueDate: value,
     };
     const updatedItems = tableData?.filter((item) => item.id !== row?.id);
     updatedItems?.unshift(newRow);
-    console.log(updatedItems, "sjhdksj");
     setTableData(updatedItems);
   };
   const statusOptions = [
