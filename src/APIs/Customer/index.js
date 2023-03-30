@@ -11,8 +11,8 @@ const CustomerServices = {
   savecustomer: async (data) => {
     try {
       return await Service.post({
-        url: "/api/customer/savecustomer",
-        data,
+        url: "/api/customer/saveCustomer",
+       data,
       });
     } catch (error) {
       throw error;

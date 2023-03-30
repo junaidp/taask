@@ -487,5 +487,6 @@
   padding: 16px 0 !important;
 }
 .MuiDataGrid-virtualScrollerContent{
-  height: 640px !important;
+  max-height: 640px !important;
+  padding-bottom: 200px !important;
 }

@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
+import { v4 as uuidv4 } from "uuid";
 // Images
 import AttachmentsIcon from "../../assets/icons/Attachment.svg";
 import SearchIcon from "../../assets/icons/search.svg";
@@ -33,7 +34,17 @@ const Resources = () => {
   const [open1, setOpen1] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [open3, setOpen3] = React.useState(false);
-  const [file, setFile] = useState(null);
+
+  const [file, setFile] = useState();
+  const [description, setDescription] = useState();
+  const [attachments, setAttachments] = useState([]);
+
+  const [link, setLink] = useState();
+  const [linkDescription, setLinkDescription] = useState();
+  const [links, setLinks] = useState([]);
+
+  console.log(link, linkDescription, "lkaksnd");
+
   const onUpload = (e) => {
     setFile(e?.target?.files[0]);
   };
@@ -54,6 +65,46 @@ const Resources = () => {
   };
   const handleClickOpenBrowse = () => {
     setOpen3(true);
+  };
+
+  const handleUploadAttachment = () => {
+    const obj = {
+      id: uuidv4(),
+      fileId: file,
+      description: description,
+    };
+    setAttachments((oldState) => [...oldState, obj]);
+    setOpen1(false);
+  };
+
+  const deleteAttachment = (e, id) => {
+    setAttachments(
+      attachments?.filter((obj, i) => {
+        if (obj?.id !== id) {
+          return obj;
+        }
+      })
+    );
+  };
+
+  const handleLinks = () => {
+    const obj = {
+      id: uuidv4(),
+      link: link,
+      description: linkDescription,
+    };
+    setLinks((oldState) => [...oldState, obj]);
+    setOpen2(false);
+  };
+
+  const deleteLinks = (e, id) => {
+    setLinks(
+      links?.filter((obj) => {
+        if (obj?.id !== id) {
+          return obj;
+        }
+      })
+    );
   };
 
   return (
@@ -88,157 +139,32 @@ const Resources = () => {
               </button>
             </Box>
             <Box>
-              <FormGroup className="inputHead">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="Lorem Ipsum"
-                    className="taskTitleInput"
-                  />
-                  <span>
-                    <img src={DeleteIcon} />
-                  </span>
-                </Box>
-              </FormGroup>
-
-              <FormGroup className="inputHead">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="Lorem Ipsum"
-                    className="taskTitleInput"
-                  />
-                  <span>
-                    <img src={DeleteIcon} />
-                  </span>
-                </Box>
-              </FormGroup>
-
-              <FormGroup className="inputHead">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="Lorem Ipsum"
-                    className="taskTitleInput"
-                  />
-                  <span>
-                    <img src={DeleteIcon} />
-                  </span>
-                </Box>
-              </FormGroup>
-
-              <FormGroup className="inputHead">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="Lorem Ipsum"
-                    className="taskTitleInput"
-                  />
-                  <span>
-                    <img src={DeleteIcon} />
-                  </span>
-                </Box>
-              </FormGroup>
-
-              <FormGroup className="inputHead">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="Lorem Ipsum"
-                    className="taskTitleInput"
-                  />
-                  <span>
-                    <img src={DeleteIcon} />
-                  </span>
-                </Box>
-              </FormGroup>
-
-              <FormGroup className="inputHead">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="Lorem Ipsum"
-                    className="taskTitleInput"
-                  />
-                  <span>
-                    <img src={DeleteIcon} />
-                  </span>
-                </Box>
-              </FormGroup>
-
-              <FormGroup className="inputHead">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="Lorem Ipsum"
-                    className="taskTitleInput"
-                  />
-                  <span>
-                    <img src={DeleteIcon} />
-                  </span>
-                </Box>
-              </FormGroup>
-
-              <FormGroup className="inputHead">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="Lorem Ipsum"
-                    className="taskTitleInput"
-                  />
-                  <span>
-                    <img src={DeleteIcon} />
-                  </span>
-                </Box>
-              </FormGroup>
+              {attachments.map((item, index) => {
+                return (
+                  <FormGroup className="inputHead">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <TextField
+                        fullWidth
+                        placeholder="Lorem Ipsum"
+                        className="taskTitleInput"
+                        value={file?.name}
+                      />
+                      <span>
+                        <img
+                          src={DeleteIcon}
+                          onClick={(e) => deleteAttachment(e, item?.id)}
+                        />
+                      </span>
+                    </Box>
+                  </FormGroup>
+                );
+              })}
             </Box>
             <Box className="tableFooter">
               <Box className="entries">
@@ -296,130 +222,39 @@ const Resources = () => {
               </button>
             </Box>
             <Box>
-              <FormGroup className="inputHead">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    paddingBottom: "8px",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="www.link.com"
-                    className="taskTitleInput"
-                  />
-                  <span>
-                    <img src={DeleteIcon} />
-                  </span>
-                </Box>
-                <TextField
-                  fullWidth
-                  placeholder="Description"
-                  className="taskTitleInput"
-                />
-              </FormGroup>
-
-              <FormGroup className="inputHead">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    paddingBottom: "8px",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="www.link.com"
-                    className="taskTitleInput"
-                  />
-                  <span>
-                    <img src={DeleteIcon} />
-                  </span>
-                </Box>
-                <TextField
-                  fullWidth
-                  placeholder="Description"
-                  className="taskTitleInput"
-                />
-              </FormGroup>
-
-              <FormGroup className="inputHead">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    paddingBottom: "8px",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="www.link.com"
-                    className="taskTitleInput"
-                  />
-                  <span>
-                    <img src={DeleteIcon} />
-                  </span>
-                </Box>
-                <TextField
-                  fullWidth
-                  placeholder="Description"
-                  className="taskTitleInput"
-                />
-              </FormGroup>
-
-              <FormGroup className="inputHead">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    paddingBottom: "8px",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="www.link.com"
-                    className="taskTitleInput"
-                  />
-                  <span>
-                    <img src={DeleteIcon} />
-                  </span>
-                </Box>
-                <TextField
-                  fullWidth
-                  placeholder="Description"
-                  className="taskTitleInput"
-                />
-              </FormGroup>
-
-              <FormGroup className="inputHead">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    paddingBottom: "8px",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="www.link.com"
-                    className="taskTitleInput"
-                  />
-                  <span>
-                    <img src={DeleteIcon} />
-                  </span>
-                </Box>
-                <TextField
-                  fullWidth
-                  placeholder="Description"
-                  className="taskTitleInput"
-                />
-              </FormGroup>
+              {links.map((item) => {
+                return (
+                  <FormGroup className="inputHead">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        paddingBottom: "8px",
+                      }}
+                    >
+                      <TextField
+                        fullWidth
+                        placeholder="www.link.com"
+                        className="taskTitleInput"
+                        value={link}
+                      />
+                      <span>
+                        <img
+                          src={DeleteIcon}
+                          onClick={(e) => deleteLinks(e, item?.id)}
+                        />
+                      </span>
+                    </Box>
+                    <TextField
+                      fullWidth
+                      placeholder="Description"
+                      className="taskTitleInput"
+                      value={linkDescription}
+                    />
+                  </FormGroup>
+                );
+              })}
             </Box>
             <Box className="tableFooter">
               <Box className="entries">
@@ -501,7 +336,11 @@ const Resources = () => {
                 paddingTop: "24px ",
               }}
             >
-              <textarea name="description" placeholder="Description"></textarea>
+              <textarea
+                name="description"
+                placeholder="Description"
+                onChange={(e) => setDescription(e.target.value)}
+              ></textarea>
             </FormGroup>
           </Box>
           <Box
@@ -511,7 +350,12 @@ const Resources = () => {
               paddingTop: "24px",
             }}
           >
-            <Button className="attachmentsSaveBtn">Upload Attachment</Button>
+            <Button
+              className="attachmentsSaveBtn"
+              onClick={() => handleUploadAttachment()}
+            >
+              Upload Attachment
+            </Button>
           </Box>
         </DialogContent>
       </Dialog>
@@ -535,7 +379,11 @@ const Resources = () => {
             }}
           >
             <FormGroup className="inputHead">
-              <TextField fullWidth placeholder="www.link.com" />
+              <TextField
+                fullWidth
+                placeholder="www.link.com"
+                onChange={(e) => setLink(e.target.value)}
+              />
             </FormGroup>
             <FormGroup
               className="inputHead"
@@ -543,7 +391,11 @@ const Resources = () => {
                 paddingTop: "24px ",
               }}
             >
-              <textarea name="description" placeholder="Description"></textarea>
+              <textarea
+                name="description"
+                placeholder="Description"
+                onChange={(e) => setLinkDescription(e.target.value)}
+              ></textarea>
             </FormGroup>
           </Box>
           <Box
@@ -553,7 +405,9 @@ const Resources = () => {
               paddingTop: "24px",
             }}
           >
-            <Button className="linksSaveBtn">Upload Attachment</Button>
+            <Button className="linksSaveBtn" onClick={() => handleLinks()}>
+              Upload Links
+            </Button>
           </Box>
         </DialogContent>
       </Dialog>

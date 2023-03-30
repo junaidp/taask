@@ -123,3 +123,6 @@ html {
 .MuiClock-clock{
   background: #f4fffb !important;
 }
+.MuiDataGrid-overlay{
+  justify-content: start !important;
+}

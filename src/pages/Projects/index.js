@@ -34,7 +34,7 @@ import EastRoundedIcon from "@mui/icons-material/EastRounded";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 // images
 import DummiAvatar from "../../assets/icons/dummiAvatar.svg";
@@ -117,7 +117,8 @@ const AssignTaskColumn = (props) => {
               className="AssignsImg"
             />
             <ListItemIcon>
-              <WestRoundedIcon className="AssignsIcon" />
+              <EastRoundedIcon className="AssignsIcon" />
+              {/* <WestRoundedIcon className="AssignsIcon" /> */}
             </ListItemIcon>
           </React.Fragment>
         );
@@ -323,28 +324,28 @@ const statusOptions = [
   { value: "doing", label: "Doing" },
   { value: "done", label: "Done" },
 ];
-const customers = [
-  {
-    id: 1,
-    PhotoUrl: MariahImg,
-    customerName: "Mariah Betts",
-  },
-  {
-    id: 2,
-    PhotoUrl: JohnImg,
-    customerName: "John Doe",
-  },
-  {
-    id: 3,
-    PhotoUrl: MariahImg,
-    customerName: "Mariah Betts",
-  },
-  {
-    id: 4,
-    PhotoUrl: JohnImg,
-    customerName: "John Doe",
-  },
-];
+// const customers = [
+//   {
+//     id: 1,
+//     PhotoUrl: MariahImg,
+//     customerName: "Mariah Betts",
+//   },
+//   {
+//     id: 2,
+//     PhotoUrl: JohnImg,
+//     customerName: "John Doe",
+//   },
+//   {
+//     id: 3,
+//     PhotoUrl: MariahImg,
+//     customerName: "Mariah Betts",
+//   },
+//   {
+//     id: 4,
+//     PhotoUrl: JohnImg,
+//     customerName: "John Doe",
+//   },
+// ];
 const RelatedCustomerOptions = [
   { value: "allCustomer", label: "All Customer" },
   { value: "contractCustomer", label: "Contract Customer" },
@@ -368,7 +369,7 @@ const Projects = (props) => {
   const [resources, setResources] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [file, setFile] = useState(null);
-  const [tableData, setTableData] = useState(rows);
+  const [tableData, setTableData] = useState([]);
 
   const [openReminder, setOpenReminder] = React.useState(false);
   const [addRemainderOpen, setAddRemainderOpen] = React.useState(false);
@@ -377,12 +378,15 @@ const Projects = (props) => {
 
   const [selectedFields, setSelectedFields] = useState([]);
   const [newTaskCustomers, setNewTaskCustomers] = useState([]);
+  console.log(newTaskCustomers, "newTaskCustomers");
 
   const [selectAll, setSelectAll] = useState(false);
-  const [filteredCustomers, setFilteredCustomers] = useState(customers);
+  const [filteredCustomers, setFilteredCustomers] = useState(rows);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open3 = Boolean(anchorEl);
   const [subtasks, setSubtasks] = useState([]);
+
+  const [tasksTitle, setTasksTitle] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -390,9 +394,10 @@ const Projects = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
-  const handleClickOpenModel = (params) => {
-    setSelectedRow(params.row);
+  const handleClickOpenModel = (row) => {
+    setSelectedRow(row);
     setOpen(true);
+    setAnchorEl(null);
   };
   // model 2
   const handleCloseProjectName = () => {
@@ -481,7 +486,6 @@ const Projects = (props) => {
   const handleClose1 = () => {
     setAnchorEl(null);
   };
-
   const handleSelectAll = (event) => {
     setSelectAll(event.target.checked);
     if (event.target.checked === true) {
@@ -503,22 +507,21 @@ const Projects = (props) => {
           return item;
         }
       });
-
       setNewTaskCustomers(newIds);
     }
   };
 
-
   const handleFilterChange = (event) => {
     const { value } = event.target;
     if (!value) {
-      setFilteredCustomers(customers);
+      setFilteredCustomers(rows);
       return;
     }
-    const filtered = customers.filter((customer) =>
-      customer.customerName.toLowerCase().includes(value.toLowerCase())
+    const filtered = rows.filter((customer) =>
+      customer.Customer.name.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredCustomers(filtered);
+    console.log(filtered, "filtered");
   };
   // for select all
   const onSelectAll = (e) => {
@@ -552,32 +555,47 @@ const Projects = (props) => {
 
   const handleSubtaskClick = () => {
     const obj = {
-      id : uuidv4(),
-      label : "",
-      active : false
-    }
-    setSubtasks((oldState)=> [...oldState, obj])
+      id: uuidv4(),
+      label: "",
+      active: false,
+    };
+    setSubtasks((oldState) => [...oldState, obj]);
   };
 
-  const handleTaskLabelChange = (e, index) =>{
-    setSubtasks(subtasks.map((obj, i) => {
-      if (i === index) {
-        return {...obj, label: e.target.value};
-      }
-      return obj;
-    }));
-  }
+  const handleTaskLabelChange = (e, index) => {
+    setSubtasks(
+      subtasks.map((obj, i) => {
+        if (i === index) {
+          return { ...obj, label: e.target.value };
+        }
+        return obj;
+      })
+    );
+  };
 
-  const onTaskActiveChange = (e, index) =>{
-    setSubtasks(subtasks.map((obj, i) => {
-      if (i === index) {
-        return {...obj, active: !obj?.active};
-      }
-      return obj;
-    }));
-  }
-
-
+  const onTaskActiveChange = (e, index) => {
+    setSubtasks(
+      subtasks.map((obj, i) => {
+        if (i === index) {
+          return { ...obj, active: !obj?.active };
+        }
+        return obj;
+      })
+    );
+  };
+  const handleSubmitprojecttask = () => {
+    const newRow = {
+      ...selectedRow,
+      CustomerTask: tasksTitle,
+    };
+    const updatedItems = tableData?.filter(
+      (item) => item.id !== selectedRow?.id
+    );
+    updatedItems?.unshift(newRow);
+    console.log(updatedItems, "updatedItems");
+    setTableData(updatedItems);
+    setOpen(false);
+  };
 
   const columns = [
     {
@@ -745,11 +763,8 @@ const Projects = (props) => {
         </React.Fragment>
       ),
       renderCell: (params) => (
-        <span
-          onClick={() => handleClickOpenModel(params)}
-          className="customerTaskBtn"
-        >
-          <Box className="badgesHead">
+        <span className="customerTaskBtn">
+          {/* <Box className="badgesHead">
             {params?.row?.Status === "todo" ? (
               <Badge badgeContent={""} className="toDoBadge tableBadge"></Badge>
             ) : params?.row?.Status === "doing" ? (
@@ -761,7 +776,8 @@ const Projects = (props) => {
               <Badge badgeContent={""} className="doneBadge tableBadge"></Badge>
             )}
           </Box>
-          <img src={PlusIcon} alt="not found" /> New Project Task
+          <img src={PlusIcon} alt="not found" /> New Project Task */}
+          {tasksTitle}
         </span>
       ),
     },
@@ -891,9 +907,10 @@ const Projects = (props) => {
               aria-expanded={open3 ? "true" : undefined}
               onClick={handleClick1}
             >
-              <img src={PlusIcon} alt="not found" /> New Project Task
+              <img src={PlusIcon} alt="not found" /> New Project
             </Button>
-            {selectedFields?.length === tableData?.length ? (
+            {selectedFields?.length === tableData?.length &&
+            tableData?.length > 0 ? (
               <span>
                 <img src={DeleteIcon} alt="not found" />
               </span>
@@ -953,12 +970,21 @@ const Projects = (props) => {
                       checked={newTaskCustomers?.includes(user?.id)}
                       onChange={(e) => handleSelectCustomer(e, user?.id)}
                     />
-                    <Avatar
-                      src={user.PhotoUrl}
-                      alt={user.PhotoUrl}
-                      className="avatar"
-                    />
-                    <ListItemText primary={user.customerName} />
+                    <Box
+                      onClick={() => handleClickOpenModel(user)}
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Avatar
+                        src={user?.Customer?.img}
+                        alt={user?.Customer?.img}
+                        className="avatar"
+                      />
+                      <ListItemText primary={user?.Customer?.name} />
+                    </Box>
                   </MenuItem>
                 ))}
               </FormControl>
@@ -1207,6 +1233,7 @@ const Projects = (props) => {
                     placeholder="Lorem Ipsum"
                     id="taskTitle"
                     className="taskTitleInput"
+                    onChange={(e) => setTasksTitle(e.target.value)}
                   />
                   <span>
                     <img src={ToDoIcon} />
@@ -1258,13 +1285,19 @@ const Projects = (props) => {
                         placeholder="Lorem Ipsum"
                         id="Subtask1"
                         className="taskTitleInput"
-                        onChange={(e)=> handleTaskLabelChange(e, index)}
+                        onChange={(e) => handleTaskLabelChange(e, index)}
                       />
                       <span>
                         {task?.active === true ? (
-                          <img src={DoneIcon} onClick={(e) => onTaskActiveChange(e, index)}/>
+                          <img
+                            src={DoneIcon}
+                            onClick={(e) => onTaskActiveChange(e, index)}
+                          />
                         ) : (
-                          <img src={ToDoIcon} onClick={(e) => onTaskActiveChange(e, index)}/>
+                          <img
+                            src={ToDoIcon}
+                            onClick={(e) => onTaskActiveChange(e, index)}
+                          />
                         )}
                       </span>
                     </Box>
@@ -1313,7 +1346,9 @@ const Projects = (props) => {
                 paddingTop: "40px",
               }}
             >
-              <Button className="SaveBtn">save</Button>
+              <Button className="SaveBtn" onClick={handleSubmitprojecttask}>
+                save
+              </Button>
             </Box>
           </DialogContent>
         </Dialog>

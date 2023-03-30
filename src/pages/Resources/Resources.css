@@ -81,9 +81,9 @@
   width: 100% !important;
   max-width: 100% !important;
 }
-.resources .linkHead .tableFooter {
+/* .resources .linkHead .tableFooter {
   padding: 10px 0 0 !important;
-}
+} */
 .resources .linkHead .inputHead:last-child{
   padding-bottom: 0 !important;
 }

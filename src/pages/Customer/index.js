@@ -393,7 +393,7 @@ let Customer = () => {
     name: Yup.string().required(),
   });
   const formik = useFormik({
-    enableReinitialize: true,
+    enableReinitialize: false,
     initialValues: {
       category: "",
       name: "",
@@ -402,7 +402,7 @@ let Customer = () => {
       customerstage: "",
       customersince: "",
       customernotes: "",
-      fileId: file,
+      // fileId: file,
       contacts: [
         {
           emailaddress: "",
@@ -415,12 +415,16 @@ let Customer = () => {
     },
     validationSchema: customerValitadion,
   });
-  console.log(formik.values, "sjajdksa");
+  console.log(formik.values,file, "sjajdksa");
 
   const handleSave = async () => {
     const data = formik?.values;
+    
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("customer", JSON.stringify(data));
     setLoading(true);
-    await CustomerServices.savecustomer(data).then((res) => {
+    await CustomerServices.savecustomer(formData).then((res) => {
       if (res?.includes("saved")) {
         setLoading(false);
         toast.success("customer successfully saved!", {
@@ -430,17 +434,17 @@ let Customer = () => {
     });
   };
 
-  const getMyContacts = async () => {
-    await CustomerServices.getAllContacts().then((res) => {
-      if (res) {
-        setAllContacts(res);
-      }
-    });
-  };
+  // const getMyContacts = async () => {
+  //   await CustomerServices.getAllContacts().then((res) => {
+  //     if (res) {
+  //       setAllContacts(res);
+  //     }
+  //   });
+  // };
 
-  useEffect(() => {
-    getMyContacts();
-  }, []);
+  // useEffect(() => {
+  //   getMyContacts();
+  // }, []);
 
   return (
     <Box className="customer">
