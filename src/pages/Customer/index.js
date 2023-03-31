@@ -11,11 +11,8 @@ import {
   Box,
   Grid,
   TextField,
-  FormControl,
-  InputLabel,
   FormGroup,
   MenuItem,
-  Toast,
   Button,
   Dialog,
   DialogTitle,
@@ -24,14 +21,12 @@ import {
   DialogActions,
   List,
   ListItem,
-  Typography,
 } from "@mui/material";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 
 // conponent
 import { useFormik } from "formik";
-import CustomerTable from "../../components/CustomerTable";
 import CustomerServices from "../../APIs/Customer";
 import Loader from "../../components/Loader";
 
@@ -50,32 +45,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 let CustomCalendarIcon = (props) => {
   return <img src={CalenderIcon} alt="" {...props} />;
 };
-const isWeekend = (date) => {
-  const day = date.day();
-  return day === 1 || day === 6;
-};
-
 const getDay = (day) => {
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  let weekDay;
-  if (day == "Su") {
-    weekDay = dayNames[0];
-  } else if (day == "Mo") {
-    weekDay = dayNames[1];
-  } else if (day == "Tu") {
-    weekDay = dayNames[2];
-  } else if (day == "We") {
-    weekDay = dayNames[3];
-  } else if (day == "Th") {
-    weekDay = dayNames[4];
-  } else if (day == "Fr") {
-    weekDay = dayNames[5];
-  } else if (day == "Sa") {
-    weekDay = dayNames[6];
-  } else {
-    weekDay = "";
-  }
-  return weekDay;
+  const dayIndex = dayNames.findIndex((name) => name.startsWith(day));
+  return dayIndex > -1 ? dayNames[dayIndex] : "";
 };
 
 const customerOption = [
@@ -402,7 +375,6 @@ let Customer = () => {
       customerstage: "",
       customersince: "",
       customernotes: "",
-      // fileId: file,
       contacts: [
         {
           emailaddress: "",
@@ -415,36 +387,28 @@ let Customer = () => {
     },
     validationSchema: customerValitadion,
   });
-  console.log(formik.values,file, "sjajdksa");
+  console.log(formik.values, file, "sjajdksa");
 
   const handleSave = async () => {
+    setLoading(true);
     const data = formik?.values;
-    
     const formData = new FormData();
     formData.append("file", file);
     formData.append("customer", JSON.stringify(data));
-    setLoading(true);
-    await CustomerServices.savecustomer(formData).then((res) => {
-      if (res?.includes("saved")) {
+    await CustomerServices.savecustomer(formData)
+      .then((res) => {
+        if (res?.includes("saved")) {
+          toast.success("customer successfully saved!", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
         setLoading(false);
-        toast.success("customer successfully saved!", {
-          position: toast.POSITION.BOTTOM_RIGHT,
-        });
-      }
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
   };
-
-  // const getMyContacts = async () => {
-  //   await CustomerServices.getAllContacts().then((res) => {
-  //     if (res) {
-  //       setAllContacts(res);
-  //     }
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   getMyContacts();
-  // }, []);
 
   return (
     <Box className="customer">
@@ -521,7 +485,6 @@ let Customer = () => {
                   displayStaticWrapperAs="desktop"
                   openTo="day"
                   value={value}
-                  shouldDisableDate={isWeekend}
                   showToolbar={false}
                   components={{
                     OpenPickerIcon: CustomCalendarIcon,
@@ -639,7 +602,6 @@ let Customer = () => {
             </FormGroup>
           </Box>
           <Box className="customTableHead">
-            {/* <CustomerTable allContacts={allContacts} /> */}
             <Button
               className="btn mainContactsBtn"
               onClick={handleMainContacts}
@@ -888,13 +850,7 @@ let Customer = () => {
                   className="uploadFileBtn"
                 >
                   Browse
-                  <input
-                    hidden
-                    accept="image/*"
-                    multiple
-                    type="file"
-                    onChange={onUpload}
-                  />
+                  <input hidden multiple type="file" onChange={onUpload} />
                 </Button>
               </Box>
             </FormGroup>

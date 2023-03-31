@@ -25,30 +25,6 @@ import JohnImg from "../../assets/Images/john.png";
 import MariahImg from "../../assets/Images/Mariah.png";
 import moment from "moment";
 
-let data = [
-  {
-    title: "John Doe",
-    time: '09:30 PM',
-    dueDate: "01/02/2023",
-  },
-  {
-    title: "Mariah Betts",
-    time: '12:39 AM',
-    dueDate: "01/02/2023",
-  },
-  {
-    title: "John Doe",
-    time: '09:30 PM',
-    dueDate: "01/02/2023",
-  },
-  {
-    title: "Mariah Betts",
-    time: '12:39 AM',
-    dueDate: "01/02/2023",
-  },
- 
-];
-
 const Appointments = ({allMeetings}) => {
   const [page, setPage] = React.useState("");
 

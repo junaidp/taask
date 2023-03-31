@@ -210,7 +210,7 @@ const Navbar = ({ activePage }) => {
             {activePage === "Resources"
               ? "Here you can store templates, copies of regularly used emails, important documents."
               : activePage === "Integrations"
-              ? "Please filter for customer(s) to view related information"
+              ? "Please filter for customer(s) to view related information."
               : null}
           </Typography>
         </Popover>

@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import "./home.css";
+import "../../index.css";
 
 // Mui imports
 import { Box, Grid } from "@mui/material";

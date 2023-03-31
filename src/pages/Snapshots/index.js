@@ -168,7 +168,10 @@ const Snapshots = () => {
         setAllSnapShot(res);
         setLoading(false);
       }
-    });
+    }).catch((err) => {
+      console.log(err);
+      setLoading(false);
+    });;
   };
   const customerSnapShotDTO = allSnapShot.customerSnapShotDTO;
   const projectSnapShotDTO = allSnapShot.projectSnapShotDTO;

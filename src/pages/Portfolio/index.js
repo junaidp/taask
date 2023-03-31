@@ -11,15 +11,9 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Typography,
   Pagination,
-  FormControl,
-  InputLabel,
-  Select,
   MenuItem,
-  FormControlLabel,
   FormGroup,
-  Checkbox,
   TextField,
   PaginationItem,
 } from "@mui/material";
@@ -27,121 +21,15 @@ import {
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 // images
-import Img1 from "../../assets/Images/user.png";
 import JohnImg from "../../assets/Images/john.png";
 import MariahImg from "../../assets/Images/Mariah.png";
 import FilterImg from "../../assets/icons/filter.svg";
 import SearchImg from "../../assets/icons/search.svg";
 import FilterMenuImg from "../../assets/icons/filterMenu.svg";
-
 // component
 import Loader from "../../components/Loader";
-
 // APIs Services
 import CustomerServices from "../../APIs/Customer";
-
-let data = [
-  {
-    id: 1,
-    photoUrl: JohnImg,
-    customer: "John Doe",
-    customerTask: "Lorem ipsum dolor sit amet.",
-    customerSince: "01/02/2023",
-    customerStage: "Contract",
-    location: "Lorem ipsum",
-    website: "www.lorem.com",
-  },
-  {
-    id: 2,
-    photoUrl: MariahImg,
-    customer: "Mariah Betts",
-    customerTask: "Lorem ipsum dolor sit amet.",
-    customerSince: "01/02/2023",
-    customerStage: "Adoption",
-    location: "Lorem ipsum",
-    website: "www.lorem.com",
-  },
-  {
-    id: 3,
-    photoUrl: JohnImg,
-    customer: "John Doe",
-    customerTask: "Lorem ipsum dolor sit amet.",
-    customerSince: "01/02/2023",
-    customerStage: "Contract",
-    location: "Lorem ipsum",
-    website: "www.lorem.com",
-  },
-  {
-    id: 4,
-    photoUrl: MariahImg,
-    customer: "Mariah Betts",
-    customerTask: "Lorem ipsum dolor sit amet.",
-    customerSince: "01/02/2023",
-    customerStage: "Adoption",
-    location: "Lorem ipsum",
-    website: "www.lorem.com",
-  },
-  {
-    id: 5,
-    photoUrl: JohnImg,
-    customer: "John Doe",
-    customerTask: "Lorem ipsum dolor sit amet.",
-    customerSince: "01/02/2023",
-    customerStage: "Contract",
-    location: "Lorem ipsum",
-    website: "www.lorem.com",
-  },
-  {
-    id: 6,
-    photoUrl: MariahImg,
-    customer: "Mariah Betts",
-    customerTask: "Lorem ipsum dolor sit amet.",
-    customerSince: "01/02/2023",
-    customerStage: "Adoption",
-    location: "Lorem ipsum",
-    website: "www.lorem.com",
-  },
-  {
-    id: 7,
-    photoUrl: JohnImg,
-    customer: "John Doe",
-    customerTask: "Lorem ipsum dolor sit amet.",
-    customerSince: "01/02/2023",
-    customerStage: "Contract",
-    location: "Lorem ipsum",
-    website: "www.lorem.com",
-  },
-  {
-    id: 8,
-    photoUrl: MariahImg,
-    customer: "Mariah Betts",
-    customerTask: "Lorem ipsum dolor sit amet.",
-    customerSince: "01/02/2023",
-    customerStage: "Adoption",
-    location: "Lorem ipsum",
-    website: "www.lorem.com",
-  },
-  {
-    id: 9,
-    photoUrl: JohnImg,
-    customer: "John Doe",
-    customerTask: "Lorem ipsum dolor sit amet.",
-    customerSince: "01/02/2023",
-    customerStage: "Contract",
-    location: "Lorem ipsum",
-    website: "www.lorem.com",
-  },
-  {
-    id: 10,
-    photoUrl: MariahImg,
-    customer: "Mariah Betts",
-    customerTask: "Lorem ipsum dolor sit amet.",
-    customerSince: "01/02/2023",
-    customerStage: "Adoption",
-    location: "Lorem ipsum",
-    website: "www.lorem.com",
-  },
-];
 
 const pages = [
   {
@@ -176,7 +64,10 @@ const Portfolio = () => {
         setAllCustomers(res);
         setLoading(false);
       }
-    });
+    }).catch((err) => {
+      console.log(err);
+      setLoading(false);
+    });;
   };
   console.log(allCustomers, "hello");
   useEffect(() => {

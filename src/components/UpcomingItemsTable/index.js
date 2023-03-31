@@ -1,6 +1,5 @@
 import * as React from "react";
 import "./styles.css";
-
 // Mui imports
 import {
   Box,
@@ -13,13 +12,8 @@ import {
   Paper,
   Typography,
   Pagination,
-  FormControl,
-  InputLabel,
-  Select,
   MenuItem,
-  FormControlLabel,
   FormGroup,
-  Checkbox,
   TextField,
   PaginationItem,
 } from "@mui/material";
@@ -27,98 +21,12 @@ import {
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 // images
-import Img1 from "../../assets/Images/user.png";
 import JohnImg from "../../assets/Images/john.png";
 import MariahImg from "../../assets/Images/Mariah.png";
 import FilterImg from "../../assets/icons/filter.svg";
 import SearchImg from "../../assets/icons/search.svg";
 import FilterMenuImg from "../../assets/icons/filterMenu.svg";
-
 import moment from "moment"
-
-let data = [
-  {
-    id: 1,
-    photoUrl: JohnImg,
-    clientName: "John Doe",
-    task: "Lorem ipsum dolor sit amet.",
-    time: "09:30 PM",
-    dueDate: "01/02/2023",
-  },
-  {
-    id: 2,
-    photoUrl: MariahImg,
-    clientName: "Mariah Betts",
-    task: "Lorem ipsum dolor sit amet.",
-    time: "12:39 AM",
-    dueDate: "01/02/2023",
-  },
-  {
-    id: 3,
-    photoUrl: JohnImg,
-    clientName: "John Doe",
-    task: "Lorem ipsum dolor sit amet.",
-    time: "09:30 PM",
-    dueDate: "01/02/2023",
-  },
-  {
-    id: 4,
-    photoUrl: MariahImg,
-    clientName: "Mariah Betts",
-    task: "Lorem ipsum dolor sit amet.",
-    time: "12:39 AM",
-    dueDate: "01/02/2023",
-  },
-  {
-    id: 5,
-    photoUrl: JohnImg,
-    clientName: "John Doe",
-    task: "Lorem ipsum dolor sit amet.",
-    time: "09:30 PM",
-    dueDate: "01/02/2023",
-  },
-  {
-    id: 6,
-    photoUrl: MariahImg,
-    clientName: "Mariah Betts",
-    task: "Lorem ipsum dolor sit amet.",
-    time: "12:39 AM",
-    dueDate: "01/02/2023",
-  },
-  {
-    id: 7,
-    photoUrl: JohnImg,
-    clientName: "John Doe",
-    task: "Lorem ipsum dolor sit amet.",
-    time: "09:30 PM",
-    dueDate: "01/02/2023",
-  },
-  {
-    id: 8,
-    photoUrl: MariahImg,
-    clientName: "Mariah Betts",
-    task: "Lorem ipsum dolor sit amet.",
-    time: "12:39 AM",
-    dueDate: "01/02/2023",
-  },
-  {
-    id: 9,
-    photoUrl: JohnImg,
-    clientName: "John Doe",
-    task: "Lorem ipsum dolor sit amet.",
-    time: "09:30 PM",
-    dueDate: "01/02/2023",
-  },
-  {
-    id: 10,
-    photoUrl: MariahImg,
-    clientName: "Mariah Betts",
-    task: "Lorem ipsum dolor sit amet.",
-    time: "12:39 AM",
-    dueDate: "01/02/2023",
-  },
- 
-];
 
 const currencies = [
   {

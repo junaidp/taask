@@ -18,6 +18,9 @@ import {
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import { v4 as uuidv4 } from "uuid";
+import CustomerServices from "../../APIs/Customer";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 // Images
 import AttachmentsIcon from "../../assets/icons/Attachment.svg";
 import SearchIcon from "../../assets/icons/search.svg";
@@ -31,11 +34,12 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const Resources = () => {
-  const [open1, setOpen1] = React.useState(false);
-  const [open2, setOpen2] = React.useState(false);
-  const [open3, setOpen3] = React.useState(false);
+  const [open1, setOpen1] = useState(false);
+  const [open2, setOpen2] = useState(false);
+  const [open3, setOpen3] = useState(false);
 
-  const [file, setFile] = useState();
+  const [file, setFile] = useState([]);
+
   const [description, setDescription] = useState();
   const [attachments, setAttachments] = useState([]);
 
@@ -43,11 +47,18 @@ const Resources = () => {
   const [linkDescription, setLinkDescription] = useState();
   const [links, setLinks] = useState([]);
 
-  console.log(link, linkDescription, "lkaksnd");
+  console.log(links, "sakjdjklsad")
 
   const onUpload = (e) => {
-    setFile(e?.target?.files[0]);
+    const uploadfile = e?.target?.files[0];
+    // const obj = {
+    //   fileId: uploadfile,
+    // };
+    // setFile((oldState) => [...oldState, obj]);
+    formik.setFieldValue("fileId", uploadfile);
+    setFile(uploadfile)
   };
+  console.log(attachments, "attachments");
   const handleCloseAttachments = () => {
     setOpen1(false);
   };
@@ -107,8 +118,34 @@ const Resources = () => {
     );
   };
 
+  const customerValitadion = Yup.object().shape({
+    name: Yup.string().required(),
+  });
+  const formik = useFormik({
+    enableReinitialize: false,
+    initialValues: {
+      fileId: "",
+      link: "",
+    },
+    validationSchema: customerValitadion,
+  });
+  console.log(formik.values, "sjajdksa");
+
+  const handleSave = async () => {
+    const data = formik?.values;
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("customer", JSON.stringify(data));
+    await CustomerServices.saveResources(formData).then((res) => {
+      if (res) {
+        console.log("testing");
+      }
+    });
+  };
+
   return (
     <Box className="resources">
+      {/* <Button onClick={handleSave}>submit</Button> */}
       <Grid container>
         <Grid item xs={6}>
           <Box className="attachmentHead">
@@ -153,7 +190,7 @@ const Resources = () => {
                         fullWidth
                         placeholder="Lorem Ipsum"
                         className="taskTitleInput"
-                        value={file?.name}
+                        value={item.fileId.name}
                       />
                       <span>
                         <img
@@ -237,7 +274,7 @@ const Resources = () => {
                         fullWidth
                         placeholder="www.link.com"
                         className="taskTitleInput"
-                        value={link}
+                        value={item.link}
                       />
                       <span>
                         <img
@@ -250,7 +287,7 @@ const Resources = () => {
                       fullWidth
                       placeholder="Description"
                       className="taskTitleInput"
-                      value={linkDescription}
+                      value={item.description}
                     />
                   </FormGroup>
                 );
@@ -310,9 +347,17 @@ const Resources = () => {
               <Box className="uploadFileHead">
                 <TextField
                   fullWidth
-                  placeholder="Lorem Ipsum"
-                  value={file?.name}
-                  id="file"
+                  {...{
+                    formik,
+                    title: "file",
+                    name: "file",
+                    checkValidation: true,
+                    placeholder: "Lorem Ipsum",
+                    value: formik?.values?.fileId?.name,
+                  }}
+                  onChange={(e) => {
+                    formik.setFieldValue("fileId", e.target.value);
+                  }}
                 />
                 <Button
                   variant="contained"
@@ -322,7 +367,6 @@ const Resources = () => {
                   Browse
                   <input
                     hidden
-                    accept="image/*"
                     multiple
                     type="file"
                     onChange={onUpload}
@@ -381,8 +425,18 @@ const Resources = () => {
             <FormGroup className="inputHead">
               <TextField
                 fullWidth
-                placeholder="www.link.com"
-                onChange={(e) => setLink(e.target.value)}
+                {...{
+                  formik,
+                  title: "link",
+                  name: "link",
+                  checkValidation: true,
+                  placeholder: "www.link.com",
+                  value: formik?.values?.link,
+                }}
+                onChange={(e) => {
+                  formik.setFieldValue("link", e.target.value);
+                  setLink(e.target.value);
+                }}
               />
             </FormGroup>
             <FormGroup

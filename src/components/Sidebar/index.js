@@ -44,30 +44,25 @@ const Sidebar = ({ setActivePage }) => {
     return index === -1 ? 0 : index;
   }
 
+  const pageNames = [
+    "Upcoming Items",
+    "Customer",
+    "Portfolio",
+    "Customer Tasks",
+    "Ad-hoc Projects",
+    "Resources",
+    "Snapshots",
+    "Integrations",
+  ];
+  
   const addActiveClass = (index) => {
     setActiveIndex(index);
-    let activePageName =
-      index == 0
-        ? "Upcoming Items"
-        : index == 1
-        ? "Customer"
-        : index === 2
-        ? "Portfolio"
-        : index === 3
-        ? "Customer Tasks"
-        : index === 4
-        ? "Ad-hoc Projects"
-        : index === 5
-        ? "Resources"
-        : index === 6
-        ? "Snapshots"
-        : index === 7
-        ? "Integrations"
-        : "UpcomingItemsTable";
+    const activePageName = pageNames[index] || "UpcomingItemsTable";
     localStorage.setItem("activeIndex", index);
     localStorage.setItem("activeIndexName", activePageName);
     setActivePage(activePageName);
   };
+  
   useEffect(() => {
     const activeIndexFromStorage = localStorage.getItem("activeIndex");
     const activeIndexNameFromStorage = localStorage.getItem("activeIndexName");

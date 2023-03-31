@@ -11,8 +11,9 @@ const CustomerServices = {
   savecustomer: async (data) => {
     try {
       return await Service.post({
-        url: "/api/customer/saveCustomer",
+        url: "​/api​/customer​/saveOnlyFile",
        data,
+       
       });
     } catch (error) {
       throw error;
@@ -42,6 +43,16 @@ const CustomerServices = {
   getAllCustomers: async () => {
     try {
       return await Service.get("/api/customer/getAllCustomers");
+    } catch (error) {
+      throw error;
+    }
+  },
+  saveResources: async (data) => {
+    try {
+      return await Service.post({
+        url: "/api/resources/saveResources",
+       data,
+      });
     } catch (error) {
       throw error;
     }

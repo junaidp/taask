@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import "./customerTask.css";
+import "../../index.css";
 
 import moment from "moment";
 import {
   Box,
-  Typography,
   Select,
   MenuItem,
   Dialog,
@@ -21,8 +21,6 @@ import {
   Pagination,
   PaginationItem,
   Menu,
-  OutlinedInput,
-  InputLabel,
   FormControl,
   ListItemText,
 } from "@mui/material";
@@ -63,25 +61,8 @@ let CustomCalendarIcon = (props) => {
 };
 const getDay = (day) => {
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  let weekDay;
-  if (day == "Su") {
-    weekDay = dayNames[0];
-  } else if (day == "Mo") {
-    weekDay = dayNames[1];
-  } else if (day == "Tu") {
-    weekDay = dayNames[2];
-  } else if (day == "We") {
-    weekDay = dayNames[3];
-  } else if (day == "Th") {
-    weekDay = dayNames[4];
-  } else if (day == "Fr") {
-    weekDay = dayNames[5];
-  } else if (day == "Sa") {
-    weekDay = dayNames[6];
-  } else {
-    weekDay = "";
-  }
-  return weekDay;
+  const dayIndex = dayNames.findIndex((name) => name.startsWith(day));
+  return dayIndex > -1 ? dayNames[dayIndex] : "";
 };
 
 const AssignTaskColumn = (props) => {
@@ -159,29 +140,6 @@ const pages = [
   {
     value: "4page",
     label: "4 page",
-  },
-];
-
-const customers = [
-  {
-    id: 1,
-    PhotoUrl: MariahImg,
-    customerName: "Mariah Betts",
-  },
-  {
-    id: 2,
-    PhotoUrl: JohnImg,
-    customerName: "John Doe",
-  },
-  {
-    id: 3,
-    PhotoUrl: MariahImg,
-    customerName: "Mariah Betts",
-  },
-  {
-    id: 4,
-    PhotoUrl: JohnImg,
-    customerName: "John Doe",
   },
 ];
 const rows = [
@@ -603,25 +561,21 @@ const CustomerTasks = (props) => {
         </React.Fragment>
       ),
       renderCell: (params) => (
-        <span>{params.value}</span>
-        // <span
-        //   onClick={() => handleClickOpenModel(params)}
-        //   className="customerTaskBtn"
-        // >
-        //   <Box className="badgesHead">
-        //     {params?.row?.Status === "todo" ? (
-        //       <Badge badgeContent={""} className="toDoBadge tableBadge"></Badge>
-        //     ) : params?.row?.Status === "doing" ? (
-        //       <Badge
-        //         badgeContent={""}
-        //         className="doingBadge tableBadge"
-        //       ></Badge>
-        //     ) : (
-        //       <Badge badgeContent={""} className="doneBadge tableBadge"></Badge>
-        //     )}
-        //   </Box>
-        //   <img src={PlusIcon} alt="not found" /> New task
-        // </span>
+        <span className="customerTaskBtn">
+          <Box className="badgesHead">
+            {params?.row?.Status === "todo" ? (
+              <Badge badgeContent={""} className="toDoBadge tableBadge"></Badge>
+            ) : params?.row?.Status === "doing" ? (
+              <Badge
+                badgeContent={""}
+                className="doingBadge tableBadge"
+              ></Badge>
+            ) : (
+              <Badge badgeContent={""} className="doneBadge tableBadge"></Badge>
+            )}
+          </Box>
+          {params.value}
+        </span>
       ),
     },
     {
@@ -754,7 +708,8 @@ const CustomerTasks = (props) => {
             >
               <img src={PlusIcon} alt="not found" /> New Customer Task
             </Button>
-            {selectedFields?.length === tableData?.length && tableData?.length > 0 ? (
+            {selectedFields?.length === tableData?.length &&
+            tableData?.length > 0 ? (
               <span>
                 <img src={DeleteIcon} alt="not found" />
               </span>
@@ -809,26 +764,17 @@ const CustomerTasks = (props) => {
                   <ListItemText primary={"Select All"} />
                 </MenuItem>
                 {filteredCustomers.map((user) => (
-                  <MenuItem value={user.customerName}>
+                  <MenuItem value={user.customerName} onClick={() => handleClickOpenModel(user)}>
                     <Checkbox
                       checked={newTaskCustomers?.includes(user?.id)}
                       onChange={(e) => handleSelectCustomer(e, user?.id)}
                     />
-                    <Box
-                      onClick={() => handleClickOpenModel(user)}
-                      sx={{
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
                       <Avatar
                         src={user?.Customer?.img}
                         alt={user?.Customer?.img}
                         className="avatar"
                       />
                       <ListItemText primary={user?.Customer?.name} />
-                    </Box>
                   </MenuItem>
                 ))}
               </FormControl>
@@ -1218,7 +1164,6 @@ const CustomerTasks = (props) => {
                   <DesktopTimePicker
                     value={timeReminder}
                     components={{
-                      // OpenPickerIcon: CustomCalendarIcon,
                       RightArrowButton: ArrowRightRoundedIcon,
                       LeftArrowButton: ArrowLeftRoundedIcon,
                     }}
