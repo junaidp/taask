@@ -28,12 +28,9 @@ function post({ url, data, token }) {
     data,
     headers: {
       Authorization: `Bearer ${token}`,
-      "referrerPolicy": 'no-referrer',
       "Content-Type": "multipart/form-data",
-      "Accept": "application/json",
-      "type": "formData",
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'authorization',
+      // 'Access-Control-Allow-Origin': '*',
+      // 'Access-Control-Allow-Headers': 'authorization',
     },
   });
 }

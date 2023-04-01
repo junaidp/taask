@@ -368,30 +368,31 @@ let Customer = () => {
   const formik = useFormik({
     enableReinitialize: false,
     initialValues: {
-      category: "",
-      name: "",
-      location: "",
-      website: "",
-      customerstage: "",
-      customersince: "",
-      customernotes: "",
+      id:"",
+      category: "categoryname",
+      name: "irfan test",
+      location: "gilgit",
+      website: "test.com",
+      customerstage: "test stage",
+      customersince: "01-12-2021",
+      customernotes: "test notes",
       contacts: [
         {
-          emailaddress: "",
+          emailaddress: "test@gmail.com",
           id: "",
-          jobtitle: "",
-          location: "",
-          name: "",
+          jobtitle: "job title",
+          location: "gilgit",
+          name: "testing",
         },
       ],
     },
     validationSchema: customerValitadion,
   });
-  console.log(formik.values, file, "sjajdksa");
-
+  
   const handleSave = async () => {
     setLoading(true);
     const data = formik?.values;
+    console.log(data, "sjajdksa");
     const formData = new FormData();
     formData.append("file", file);
     formData.append("customer", JSON.stringify(data));
