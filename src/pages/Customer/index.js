@@ -394,14 +394,6 @@ let Customer = () => {
   
   const handleSave = async () => {
     setLoading(true);
- 
-    // console.log(data, "sjajdksa");
-    // const formData = new FormData();
-
-    // formData.append("file", file);
-    // console.log(file, "filefilefilefile")
-    // formData.append("customer", JSON.stringify(data));
-
     const customer= formik?.values;
     const data = new FormData();
     data.append('file', file);
