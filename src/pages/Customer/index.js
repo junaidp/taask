@@ -52,6 +52,7 @@ const getDay = (day) => {
   return dayIndex > -1 ? dayNames[dayIndex] : "";
 };
 
+
 const customerOption = [
   {
     value: "PreBoarding",
