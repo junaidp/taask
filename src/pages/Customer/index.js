@@ -29,6 +29,7 @@ import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import { useFormik } from "formik";
 import CustomerServices from "../../APIs/Customer";
 import Loader from "../../components/Loader";
+import FormData from 'form-data';
 
 // Images
 import CalenderIcon from "../../assets/icons/calender.svg";
@@ -367,22 +368,23 @@ let Customer = () => {
   });
   const formik = useFormik({
     enableReinitialize: false,
+   
     initialValues: {
       id:"",
-      category: "categoryname",
-      name: "irfan test",
-      location: "gilgit",
-      website: "test.com",
-      customerstage: "test stage",
-      customersince: "01-12-2021",
-      customernotes: "test notes",
+      category: "",
+      name: "",
+      location: "",
+      website: "",
+      customerStage: "",
+      customerSince: "",
+      customerNotes: "",
       contacts: [
         {
-          emailaddress: "test@gmail.com",
+          emailAddress: "",
           id: "",
-          jobtitle: "job title",
-          location: "gilgit",
-          name: "testing",
+          jobTitle: "",
+          location: "",
+          name: "",
         },
       ],
     },
@@ -391,16 +393,26 @@ let Customer = () => {
   
   const handleSave = async () => {
     setLoading(true);
-    const data = formik?.values;
-    console.log(data, "sjajdksa");
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("customer", JSON.stringify(data));
-    await CustomerServices.savecustomer(formData)
+ 
+    // console.log(data, "sjajdksa");
+    // const formData = new FormData();
+
+    // formData.append("file", file);
+    // console.log(file, "filefilefilefile")
+    // formData.append("customer", JSON.stringify(data));
+
+    const customer= formik?.values;
+    const data = new FormData();
+    data.append('file', file);
+    const customerJson = JSON.stringify(customer);
+    const blob = new Blob([customerJson], { type: 'application/json' });
+    data.append('customer', blob);
+
+    await CustomerServices.saveCustomer(data)
       .then((res) => {
         if (res?.includes("saved")) {
           toast.success("customer successfully saved!", {
-            position: toast.POSITION.BOTTOM_RIGHT,
+            position: toast.POSITION.TOP_RIGHT,
           });
         }
         setLoading(false);
@@ -494,7 +506,7 @@ let Customer = () => {
                   }}
                   onChange={(newValue) => {
                     setValue(newValue);
-                    formik.setFieldValue("customersince", newValue);
+                    formik.setFieldValue("customerSince", newValue);
                   }}
                   showDaysOutsideCurrentMonth
                   dayOfWeekFormatter={(day) => getDay(day)}
@@ -511,12 +523,12 @@ let Customer = () => {
                 {...{
                   formik,
                   title: "Customer Stage",
-                  name: "customerstage",
+                  name: "customerStage",
                   checkValidation: true,
-                  value: formik?.values?.customerstage,
+                  value: formik?.values?.customerStage,
                 }}
                 onChange={(e) => {
-                  formik.setFieldValue("customerstage", e.target.value);
+                  formik.setFieldValue("customerStage", e.target.value);
                 }}
                 InputProps={{
                   placeholder: "Select a customer stage",
@@ -638,11 +650,11 @@ let Customer = () => {
                         name: "emailAddress",
                         placeholder: "Email Address",
                         checkValidation: true,
-                        value: formik?.values?.contacts.emailaddress,
+                        value: formik?.values?.contacts?.emailAddress,
                       }}
                       onChange={(e) => {
                         formik.setFieldValue(
-                          "contacts.0.emailaddress",
+                          "contacts.0.emailAddress",
                           e.target.value
                         );
                       }}
@@ -656,14 +668,14 @@ let Customer = () => {
                       {...{
                         formik,
                         title: "JobTitle",
-                        name: "jobtitle",
+                        name: "jobTitle",
                         placeholder: "Job Title",
                         checkValidation: true,
-                        value: formik?.values?.contacts.jobtitle,
+                        value: formik?.values?.contacts?.jobTitle,
                       }}
                       onChange={(e) => {
                         formik.setFieldValue(
-                          "contacts.0.jobtitle",
+                          "contacts.0.jobTitle",
                           e.target.value
                         );
                       }}
@@ -731,13 +743,13 @@ let Customer = () => {
               {...{
                 formik,
                 title: "CustomerNotes",
-                name: "customernotes",
+                name: "customerNotes",
                 placeholder: "Lorem Ipsum",
                 checkValidation: true,
-                value: formik?.values?.customernotes,
+                value: formik?.values?.customerNotes,
               }}
               onChange={(e) => {
-                formik.setFieldValue("customernotes", e.target.value);
+                formik.setFieldValue("customerNotes", e.target.value);
               }}
             ></textarea>
           </FormGroup>

@@ -128,7 +128,7 @@ const Portfolio = () => {
                     {item?.name}
                   </Box>
                 </TableCell>
-                <TableCell>{item?.contacts?.name}</TableCell>
+                <TableCell>{item?.contacts[0].name}</TableCell>
                 <TableCell>{item?.customerSince}</TableCell>
                 <TableCell>{item?.customerStage}</TableCell>
                 <TableCell>{item?.location}</TableCell>

@@ -27,10 +27,8 @@ function post({ url, data, token }) {
     url,
     data,
     headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "multipart/form-data",
-      // 'Access-Control-Allow-Origin': '*',
-      // 'Access-Control-Allow-Headers': 'authorization',
+      // Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
     },
   });
 }

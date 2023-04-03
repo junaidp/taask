@@ -8,10 +8,10 @@ const CustomerServices = {
       throw error;
     }
   },
-  savecustomer: async (data) => {
+  saveCustomer: async (data) => {
     try {
       return await Service.post({
-        url: "​/api​/customer​/saveOnlyFile",
+        url: "/api/customer/saveCustomer",
        data,
        
       });
