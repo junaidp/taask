@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./customerTask.css";
 import "../../index.css";
 
+// APIs Services
+import CustomerServices from "../../APIs/Customer";
 import moment from "moment";
 import {
   Box,
@@ -25,8 +27,12 @@ import {
   ListItemText,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import * as Yup from "yup";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import dayjs from "dayjs";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import FormData from "form-data";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -275,6 +281,11 @@ const rows = [
   },
 ];
 const CustomerTasks = (props) => {
+  const [allCustomers, setAllCustomers] = useState([]);
+  const [searchCustomer, setSearchCustomer] = useState();
+  const [token, setToken] = useState(null);
+
+  console.log(token, "token");
   const [value, setValue] = React.useState(dayjs("2023-12-02"));
   const [eventReminder, setEventReminder] = React.useState(dayjs("2023-5-3"));
   const [dateReminder, setDateReminder] = React.useState(dayjs("2023-5-11"));
@@ -283,11 +294,11 @@ const CustomerTasks = (props) => {
   );
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  console.log(selectedRow, "selectedRow");
   const [file, setFile] = useState(null);
   const [tableData, setTableData] = useState([]);
   console.log(tableData, "ashdhjsad");
   const [selectAll, setSelectAll] = useState(false);
-  const [filteredCustomers, setFilteredCustomers] = useState(rows);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open1 = Boolean(anchorEl);
   const [openArchive, setOpenArchive] = React.useState(false);
@@ -328,7 +339,7 @@ const CustomerTasks = (props) => {
   const handleSelectAll = (event) => {
     setSelectAll(event.target.checked);
     if (event.target.checked === true) {
-      const allIDs = filteredCustomers?.map((item) => {
+      const allIDs = allCustomers?.map((item) => {
         return item?.id;
       });
       setNewTaskCustomers(allIDs);
@@ -340,7 +351,6 @@ const CustomerTasks = (props) => {
     if (e.target.checked === true) {
       setNewTaskCustomers((oldState) => [...oldState, id]);
     } else {
-      // setSelectedFields([])
       const newIds = newTaskCustomers.filter((item) => {
         if (item !== id) {
           return item;
@@ -352,15 +362,7 @@ const CustomerTasks = (props) => {
 
   const handleFilterChange = (event) => {
     const { value } = event.target;
-    if (!value) {
-      setFilteredCustomers(rows);
-      return;
-    }
-    const filtered = rows.filter((customer) =>
-      customer.Customer.name.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredCustomers(filtered);
-    console.log(filtered, "filtered");
+    setSearchCustomer(value);
   };
 
   const handleClickOpen = () => {
@@ -370,7 +372,30 @@ const CustomerTasks = (props) => {
     setOpen(false);
   };
   const handleClickOpenModel = (params) => {
-    console.log(params, "shagdsagd");
+    formik?.setFieldValue("customer.category", params?.category);
+    formik?.setFieldValue(
+      "customer.contacts[0].emailaddress",
+      params?.contacts[0]?.emailAddress
+    );
+    formik?.setFieldValue(
+      "customer.contacts[0].jobTitle",
+      params?.contacts[0]?.jobTitle
+    );
+    formik?.setFieldValue(
+      "customer.contacts[0].location",
+      params?.contacts[0]?.location
+    );
+    formik?.setFieldValue(
+      "customer.contacts[0].name",
+      params?.contacts[0]?.name
+    );
+    formik?.setFieldValue("customer.customernotes", params?.customerNotes);
+    formik?.setFieldValue("customer.customersince", params?.customerSince);
+    formik?.setFieldValue("customer.customerstage", params?.customerStage);
+    formik?.setFieldValue("customer.location", params?.location);
+    formik?.setFieldValue("customer.name", params?.name);
+    formik?.setFieldValue("customer.website", params?.website);
+    formik?.setFieldValue("customer.customerId", token);
     setSelectedRow(params);
     setOpen(true);
     setAnchorEl(null);
@@ -465,6 +490,45 @@ const CustomerTasks = (props) => {
     );
   };
 
+  const customerValitadion = Yup.object().shape({
+    name: Yup.string().required(),
+  });
+  console.log(selectedRow?.category, "ssssssssssssssss");
+  const formik = useFormik({
+    enableReinitialize: false,
+    initialValues: {
+      customer: {
+        category: "",
+        contacts: [
+          {
+            emailaddress: "",
+            id: "",
+            jobTitle: "",
+            location: "",
+            name: "",
+          },
+        ],
+        customernotes: "",
+        customersince: "",
+        customerstage: "",
+        id: "",
+        location: "",
+        name: "",
+        website: "",
+      },
+      duedate: "",
+      subTask: [
+        {
+          name: "",
+        },
+      ],
+      taskName: "",
+      time: "",
+      customerId: "",
+    },
+    validationSchema: customerValitadion,
+  });
+
   const handleSubmittask = () => {
     const newRow = {
       ...selectedRow,
@@ -478,6 +542,96 @@ const CustomerTasks = (props) => {
     setTableData(updatedItems);
     setOpen(false);
   };
+
+  // Api calls
+  const getAllCustomers = async () => {
+    await CustomerServices.getAllCustomers()
+      .then((res) => {
+        if (res) {
+          setAllCustomers(res);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  console.log(allCustomers, "hello");
+
+  console.log(formik.values, "sdkmksdm");
+  const handleSave = async () => {
+    // const task = {
+    //   customer: {
+    //     category: "test task category",
+    //     contacts: [
+    //       {
+    //         emailaddress: "test task emailAddress",
+    //         id: "",
+    //         jobTitle: "test task jobTitle",
+    //         location: "test task location",
+    //         name: "test task name",
+    //       },
+    //     ],
+    //     customernotes: "test task customerNotes",
+    //     customersince: "test task customerSince",
+    //     customerstage: "test task customerStage",
+    //     id: "",
+    //     location: "test task location",
+    //     name: "test task name",
+    //     website: "test task website",
+    //   },
+    //   duedate: "10-3-2022",
+    //   subtask: [
+    //     {
+    //       name: "test task name",
+    //     },
+    //   ],
+    //   taskname: "test taskName",
+    //   time: "10:00",
+    // };
+
+    const task = formik?.values;
+    const data = new FormData();
+    data.append("file", file);
+    const customerJson = JSON.stringify(task);
+    const blob = new Blob([customerJson], { type: "application/json" });
+    data.append("task", blob);
+
+    await CustomerServices.saveTask(data)
+      .then((res) => {
+        toast.success("Task successfully saved!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        if (res) {
+          alert("task saved");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const [allSnapShot, setAllSnapShot] = useState([]);
+  const getTasks = async () => {
+    let customerId = token;
+    await CustomerServices.getTasks(customerId)
+      .then((res) => {
+        if (res) {
+          // setAllSnapShot(res);
+          alert("data is here");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+    getTasks();
+  }, [token]);
+
+  useEffect(() => {
+    getAllCustomers();
+  }, []);
 
   const columns = [
     {
@@ -756,27 +910,54 @@ const CustomerTasks = (props) => {
               <FormControl sx={{ width: 300 }} className="selectCustomer">
                 <MenuItem value={"selectAll"}>
                   <Checkbox
-                    checked={
-                      newTaskCustomers?.length === filteredCustomers?.length
-                    }
+                    checked={newTaskCustomers?.length === allCustomers?.length}
                     onChange={handleSelectAll}
                   />
                   <ListItemText primary={"Select All"} />
                 </MenuItem>
-                {filteredCustomers.map((user) => (
-                  <MenuItem value={user.customerName} onClick={() => handleClickOpenModel(user)}>
-                    <Checkbox
-                      checked={newTaskCustomers?.includes(user?.id)}
-                      onChange={(e) => handleSelectCustomer(e, user?.id)}
-                    />
-                      <Avatar
-                        src={user?.Customer?.img}
-                        alt={user?.Customer?.img}
-                        className="avatar"
+                {allCustomers?.map((customer) =>
+                  searchCustomer ? (
+                    customer?.name
+                      ?.toLowerCase()
+                      ?.includes(searchCustomer?.toLowerCase()) ? (
+                      <MenuItem
+                        value={customer.customerName}
+                        onClick={() => handleClickOpenModel(customer)}
+                      >
+                        <Checkbox
+                          checked={newTaskCustomers?.includes(customer?.id)}
+                          onChange={(e) =>
+                            handleSelectCustomer(e, customer?.id)
+                          }
+                        />
+                        {/* <Avatar
+                   src={customer?.Customer?.img}
+                   alt={customer?.Customer?.img}
+                   className="avatar"
+                 /> */}
+                        <ListItemText primary={customer?.name} />
+                      </MenuItem>
+                    ) : (
+                      ""
+                    )
+                  ) : (
+                    <MenuItem
+                      value={customer.customerName}
+                      onClick={() => handleClickOpenModel(customer)}
+                    >
+                      <Checkbox
+                        checked={newTaskCustomers?.includes(customer?.id)}
+                        onChange={(e) => handleSelectCustomer(e, customer?.id)}
                       />
-                      <ListItemText primary={user?.Customer?.name} />
-                  </MenuItem>
-                ))}
+                      {/* <Avatar
+                   src={customer?.Customer?.img}
+                   alt={customer?.Customer?.img}
+                   className="avatar"
+                 /> */}
+                      <ListItemText primary={customer?.name} />
+                    </MenuItem>
+                  )
+                )}
               </FormControl>
             </Menu>
           </Box>
@@ -873,7 +1054,7 @@ const CustomerTasks = (props) => {
             <Box className="topHead">
               <Box>
                 <h6>
-                  Customer ID{" "}
+                  Customer ID
                   <span>
                     {selectedRow?.id < 10
                       ? `0${selectedRow?.id}`
@@ -883,12 +1064,12 @@ const CustomerTasks = (props) => {
               </Box>
               <Box>
                 <h6>
-                  Customer Name <span>{selectedRow?.Customer?.name}</span>
+                  Customer Name <span>{selectedRow?.name}</span>
                 </h6>
               </Box>
               <Box>
                 <h6>
-                  Customer Stage <span>{selectedRow?.CustomerStage}</span>
+                  Customer Stage <span>{selectedRow?.customerStage}</span>
                 </h6>
               </Box>
               {/* <Box className="actionsHead">
@@ -922,10 +1103,19 @@ const CustomerTasks = (props) => {
                   </span>
                   <TextField
                     fullWidth
-                    placeholder="Lorem Ipsum"
-                    id="taskTitle"
                     className="taskTitleInput"
-                    onChange={(e) => setTasksTitle(e.target.value)}
+                    {...{
+                      formik,
+                      title: "taskTitle",
+                      name: "taskTitle",
+                      placeholder: "Lorem Ipsum",
+                      checkValidation: true,
+                      value: formik?.values?.taskname,
+                    }}
+                    onChange={(e) => {
+                      formik.setFieldValue("taskname", e.target.value);
+                      setTasksTitle(e.target.value);
+                    }}
                   />
                   <span title="Complete">
                     <img src={ToDoIcon} />
@@ -974,10 +1164,19 @@ const CustomerTasks = (props) => {
                       </span>
                       <TextField
                         fullWidth
-                        placeholder="Lorem Ipsum"
-                        id="Subtask1"
                         className="taskTitleInput"
-                        onChange={(e) => handleTaskLabelChange(e, index)}
+                        {...{
+                          formik,
+                          title: "subtask",
+                          name: "subtask",
+                          placeholder: "Lorem Ipsum",
+                          checkValidation: true,
+                          value: formik?.values?.subtask.name,
+                        }}
+                        onChange={(e) => {
+                          formik.setFieldValue("subtask.name", e.target.value);
+                          handleTaskLabelChange(e, index);
+                        }}
                       />
                       <span>
                         {task?.active === true ? (
@@ -1020,13 +1219,7 @@ const CustomerTasks = (props) => {
                     className="uploadFileBtn"
                   >
                     Upload
-                    <input
-                      hidden
-                      accept="image/*"
-                      multiple
-                      type="file"
-                      onChange={onUpload}
-                    />
+                    <input hidden multiple type="file" onChange={onUpload} />
                   </Button>
                 </Box>
               </FormGroup>
@@ -1038,7 +1231,13 @@ const CustomerTasks = (props) => {
                 paddingTop: "40px",
               }}
             >
-              <Button className="SaveBtn" onClick={handleSubmittask}>
+              <Button
+                className="SaveBtn"
+                onClick={() => {
+                  // handleSubmittask();
+                  handleSave();
+                }}
+              >
                 save
               </Button>
             </Box>

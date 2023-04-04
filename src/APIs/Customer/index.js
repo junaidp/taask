@@ -12,8 +12,7 @@ const CustomerServices = {
     try {
       return await Service.post({
         url: "/api/customer/saveCustomer",
-       data,
-       
+        data,
       });
     } catch (error) {
       throw error;
@@ -35,7 +34,9 @@ const CustomerServices = {
   },
   getSnapShot: async () => {
     try {
-      return await Service.get("/api/snapshot/getSnapShot?userId=64130e12ba30110e1c2166c4");
+      return await Service.get(
+        "/api/snapshot/getSnapShot?userId=64130e12ba30110e1c2166c4"
+      );
     } catch (error) {
       throw error;
     }
@@ -51,8 +52,28 @@ const CustomerServices = {
     try {
       return await Service.post({
         url: "/api/resources/saveResources",
-       data,
+        data,
       });
+    } catch (error) {
+      throw error;
+    }
+  },
+  saveTask: async (data) => {
+    try {
+      return await Service.post({
+        url: "/api/task/saveTask",
+        data,
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+  getTasks: async (customerId) => {
+    console.log(customerId, "sajd")
+    try {
+      return await Service.get(
+        `api/task/getTasks?userid=${customerId}`
+      );
     } catch (error) {
       throw error;
     }
@@ -60,3 +81,4 @@ const CustomerServices = {
 };
 
 export default CustomerServices;
+
