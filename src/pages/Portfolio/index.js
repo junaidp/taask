@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./portfolio.css";
 
+
 // Mui imports
 import {
   Box,
@@ -11,15 +12,12 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Pagination,
   MenuItem,
   FormGroup,
   TextField,
   PaginationItem,
 } from "@mui/material";
 
-import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
-import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 // images
 import JohnImg from "../../assets/Images/john.png";
 import MariahImg from "../../assets/Images/Mariah.png";
@@ -28,48 +26,30 @@ import SearchImg from "../../assets/icons/search.svg";
 import FilterMenuImg from "../../assets/icons/filterMenu.svg";
 // component
 import Loader from "../../components/Loader";
+import CustomPagination from "../../components/Pagination";
 // APIs Services
 import CustomerServices from "../../APIs/Customer";
-
-const pages = [
-  {
-    value: "1page",
-    label: "1 page",
-  },
-  {
-    value: "2page",
-    label: "2 page",
-  },
-  {
-    value: "3page",
-    label: "3 page",
-  },
-  {
-    value: "4page",
-    label: "4 page",
-  },
-];
 
 const Portfolio = () => {
   const [allCustomers, setAllCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = React.useState("");
-  const handleChange = (event) => {
-    setPage(event.target.value);
-  };
+  const [count, setCount] = useState(0);
+  const [currentItems, setCurrentItems] = useState([]);
 
   const getAllCustomers = async () => {
-    await CustomerServices.getAllCustomers().then((res) => {
-      if (res) {
-        setAllCustomers(res);
+    await CustomerServices.getAllCustomers()
+      .then((res) => {
+        if (res) {
+          const data = res;
+          setAllCustomers(data);
+          setCount(data?.length);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
         setLoading(false);
-      }
-    }).catch((err) => {
-      console.log(err);
-      setLoading(false);
-    });;
+      });
   };
-  console.log(allCustomers, "hello");
   useEffect(() => {
     getAllCustomers();
   }, []);
@@ -115,7 +95,7 @@ const Portfolio = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {allCustomers.map((item, index) => (
+            {currentItems.map((item, index) => (
               <TableRow key={item.clientName}>
                 <TableCell>
                   {index + 1 < 10 ? `0${index + 1}` : index + 1}
@@ -139,59 +119,15 @@ const Portfolio = () => {
             ))}
           </TableBody>
         </Table>
-        <Box className="tableFooter">
-          <Box className="entries">
-            <span>Showing 1 to 10 of 9,225 entries</span>
-          </Box>
-          <Box className="PaginationHead">
-            <Box className="paginationBox">
-              <Pagination
-                count={10}
-                siblingCount={0}
-                variant="outlined"
-                shape="rounded"
-                renderItem={(item) => (
-                  <PaginationItem
-                    slots={{
-                      previous: ArrowLeftRoundedIcon,
-                      next: ArrowRightRoundedIcon,
-                    }}
-                    {...item}
-                  />
-                )}
-              />
-            </Box>
-            <Box
-              className="selectPageBox"
-              component="form"
-              sx={{
-                "& .MuiTextField-root": { width: "100%" },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <TextField
-                id="outlined-select-currency"
-                select
-                defaultValue="1page"
-              >
-                {pages.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Box>
-            <Box className="GotoBox">
-              <FormGroup>
-                <label htmlFor="page" className="label">
-                  go to
-                </label>
-                <TextField variant="outlined" id="page" />
-              </FormGroup>
-            </Box>
-          </Box>
-        </Box>
+        <CustomPagination
+          data={allCustomers}
+          count={count}
+          setCurrentItems={setCurrentItems}
+          customInput={true}
+          customSelect={true}
+          paginationDetail={true}
+          buttons={true}
+        />
       </TableContainer>
       <Loader loaderValue={loading} />
     </Box>

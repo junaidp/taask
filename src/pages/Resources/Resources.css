@@ -79,51 +79,6 @@
   width: 18px;
   cursor: pointer;
 }
-.resources .tableFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 36px 0 0;
-  width: 100% !important;
-  max-width: 100% !important;
-}
-/* .resources .linkHead .tableFooter {
-  padding: 10px 0 0 !important;
-} */
-.resources .linkHead .inputHead:last-child{
-  padding-bottom: 0 !important;
-}
-.resources .entries span {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  color: #3a606e;
-}
-.resources .tableFooter .PaginationHead {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.resources .tableFooter .paginationBox {
-  width: 150px;
-}
-.resources
-  .tableFooter
-  .paginationBox
-  .MuiPagination-ul
-  li:first-child
-  .MuiPaginationItem-root {
-  border: unset !important;
-}
-.resources
-  .tableFooter
-  .paginationBox
-  .MuiPagination-ul
-  li:last-child
-  .MuiPaginationItem-root {
-  border: unset !important;
-}
-/* ******* */
  .uploadFileHead {
   position: relative;
 }

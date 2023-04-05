@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import "./Appointments.css";
 
 // Mui imports
@@ -12,8 +12,8 @@ import {
   TableRow,
   Paper,
   Typography,
-  Pagination,
-  PaginationItem,
+  // Pagination,
+  // PaginationItem,
 } from "@mui/material";
 
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
@@ -23,14 +23,19 @@ import FilterImg from "../../assets/icons/filter.svg";
 import SearchImg from "../../assets/icons/search.svg";
 import JohnImg from "../../assets/Images/john.png";
 import MariahImg from "../../assets/Images/Mariah.png";
+
+// components
+import CustomPagination from "../../components/Pagination";
 import moment from "moment";
 
-const Appointments = ({allMeetings}) => {
+const Appointments = ({ allMeetings }) => {
   const [page, setPage] = React.useState("");
+  const [currentItems, setCurrentItems] = useState([]);
 
   const handleChange = (event) => {
     setPage(event.target.value);
   };
+
   return (
     <TableContainer
       component={Paper}
@@ -62,12 +67,10 @@ const Appointments = ({allMeetings}) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {allMeetings?.map((item, index) => (
+          {currentItems?.map((item, index) => (
             <TableRow>
               <TableCell component="th" scope="row">
-                <Box className="userprofile">
-                  {item.meetingName}
-                </Box>
+                <Box className="userprofile">{item.meetingName}</Box>
               </TableCell>
               <TableCell>{item.time}</TableCell>
               <TableCell>{moment(item.dueDate).format("DD/MM/YYYY")}</TableCell>
@@ -75,30 +78,15 @@ const Appointments = ({allMeetings}) => {
           ))}
         </TableBody>
       </Table>
-      <Box className="tableFooter">
-        <Box className="entries">
-          <span>Showing 1 to 03 of 50 entries</span>
-        </Box>
-        <Box className="PaginationHead">
-          <Box className="paginationBox">
-            <Pagination
-              count={5}
-              siblingCount={-1}
-              variant="outlined"
-              shape="rounded"
-              renderItem={(item) => (
-                <PaginationItem
-                  slots={{
-                    previous: ArrowLeftRoundedIcon,
-                    next: ArrowRightRoundedIcon,
-                  }}
-                  {...item}
-                />
-              )}
-            />
-          </Box>
-        </Box>
-      </Box>
+      <CustomPagination
+        data={allMeetings}
+        count={allMeetings?.length}
+        setCurrentItems={setCurrentItems}
+        customInput={false}
+        customSelect={false}
+        paginationDetail={true}
+        buttons={true}
+      />
     </TableContainer>
   );
 };

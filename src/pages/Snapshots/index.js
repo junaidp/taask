@@ -169,7 +169,6 @@ const Snapshots = () => {
         setLoading(false);
       }
     }).catch((err) => {
-      console.log(err);
       setLoading(false);
     });;
   };

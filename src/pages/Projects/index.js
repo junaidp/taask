@@ -17,8 +17,8 @@ import {
   FormGroup,
   Avatar,
   ListItemIcon,
-  Pagination,
-  PaginationItem,
+  // Pagination,
+  // PaginationItem,
   Menu,
   FormControl,
   ListItemText,
@@ -36,7 +36,7 @@ import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import { v4 as uuidv4 } from "uuid";
-
+import CustomPagination from "../../components/Pagination";
 // images
 import DummiAvatar from "../../assets/icons/dummiAvatar.svg";
 import CalenderIcon from "../../assets/icons/calender.svg";
@@ -285,24 +285,7 @@ const rows = [
     Action: "",
   },
 ];
-const pages = [
-  {
-    value: "1page",
-    label: "1 page",
-  },
-  {
-    value: "2page",
-    label: "2 page",
-  },
-  {
-    value: "3page",
-    label: "3 page",
-  },
-  {
-    value: "4page",
-    label: "4 page",
-  },
-];
+
 const statusOptions = [
   { value: "todo", label: "To do" },
   { value: "doing", label: "Doing" },
@@ -333,24 +316,18 @@ const Projects = (props) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [file, setFile] = useState(null);
   const [tableData, setTableData] = useState([]);
-
   const [openReminder, setOpenReminder] = React.useState(false);
   const [addRemainderOpen, setAddRemainderOpen] = React.useState(false);
-
   const [openArchive, setOpenArchive] = React.useState(false);
-
   const [selectedFields, setSelectedFields] = useState([]);
   const [newTaskCustomers, setNewTaskCustomers] = useState([]);
-  console.log(newTaskCustomers, "newTaskCustomers");
-
   const [selectAll, setSelectAll] = useState(false);
   const [filteredCustomers, setFilteredCustomers] = useState(rows);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open3 = Boolean(anchorEl);
   const [subtasks, setSubtasks] = useState([]);
-
   const [tasksTitle, setTasksTitle] = useState("");
-
+  const [currentItems, setCurrentItems] = useState([]);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -484,9 +461,7 @@ const Projects = (props) => {
       customer.Customer.name.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredCustomers(filtered);
-    console.log(filtered, "filtered");
   };
-  // for select all
   const onSelectAll = (e) => {
     if (e.target.checked === true) {
       const allIds = tableData?.map((item) => {
@@ -497,7 +472,6 @@ const Projects = (props) => {
       setSelectedFields([]);
     }
   };
-  // for single select
   const onSelectField = (e, id) => {
     if (e.target.checked === true) {
       if (selectedFields.includes(id)) {
@@ -555,7 +529,6 @@ const Projects = (props) => {
       (item) => item.id !== selectedRow?.id
     );
     updatedItems?.unshift(newRow);
-    console.log(updatedItems, "updatedItems");
     setTableData(updatedItems);
     setOpen(false);
   };
@@ -965,68 +938,23 @@ const Projects = (props) => {
 
         <Box className="projectsMain">
           <DataGrid
-            rows={tableData}
+            rows={currentItems}
             columns={columns}
-            // checkboxSelection
             autoHeight
             disableRowSelectionOnClick
             hideFooterPagination
             className="projectTable"
           />
         </Box>
-        <Box className="projectFooter">
-          <Box className="entries">
-            <span>Showing 1 to 10 of 9,225 entries</span>
-          </Box>
-          <Box className="PaginationHead">
-            <Box className="paginationBox">
-              <Pagination
-                count={10}
-                siblingCount={0}
-                variant="outlined"
-                shape="rounded"
-                renderItem={(item) => (
-                  <PaginationItem
-                    slots={{
-                      previous: ArrowLeftRoundedIcon,
-                      next: ArrowRightRoundedIcon,
-                    }}
-                    {...item}
-                  />
-                )}
-              />
-            </Box>
-            <Box
-              className="selectPageBox"
-              component="form"
-              sx={{
-                "& .MuiTextField-root": { width: "100%" },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <TextField
-                id="outlined-select-currency"
-                select
-                defaultValue="1page"
-              >
-                {pages.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Box>
-            <Box className="GotoBox">
-              <FormGroup>
-                <label htmlFor="page" className="label">
-                  go to
-                </label>
-                <TextField variant="outlined" id="page" />
-              </FormGroup>
-            </Box>
-          </Box>
-        </Box>
+        <CustomPagination
+          data={tableData}
+          count={tableData?.length}
+          setCurrentItems={setCurrentItems}
+          customInput={true}
+          customSelect={true}
+          paginationDetail={true}
+          buttons={true}
+        />
 
         <Dialog
           open={open1}

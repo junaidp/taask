@@ -58,6 +58,15 @@ const CustomerServices = {
       throw error;
     }
   },
+  getResources: async (userId) => {
+    try {
+      return await Service.get(
+        `api/resources/getResources?userId=${userId}`
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   saveTask: async (data) => {
     try {
       return await Service.post({
@@ -69,7 +78,6 @@ const CustomerServices = {
     }
   },
   getTasks: async (customerId) => {
-    console.log(customerId, "sajd")
     try {
       return await Service.get(
         `api/task/getTasks?userid=${customerId}`

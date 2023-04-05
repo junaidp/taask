@@ -20,8 +20,6 @@ import {
   FormGroup,
   Avatar,
   ListItemIcon,
-  Pagination,
-  PaginationItem,
   Menu,
   FormControl,
   ListItemText,
@@ -39,6 +37,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { DesktopTimePicker } from "@mui/x-date-pickers/DesktopTimePicker";
 import { v4 as uuidv4 } from "uuid";
+import CustomPagination from "../../components/Pagination";
 import EastRoundedIcon from "@mui/icons-material/EastRounded";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
@@ -72,7 +71,6 @@ const getDay = (day) => {
 };
 
 const AssignTaskColumn = (props) => {
-  console.log(props, "sdkjsdksdjsdskdj");
   const { rows } = props;
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
@@ -122,164 +120,10 @@ const AssignTaskColumn = (props) => {
     </Select>
   );
 };
-
-const pages = [
-  {
-    value: "1page",
-    label: "1 page",
-  },
-  {
-    value: "2page",
-    label: "2 page",
-  },
-  {
-    value: "3page",
-    label: "3 page",
-  },
-  {
-    value: "4page",
-    label: "4 page",
-  },
-];
-// const rows = [
-//   {
-//     id: 1,
-//     Customer: {
-//       img: JohnImg,
-//       name: "John Doe",
-//     },
-//     CustomerStage: "Contract",
-//     CustomerTask: "",
-//     DueDate: "01/12/2023",
-//     AssignTask: "AssignTask",
-//     Status: "todo",
-//     Action: "",
-//   },
-//   {
-//     id: 2,
-//     Customer: {
-//       img: MariahImg,
-//       name: "Mariah Betts",
-//     },
-//     CustomerStage: "Adoption",
-//     CustomerTask: "",
-//     DueDate: "01/04/2023",
-//     AssignTask: "AssignTask",
-//     Status: "doing",
-//     Action: "",
-//   },
-//   {
-//     id: 3,
-//     Customer: {
-//       img: JohnImg,
-//       name: "John Doe",
-//     },
-//     CustomerStage: "Contract",
-//     CustomerTask: "",
-//     DueDate: "01/06/2023",
-//     AssignTask: "AssignTask",
-//     Status: "done",
-//     Action: "",
-//   },
-//   {
-//     id: 4,
-//     Customer: {
-//       img: MariahImg,
-//       name: "Mariah Betts",
-//     },
-//     CustomerStage: "Adoption",
-//     CustomerTask: "",
-//     DueDate: "01/09/2023",
-//     AssignTask: "AssignTask",
-//     Status: "doing",
-//     Action: "",
-//   },
-//   {
-//     id: 5,
-//     Customer: {
-//       img: JohnImg,
-//       name: "John Doe",
-//     },
-//     CustomerStage: "Contract",
-//     CustomerTask: "",
-//     DueDate: "01/08/2023",
-//     AssignTask: "AssignTask",
-//     Status: "done",
-//     Action: "",
-//   },
-//   {
-//     id: 6,
-//     Customer: {
-//       img: MariahImg,
-//       name: "Mariah Betts",
-//     },
-//     CustomerStage: "Adoption",
-//     CustomerTask: "",
-//     DueDate: "01/02/2023",
-//     AssignTask: "AssignTask",
-//     Status: "doing",
-//     Action: "",
-//   },
-//   {
-//     id: 7,
-//     Customer: {
-//       img: JohnImg,
-//       name: "John Doe",
-//     },
-//     CustomerStage: "Contract",
-//     CustomerTask: "",
-//     DueDate: "01/02/2023",
-//     AssignTask: "AssignTask",
-//     Status: "done",
-//     Action: "",
-//   },
-//   {
-//     id: 8,
-//     Customer: {
-//       img: MariahImg,
-//       name: "Mariah Betts",
-//     },
-//     CustomerStage: "Adoption",
-//     CustomerTask: "",
-//     DueDate: "01/02/2023",
-//     AssignTask: "AssignTask",
-//     Status: "doing",
-//     Action: "",
-//   },
-//   {
-//     id: 9,
-//     Customer: {
-//       img: JohnImg,
-//       name: "John Doe",
-//     },
-//     CustomerStage: "Contract",
-//     CustomerTask: "",
-//     DueDate: "01/02/2023",
-//     AssignTask: "AssignTask",
-//     Status: "done",
-//     Action: "",
-//   },
-//   {
-//     id: 10,
-//     Customer: {
-//       img: MariahImg,
-//       name: "Mariah Betts",
-//     },
-//     CustomerStage: "Adoption",
-//     CustomerTask: "",
-//     DueDate: "01/02/2023",
-//     AssignTask: "AssignTask",
-//     Status: "doing",
-//     Action: "",
-//   },
-// ];
-
 const CustomerTasks = (props) => {
   const [allCustomers, setAllCustomers] = useState([]);
   const [searchCustomer, setSearchCustomer] = useState();
   const [customerTask, setCustomerTask] = useState([]);
-  console.log(customerTask, "customerTask");
-
   const [value, setValue] = React.useState(dayjs("2023-12-02"));
   const [eventReminder, setEventReminder] = React.useState(dayjs("2023-5-3"));
   const [dateReminder, setDateReminder] = React.useState(dayjs("2023-5-11"));
@@ -288,21 +132,18 @@ const CustomerTasks = (props) => {
   );
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-  console.log(selectedRow, "selectedRow");
   const [file, setFile] = useState(null);
   const [tableData, setTableData] = useState([]);
-  console.log(tableData, "ashdhjsad");
   const [selectAll, setSelectAll] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open1 = Boolean(anchorEl);
   const [openArchive, setOpenArchive] = React.useState(false);
   const [openReminder, setOpenReminder] = React.useState(false);
   const [addRemainderOpen, setAddRemainderOpen] = React.useState(false);
-
   const [selectedFields, setSelectedFields] = useState([]);
   const [newTaskCustomers, setNewTaskCustomers] = useState([]);
-
   const [subtasks, setSubtasks] = useState([]);
+  const [currentItems, setCurrentItems] = useState([]);
 
   const setUpdataForTable = (tasks) => {
     const rows = tasks?.map((item, index) => {
@@ -390,8 +231,8 @@ const CustomerTasks = (props) => {
     setOpen(false);
   };
   const handleClickOpenModel = (params) => {
-    formik?.setFieldValue("customerId", params.id);
     setSelectedRow(params);
+    formik.setFieldValue('customerId', params?.id);
     setOpen(true);
     setAnchorEl(null);
   };
@@ -400,7 +241,6 @@ const CustomerTasks = (props) => {
   };
   const onStatusChange = (e, row) => {
     let value = e.target.value;
-    console.log(row, "sjjiduiashdu");
     const newRow = {
       ...row?.row,
       Status: value,
@@ -425,7 +265,6 @@ const CustomerTasks = (props) => {
     { value: "done", label: "Done" },
   ];
 
-  // for select all
   const onSelectAll = (e) => {
     if (e.target.checked === true) {
       const allIds = tableData?.map((item) => {
@@ -436,7 +275,6 @@ const CustomerTasks = (props) => {
       setSelectedFields([]);
     }
   };
-  // for single select
   const onSelectField = (e, id) => {
     if (e.target.checked === true) {
       if (selectedFields.includes(id)) {
@@ -454,7 +292,6 @@ const CustomerTasks = (props) => {
       setSelectedFields(newIds);
     }
   };
-  // *********
   const handleSubtaskClick = () => {
     const obj = {
       id: uuidv4(),
@@ -489,7 +326,6 @@ const CustomerTasks = (props) => {
   const customerValitadion = Yup.object().shape({
     name: Yup.string().required(),
   });
-  console.log(selectedRow, "ssssssssssssssss");
   const formik = useFormik({
     enableReinitialize: false,
     initialValues: {
@@ -504,25 +340,24 @@ const CustomerTasks = (props) => {
     },
     validationSchema: customerValitadion,
   });
-
-
-
-  // Api calls************************************************************************
+  console.log(formik.values, "skjdakjdj")
 
   const getAllCustomers = async () => {
     await CustomerServices.getAllCustomers()
       .then((res) => {
         if (res) {
           setAllCustomers(res);
+          toast.success("All customer here", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         }
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(`${err.data.error}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
   };
-  console.log(allCustomers, "hello");
-
-  console.log(formik.values, "sdkmksdm");
   const handleSave = async () => {
     const task = formik?.values;
     const data = new FormData();
@@ -537,7 +372,8 @@ const CustomerTasks = (props) => {
             position: toast.POSITION.TOP_RIGHT,
           });
         }
-      }).catch((err) => {
+      })
+      .catch((err) => {
         toast.error(`${err.data.error}`, {
           position: toast.POSITION.TOP_RIGHT,
         });
@@ -918,68 +754,21 @@ const CustomerTasks = (props) => {
         </Box>
 
         <DataGrid
-          rows={tableData}
+          rows={currentItems}
           columns={columns}
-          // checkboxSelection
           autoHeight
           disableRowSelectionOnClick
           hideFooterPagination
-          // onSelectionModelChange={handleSelectionChange}
         />
-        <Box className="CustomerTaskFooter">
-          <Box className="entries">
-            <span>Showing 1 to 10 of 9,225 entries</span>
-          </Box>
-          <Box className="PaginationHead">
-            <Box className="paginationBox">
-              <Pagination
-                count={10}
-                siblingCount={0}
-                variant="outlined"
-                shape="rounded"
-                renderItem={(item) => (
-                  <PaginationItem
-                    slots={{
-                      previous: ArrowLeftRoundedIcon,
-                      next: ArrowRightRoundedIcon,
-                    }}
-                    {...item}
-                  />
-                )}
-              />
-            </Box>
-            <Box
-              className="selectPageBox"
-              component="form"
-              sx={{
-                "& .MuiTextField-root": { width: "100%" },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <TextField
-                id="outlined-select-currency"
-                select
-                defaultValue="1page"
-              >
-                {pages.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Box>
-            <Box className="GotoBox">
-              <FormGroup>
-                <label htmlFor="page" className="label">
-                  go to
-                </label>
-                <TextField variant="outlined" id="page" />
-              </FormGroup>
-            </Box>
-          </Box>
-        </Box>
-
+        <CustomPagination
+          data={tableData}
+          count={tableData?.length}
+          setCurrentItems={setCurrentItems}
+          customInput={true}
+          customSelect={true}
+          paginationDetail={true}
+          buttons={true}
+        />
         <Dialog
           open={open}
           TransitionComponent={Transition}

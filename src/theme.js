@@ -182,6 +182,7 @@ export const mainTheme = createTheme({
             fontWeight: 400,
             fontSize: 14,
             color: "#3A606E",
+            margin: '0 5px !important'
           },
           ".MuiButtonBase-root.Mui-selected": {
             backgroundColor: "#A0ECD0 !important",

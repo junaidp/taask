@@ -7,7 +7,7 @@ import {
   Typography,
   FormGroup,
   TextField,
-  Pagination,
+  // Pagination,
   PaginationItem,
   Dialog,
   DialogTitle,
@@ -25,6 +25,7 @@ import * as Yup from "yup";
 import FormData from "form-data";
 import CustomerServices from "../../APIs/Customer";
 import Loader from "../../components/Loader";
+import CustomPagination from "../../components/Pagination";
 // Images
 import AttachmentsIcon from "../../assets/icons/Attachment.svg";
 import SearchIcon from "../../assets/icons/search.svg";
@@ -49,14 +50,13 @@ const Resources = () => {
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(false);
   let userId = localStorage.getItem("token");
-
-  console.log(userId, "sakjdjklsad");
+  const [currentItems, setCurrentItems] = useState([]);
+  const [allResources, setAllResources]= useState([])
 
   const onUpload = (e) => {
     const uploadfile = e?.target?.files[0];
     setFile(uploadfile);
   };
-  console.log(attachments, "attachments");
   const handleCloseAttachments = () => {
     setOpen1(false);
   };
@@ -84,7 +84,6 @@ const Resources = () => {
     };
     setAttachments((oldState) => [...oldState, obj]);
     setOpen1(false);
-
     toast.success("Attachment saved!", {
       position: toast.POSITION.TOP_RIGHT,
     });
@@ -135,7 +134,6 @@ const Resources = () => {
     },
     validationSchema: customerValitadion,
   });
-  console.log(formik.values, "sjajdksa");
   const handleSave = async () => {
     setLoading(true);
     const resourcesData = formik?.values;
@@ -152,15 +150,34 @@ const Resources = () => {
           });
         }
         setLoading(false);
-      }).catch((err) => {
+      })
+      .catch((err) => {
         setLoading(false);
         toast.error(`${err.data.error}`, {
           position: toast.POSITION.TOP_RIGHT,
         });
       });
   };
+  const getResources = async () => {
+    await CustomerServices.getResources(userId)
+      .then((res) => {
+        if (res) {
+          toast.success("resources here successfull", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          setAllResources(res);
+        }
+      })
+      .catch((err) => {
+        toast.error(`${err.data.error}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
+  };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getResources()
+  }, []);
 
   return (
     <Box className="resources">
@@ -222,31 +239,15 @@ const Resources = () => {
                 );
               })}
             </Box>
-
-            <Box className="tableFooter">
-              <Box className="entries">
-                <span>Showing 1 to 03 of 50 entries</span>
-              </Box>
-              <Box className="PaginationHead">
-                <Box className="paginationBox">
-                  <Pagination
-                    count={5}
-                    siblingCount={-1}
-                    variant="outlined"
-                    shape="rounded"
-                    renderItem={(item) => (
-                      <PaginationItem
-                        slots={{
-                          previous: ArrowLeftRoundedIcon,
-                          next: ArrowRightRoundedIcon,
-                        }}
-                        {...item}
-                      />
-                    )}
-                  />
-                </Box>
-              </Box>
-            </Box>
+            <CustomPagination
+              data={allResources}
+              count={allResources?.length}
+              setCurrentItems={setCurrentItems}
+              customInput={false}
+              customSelect={false}
+              paginationDetail={true}
+              buttons={true}
+            />
           </Box>
         </Grid>
         <Grid item xs={6}>
@@ -313,30 +314,15 @@ const Resources = () => {
                 );
               })}
             </Box>
-            <Box className="tableFooter">
-              <Box className="entries">
-                <span>Showing 1 to 03 of 50 entries</span>
-              </Box>
-              <Box className="PaginationHead">
-                <Box className="paginationBox">
-                  <Pagination
-                    count={5}
-                    siblingCount={-1}
-                    variant="outlined"
-                    shape="rounded"
-                    renderItem={(item) => (
-                      <PaginationItem
-                        slots={{
-                          previous: ArrowLeftRoundedIcon,
-                          next: ArrowRightRoundedIcon,
-                        }}
-                        {...item}
-                      />
-                    )}
-                  />
-                </Box>
-              </Box>
-            </Box>
+             <CustomPagination
+              data={allResources}
+              count={allResources?.length}
+              setCurrentItems={setCurrentItems}
+              customInput={false}
+              customSelect={false}
+              paginationDetail={true}
+              buttons={true}
+            />
           </Box>
         </Grid>
       </Grid>
