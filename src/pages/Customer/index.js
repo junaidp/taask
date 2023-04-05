@@ -29,7 +29,7 @@ import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import { useFormik } from "formik";
 import CustomerServices from "../../APIs/Customer";
 import Loader from "../../components/Loader";
-import FormData from 'form-data';
+import FormData from "form-data";
 
 // Images
 import CalenderIcon from "../../assets/icons/calender.svg";
@@ -51,7 +51,6 @@ const getDay = (day) => {
   const dayIndex = dayNames.findIndex((name) => name.startsWith(day));
   return dayIndex > -1 ? dayNames[dayIndex] : "";
 };
-
 
 const customerOption = [
   {
@@ -369,9 +368,9 @@ let Customer = () => {
   });
   const formik = useFormik({
     enableReinitialize: false,
-   
+
     initialValues: {
-      id:"",
+      id: "",
       category: "",
       name: "",
       location: "",
@@ -391,15 +390,15 @@ let Customer = () => {
     },
     validationSchema: customerValitadion,
   });
-  
+
   const handleSave = async () => {
     setLoading(true);
-    const customer= formik?.values;
+    const customer = formik?.values;
     const data = new FormData();
-    data.append('file', file);
+    data.append("file", file);
     const customerJson = JSON.stringify(customer);
-    const blob = new Blob([customerJson], { type: 'application/json' });
-    data.append('customer', blob);
+    const blob = new Blob([customerJson], { type: "application/json" });
+    data.append("customer", blob);
 
     await CustomerServices.saveCustomer(data)
       .then((res) => {
@@ -411,8 +410,10 @@ let Customer = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
         setLoading(false);
+        toast.error(`${err.data.error}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
   };
 

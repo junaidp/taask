@@ -72,20 +72,21 @@ const getDay = (day) => {
 };
 
 const AssignTaskColumn = (props) => {
+  console.log(props, "sdkjsdksdjsdskdj");
   const { rows } = props;
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   const handleCustomerSelect = (event, row) => {
     const selectedCustomerId = event.target.value;
     const selectedCustomer = rows.find(
-      (row) => row.Customer.name === selectedCustomerId
+      (row) => row.customerName === selectedCustomerId
     );
     setSelectedCustomer(selectedCustomer);
   };
 
   return (
     <Select
-      value={selectedCustomer ? selectedCustomer.Customer.name : ""}
+      value={selectedCustomer ? selectedCustomer.customerName : ""}
       onChange={(event) => handleCustomerSelect(event, props.row)}
       displayEmpty
       className="AssignsSelect"
@@ -102,11 +103,7 @@ const AssignTaskColumn = (props) => {
         }
         return (
           <React.Fragment>
-            <Avatar
-              src={selectedCustomer.Customer.img}
-              alt={selectedCustomer.Customer.name}
-              className="AssignsImg"
-            />
+            <Avatar src={null} alt={props.row.customerName} />
             <ListItemIcon>
               {/* <WestRoundedIcon className="AssignsIcon" /> */}
               <EastRoundedIcon className="AssignsIcon" />
@@ -117,13 +114,9 @@ const AssignTaskColumn = (props) => {
     >
       <p className="para">Assign Task</p>
       {rows.map((row) => (
-        <MenuItem key={row.id} value={row.Customer.name}>
-          <Avatar
-            src={row.Customer.img}
-            alt={row.Customer.name}
-            className="AssignsImg"
-          />
-          <span className="AssignsName">{row.Customer.name}</span>
+        <MenuItem key={row.id} value={row.customerName}>
+          <Avatar src={null} alt={row.customerName} className="AssignsImg" />
+          <span className="AssignsName">{row.customerName}</span>
         </MenuItem>
       ))}
     </Select>
@@ -148,144 +141,145 @@ const pages = [
     label: "4 page",
   },
 ];
-const rows = [
-  {
-    id: 1,
-    Customer: {
-      img: JohnImg,
-      name: "John Doe",
-    },
-    CustomerStage: "Contract",
-    CustomerTask: "",
-    DueDate: "01/12/2023",
-    AssignTask: "AssignTask",
-    Status: "todo",
-    Action: "",
-  },
-  {
-    id: 2,
-    Customer: {
-      img: MariahImg,
-      name: "Mariah Betts",
-    },
-    CustomerStage: "Adoption",
-    CustomerTask: "",
-    DueDate: "01/04/2023",
-    AssignTask: "AssignTask",
-    Status: "doing",
-    Action: "",
-  },
-  {
-    id: 3,
-    Customer: {
-      img: JohnImg,
-      name: "John Doe",
-    },
-    CustomerStage: "Contract",
-    CustomerTask: "",
-    DueDate: "01/06/2023",
-    AssignTask: "AssignTask",
-    Status: "done",
-    Action: "",
-  },
-  {
-    id: 4,
-    Customer: {
-      img: MariahImg,
-      name: "Mariah Betts",
-    },
-    CustomerStage: "Adoption",
-    CustomerTask: "",
-    DueDate: "01/09/2023",
-    AssignTask: "AssignTask",
-    Status: "doing",
-    Action: "",
-  },
-  {
-    id: 5,
-    Customer: {
-      img: JohnImg,
-      name: "John Doe",
-    },
-    CustomerStage: "Contract",
-    CustomerTask: "",
-    DueDate: "01/08/2023",
-    AssignTask: "AssignTask",
-    Status: "done",
-    Action: "",
-  },
-  {
-    id: 6,
-    Customer: {
-      img: MariahImg,
-      name: "Mariah Betts",
-    },
-    CustomerStage: "Adoption",
-    CustomerTask: "",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "doing",
-    Action: "",
-  },
-  {
-    id: 7,
-    Customer: {
-      img: JohnImg,
-      name: "John Doe",
-    },
-    CustomerStage: "Contract",
-    CustomerTask: "",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "done",
-    Action: "",
-  },
-  {
-    id: 8,
-    Customer: {
-      img: MariahImg,
-      name: "Mariah Betts",
-    },
-    CustomerStage: "Adoption",
-    CustomerTask: "",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "doing",
-    Action: "",
-  },
-  {
-    id: 9,
-    Customer: {
-      img: JohnImg,
-      name: "John Doe",
-    },
-    CustomerStage: "Contract",
-    CustomerTask: "",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "done",
-    Action: "",
-  },
-  {
-    id: 10,
-    Customer: {
-      img: MariahImg,
-      name: "Mariah Betts",
-    },
-    CustomerStage: "Adoption",
-    CustomerTask: "",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "doing",
-    Action: "",
-  },
-];
+// const rows = [
+//   {
+//     id: 1,
+//     Customer: {
+//       img: JohnImg,
+//       name: "John Doe",
+//     },
+//     CustomerStage: "Contract",
+//     CustomerTask: "",
+//     DueDate: "01/12/2023",
+//     AssignTask: "AssignTask",
+//     Status: "todo",
+//     Action: "",
+//   },
+//   {
+//     id: 2,
+//     Customer: {
+//       img: MariahImg,
+//       name: "Mariah Betts",
+//     },
+//     CustomerStage: "Adoption",
+//     CustomerTask: "",
+//     DueDate: "01/04/2023",
+//     AssignTask: "AssignTask",
+//     Status: "doing",
+//     Action: "",
+//   },
+//   {
+//     id: 3,
+//     Customer: {
+//       img: JohnImg,
+//       name: "John Doe",
+//     },
+//     CustomerStage: "Contract",
+//     CustomerTask: "",
+//     DueDate: "01/06/2023",
+//     AssignTask: "AssignTask",
+//     Status: "done",
+//     Action: "",
+//   },
+//   {
+//     id: 4,
+//     Customer: {
+//       img: MariahImg,
+//       name: "Mariah Betts",
+//     },
+//     CustomerStage: "Adoption",
+//     CustomerTask: "",
+//     DueDate: "01/09/2023",
+//     AssignTask: "AssignTask",
+//     Status: "doing",
+//     Action: "",
+//   },
+//   {
+//     id: 5,
+//     Customer: {
+//       img: JohnImg,
+//       name: "John Doe",
+//     },
+//     CustomerStage: "Contract",
+//     CustomerTask: "",
+//     DueDate: "01/08/2023",
+//     AssignTask: "AssignTask",
+//     Status: "done",
+//     Action: "",
+//   },
+//   {
+//     id: 6,
+//     Customer: {
+//       img: MariahImg,
+//       name: "Mariah Betts",
+//     },
+//     CustomerStage: "Adoption",
+//     CustomerTask: "",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "doing",
+//     Action: "",
+//   },
+//   {
+//     id: 7,
+//     Customer: {
+//       img: JohnImg,
+//       name: "John Doe",
+//     },
+//     CustomerStage: "Contract",
+//     CustomerTask: "",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "done",
+//     Action: "",
+//   },
+//   {
+//     id: 8,
+//     Customer: {
+//       img: MariahImg,
+//       name: "Mariah Betts",
+//     },
+//     CustomerStage: "Adoption",
+//     CustomerTask: "",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "doing",
+//     Action: "",
+//   },
+//   {
+//     id: 9,
+//     Customer: {
+//       img: JohnImg,
+//       name: "John Doe",
+//     },
+//     CustomerStage: "Contract",
+//     CustomerTask: "",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "done",
+//     Action: "",
+//   },
+//   {
+//     id: 10,
+//     Customer: {
+//       img: MariahImg,
+//       name: "Mariah Betts",
+//     },
+//     CustomerStage: "Adoption",
+//     CustomerTask: "",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "doing",
+//     Action: "",
+//   },
+// ];
+
 const CustomerTasks = (props) => {
   const [allCustomers, setAllCustomers] = useState([]);
   const [searchCustomer, setSearchCustomer] = useState();
-  const [token, setToken] = useState(null);
+  const [customerTask, setCustomerTask] = useState([]);
+  console.log(customerTask, "customerTask");
 
-  console.log(token, "token");
   const [value, setValue] = React.useState(dayjs("2023-12-02"));
   const [eventReminder, setEventReminder] = React.useState(dayjs("2023-5-3"));
   const [dateReminder, setDateReminder] = React.useState(dayjs("2023-5-11"));
@@ -309,7 +303,31 @@ const CustomerTasks = (props) => {
   const [newTaskCustomers, setNewTaskCustomers] = useState([]);
 
   const [subtasks, setSubtasks] = useState([]);
-  const [tasksTitle, setTasksTitle] = useState("");
+
+  const setUpdataForTable = (tasks) => {
+    const rows = tasks?.map((item, index) => {
+      return {
+        id: index < 10 ? `0${index + 1}` : index + 1,
+        category: item?.customer?.category,
+        emailAddress: item?.customer?.contacts[0].emailAddress,
+        jobTitle: item?.customer?.contacts[0].jobTitle,
+        location: item?.customer?.contacts[0].location,
+        contactName: item?.customer?.contacts[0].name,
+        customerNotes: item?.customer?.customerNotes,
+        customerSince: item?.customer?.customerSince,
+        customerStage: item?.customer?.customerStage,
+        customerFileId: item?.customer?.fileId,
+        customerId: item?.customer?.id,
+        customerLocation: item?.customer?.location,
+        customerName: item?.customer?.name,
+        website: item?.customer?.website,
+        fileId: item?.fileId,
+        subTask: item?.subTask[0]?.name,
+        taskName: item?.taskName,
+      };
+    });
+    setTableData(rows);
+  };
 
   const handleArchiveClose = () => {
     setOpenArchive(false);
@@ -372,30 +390,7 @@ const CustomerTasks = (props) => {
     setOpen(false);
   };
   const handleClickOpenModel = (params) => {
-    formik?.setFieldValue("customer.category", params?.category);
-    formik?.setFieldValue(
-      "customer.contacts[0].emailaddress",
-      params?.contacts[0]?.emailAddress
-    );
-    formik?.setFieldValue(
-      "customer.contacts[0].jobTitle",
-      params?.contacts[0]?.jobTitle
-    );
-    formik?.setFieldValue(
-      "customer.contacts[0].location",
-      params?.contacts[0]?.location
-    );
-    formik?.setFieldValue(
-      "customer.contacts[0].name",
-      params?.contacts[0]?.name
-    );
-    formik?.setFieldValue("customer.customernotes", params?.customerNotes);
-    formik?.setFieldValue("customer.customersince", params?.customerSince);
-    formik?.setFieldValue("customer.customerstage", params?.customerStage);
-    formik?.setFieldValue("customer.location", params?.location);
-    formik?.setFieldValue("customer.name", params?.name);
-    formik?.setFieldValue("customer.website", params?.website);
-    formik?.setFieldValue("customer.customerId", token);
+    formik?.setFieldValue("customerId", params.id);
     setSelectedRow(params);
     setOpen(true);
     setAnchorEl(null);
@@ -405,6 +400,7 @@ const CustomerTasks = (props) => {
   };
   const onStatusChange = (e, row) => {
     let value = e.target.value;
+    console.log(row, "sjjiduiashdu");
     const newRow = {
       ...row?.row,
       Status: value,
@@ -493,57 +489,26 @@ const CustomerTasks = (props) => {
   const customerValitadion = Yup.object().shape({
     name: Yup.string().required(),
   });
-  console.log(selectedRow?.category, "ssssssssssssssss");
+  console.log(selectedRow, "ssssssssssssssss");
   const formik = useFormik({
     enableReinitialize: false,
     initialValues: {
-      customer: {
-        category: "",
-        contacts: [
-          {
-            emailaddress: "",
-            id: "",
-            jobTitle: "",
-            location: "",
-            name: "",
-          },
-        ],
-        customernotes: "",
-        customersince: "",
-        customerstage: "",
-        id: "",
-        location: "",
-        name: "",
-        website: "",
-      },
-      duedate: "",
       subTask: [
         {
           name: "",
         },
       ],
       taskName: "",
-      time: "",
       customerId: "",
+      // dueDate: "04/04/2022"
     },
     validationSchema: customerValitadion,
   });
 
-  const handleSubmittask = () => {
-    const newRow = {
-      ...selectedRow,
-      CustomerTask: tasksTitle,
-    };
-    const updatedItems = tableData?.filter(
-      (item) => item.id !== selectedRow?.id
-    );
-    updatedItems?.unshift(newRow);
-    console.log(updatedItems, "updatedItems");
-    setTableData(updatedItems);
-    setOpen(false);
-  };
 
-  // Api calls
+
+  // Api calls************************************************************************
+
   const getAllCustomers = async () => {
     await CustomerServices.getAllCustomers()
       .then((res) => {
@@ -559,75 +524,46 @@ const CustomerTasks = (props) => {
 
   console.log(formik.values, "sdkmksdm");
   const handleSave = async () => {
-    // const task = {
-    //   customer: {
-    //     category: "test task category",
-    //     contacts: [
-    //       {
-    //         emailaddress: "test task emailAddress",
-    //         id: "",
-    //         jobTitle: "test task jobTitle",
-    //         location: "test task location",
-    //         name: "test task name",
-    //       },
-    //     ],
-    //     customernotes: "test task customerNotes",
-    //     customersince: "test task customerSince",
-    //     customerstage: "test task customerStage",
-    //     id: "",
-    //     location: "test task location",
-    //     name: "test task name",
-    //     website: "test task website",
-    //   },
-    //   duedate: "10-3-2022",
-    //   subtask: [
-    //     {
-    //       name: "test task name",
-    //     },
-    //   ],
-    //   taskname: "test taskName",
-    //   time: "10:00",
-    // };
-
     const task = formik?.values;
     const data = new FormData();
     data.append("file", file);
     const customerJson = JSON.stringify(task);
     const blob = new Blob([customerJson], { type: "application/json" });
     data.append("task", blob);
-
     await CustomerServices.saveTask(data)
       .then((res) => {
-        toast.success("Task successfully saved!", {
+        if (res) {
+          toast.success("task saved", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+        }
+      }).catch((err) => {
+        toast.error(`${err.data.error}`, {
           position: toast.POSITION.TOP_RIGHT,
         });
-        if (res) {
-          alert("task saved");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
       });
+    getTasks();
+    setOpen(false);
   };
   const [allSnapShot, setAllSnapShot] = useState([]);
   const getTasks = async () => {
-    let customerId = token;
+    let customerId = formik?.values.customerId;
     await CustomerServices.getTasks(customerId)
       .then((res) => {
         if (res) {
-          // setAllSnapShot(res);
-          alert("data is here");
+          toast.success("task are ready", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          setCustomerTask(res);
+          setUpdataForTable(res);
         }
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(`${err.data.error}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
   };
-
-  useEffect(() => {
-    setToken(localStorage.getItem("token"));
-    getTasks();
-  }, [token]);
 
   useEffect(() => {
     getAllCustomers();
@@ -671,7 +607,7 @@ const CustomerTasks = (props) => {
       ),
     },
     {
-      field: "Customer",
+      field: "customerName",
       headerName: "Customer",
       sortable: false,
       disableColumnMenu: true,
@@ -684,13 +620,13 @@ const CustomerTasks = (props) => {
       ),
       renderCell: (params) => (
         <div className="CustomerNameHead">
-          <Avatar src={params.value.img} alt={params.value.name} />
-          {params.value.name}
+          {/* <Avatar src={params.value.img} alt={params.value.name} /> */}
+          {params.value}
         </div>
       ),
     },
     {
-      field: "CustomerStage",
+      field: "customerStage",
       headerName: "Customer Stage",
       sortable: false,
       disableColumnMenu: true,
@@ -701,9 +637,10 @@ const CustomerTasks = (props) => {
           <img src={FilterImg} className="filterImg" />
         </React.Fragment>
       ),
+      renderCell: (params) => <span>{params.value}</span>,
     },
     {
-      field: "CustomerTask",
+      field: "taskName",
       headerName: "Customer Task",
       sortable: false,
       disableColumnMenu: true,
@@ -785,7 +722,9 @@ const CustomerTasks = (props) => {
           <img src={FilterImg} className="filterImg" />
         </React.Fragment>
       ),
-      renderCell: (params) => <AssignTaskColumn rows={rows} row={params.row} />,
+      renderCell: (params) => (
+        <AssignTaskColumn rows={tableData} row={params.row} />
+      ),
     },
     {
       field: "Status",
@@ -802,7 +741,7 @@ const CustomerTasks = (props) => {
       renderCell: (params) => {
         return (
           <Select
-            defaultValue={params.value}
+            defaultValue="todo"
             className="StatusHead"
             onChange={(e) => onStatusChange(e, params)}
           >
@@ -1110,11 +1049,10 @@ const CustomerTasks = (props) => {
                       name: "taskTitle",
                       placeholder: "Lorem Ipsum",
                       checkValidation: true,
-                      value: formik?.values?.taskname,
+                      value: formik?.values?.taskName,
                     }}
                     onChange={(e) => {
-                      formik.setFieldValue("taskname", e.target.value);
-                      setTasksTitle(e.target.value);
+                      formik.setFieldValue("taskName", e.target.value);
                     }}
                   />
                   <span title="Complete">
@@ -1167,14 +1105,17 @@ const CustomerTasks = (props) => {
                         className="taskTitleInput"
                         {...{
                           formik,
-                          title: "subtask",
-                          name: "subtask",
+                          title: "subTask",
+                          name: "subTask",
                           placeholder: "Lorem Ipsum",
                           checkValidation: true,
-                          value: formik?.values?.subtask.name,
+                          value: formik?.values?.subTask[0].name,
                         }}
                         onChange={(e) => {
-                          formik.setFieldValue("subtask.name", e.target.value);
+                          formik.setFieldValue(
+                            "subTask[0].name",
+                            e.target.value
+                          );
                           handleTaskLabelChange(e, index);
                         }}
                       />
@@ -1260,7 +1201,10 @@ const CustomerTasks = (props) => {
                 if (item?.Status === "done") {
                   return (
                     <Box className="ArchiveContent">
-                      <h4>{item.Customer.name}</h4>
+                      <div>
+                        <h4>{item.customerName}</h4>
+                        <p>{item.taskName}</p>
+                      </div>
                       <span>
                         <img src={DoneIcon} alt="not found" />
                       </span>
@@ -1377,6 +1321,7 @@ const CustomerTasks = (props) => {
             <Button className="reminderBtn">save</Button>
           </DialogContent>
         </Dialog>
+        <ToastContainer />
       </Box>
     </Box>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Resources.css";
 // Mui imports
 import {
@@ -17,10 +17,14 @@ import {
 } from "@mui/material";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
-import CustomerServices from "../../APIs/Customer";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import FormData from "form-data";
+import CustomerServices from "../../APIs/Customer";
+import Loader from "../../components/Loader";
 // Images
 import AttachmentsIcon from "../../assets/icons/Attachment.svg";
 import SearchIcon from "../../assets/icons/search.svg";
@@ -37,26 +41,20 @@ const Resources = () => {
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [open3, setOpen3] = useState(false);
-
   const [file, setFile] = useState([]);
-
   const [description, setDescription] = useState();
   const [attachments, setAttachments] = useState([]);
-
   const [link, setLink] = useState();
   const [linkDescription, setLinkDescription] = useState();
   const [links, setLinks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  let userId = localStorage.getItem("token");
 
-  console.log(links, "sakjdjklsad")
+  console.log(userId, "sakjdjklsad");
 
   const onUpload = (e) => {
     const uploadfile = e?.target?.files[0];
-    // const obj = {
-    //   fileId: uploadfile,
-    // };
-    // setFile((oldState) => [...oldState, obj]);
-    formik.setFieldValue("fileId", uploadfile);
-    setFile(uploadfile)
+    setFile(uploadfile);
   };
   console.log(attachments, "attachments");
   const handleCloseAttachments = () => {
@@ -86,6 +84,10 @@ const Resources = () => {
     };
     setAttachments((oldState) => [...oldState, obj]);
     setOpen1(false);
+
+    toast.success("Attachment saved!", {
+      position: toast.POSITION.TOP_RIGHT,
+    });
   };
 
   const deleteAttachment = (e, id) => {
@@ -106,6 +108,9 @@ const Resources = () => {
     };
     setLinks((oldState) => [...oldState, obj]);
     setOpen2(false);
+    toast.success("Link saved!", {
+      position: toast.POSITION.TOP_RIGHT,
+    });
   };
 
   const deleteLinks = (e, id) => {
@@ -124,24 +129,38 @@ const Resources = () => {
   const formik = useFormik({
     enableReinitialize: false,
     initialValues: {
-      fileId: "",
+      id: "",
       link: "",
+      userId: userId,
     },
     validationSchema: customerValitadion,
   });
   console.log(formik.values, "sjajdksa");
-
   const handleSave = async () => {
-    const data = formik?.values;
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("customer", JSON.stringify(data));
-    await CustomerServices.saveResources(formData).then((res) => {
-      if (res) {
-        console.log("testing");
-      }
-    });
+    setLoading(true);
+    const resourcesData = formik?.values;
+    const data = new FormData();
+    data.append("file", file);
+    const resourcesJson = JSON.stringify(resourcesData);
+    const blob = new Blob([resourcesJson], { type: "application/json" });
+    data.append("resources", blob);
+    await CustomerServices.saveResources(data)
+      .then((res) => {
+        if (res?.includes("resources saved successfull")) {
+          toast.success("resources saved successfull", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+        }
+        setLoading(false);
+      }).catch((err) => {
+        setLoading(false);
+        toast.error(`${err.data.error}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
   };
+
+  useEffect(() => {}, []);
 
   return (
     <Box className="resources">
@@ -167,13 +186,13 @@ const Resources = () => {
               </Box>
             </Box>
             <Box className="resourcesModelHead">
-              <button
+              <Button
                 className="btn"
                 onClick={() => handleClickOpenAttachmentsModel()}
               >
                 <img src={PlusIcon} alt="img not found" />
                 Attachment
-              </button>
+              </Button>
             </Box>
             <Box>
               {attachments.map((item, index) => {
@@ -203,6 +222,7 @@ const Resources = () => {
                 );
               })}
             </Box>
+
             <Box className="tableFooter">
               <Box className="entries">
                 <span>Showing 1 to 03 of 50 entries</span>
@@ -250,13 +270,13 @@ const Resources = () => {
             </Box>
 
             <Box className="resourcesModelHead">
-              <button
+              <Button
                 className="btn"
                 onClick={() => handleClickOpenLinksModel()}
               >
                 <img src={PlusIcon} alt="img not found" />
                 link
-              </button>
+              </Button>
             </Box>
             <Box>
               {links.map((item) => {
@@ -320,7 +340,9 @@ const Resources = () => {
           </Box>
         </Grid>
       </Grid>
-
+      <Button className="btn saveResources" onClick={handleSave}>
+        save resources
+      </Button>
       <Dialog
         open={open1}
         TransitionComponent={Transition}
@@ -347,17 +369,10 @@ const Resources = () => {
               <Box className="uploadFileHead">
                 <TextField
                   fullWidth
-                  {...{
-                    formik,
-                    title: "file",
-                    name: "file",
-                    checkValidation: true,
-                    placeholder: "Lorem Ipsum",
-                    value: formik?.values?.fileId?.name,
-                  }}
-                  onChange={(e) => {
-                    formik.setFieldValue("fileId", e.target.value);
-                  }}
+                  title="file"
+                  name="file"
+                  placeholder="file"
+                  value={file?.name}
                 />
                 <Button
                   variant="contained"
@@ -365,12 +380,7 @@ const Resources = () => {
                   className="uploadFileBtn"
                 >
                   Browse
-                  <input
-                    hidden
-                    multiple
-                    type="file"
-                    onChange={onUpload}
-                  />
+                  <input hidden multiple type="file" onChange={onUpload} />
                 </Button>
               </Box>
             </FormGroup>
@@ -496,6 +506,8 @@ const Resources = () => {
           </Box>
         </DialogContent>
       </Dialog>
+      <ToastContainer />
+      <Loader loaderValue={loading} />
     </Box>
   );
 };

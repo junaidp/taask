@@ -419,6 +419,7 @@
   background: transparent !important;
   border: none !important;
   box-shadow: unset !important;
+  padding: 0 !important;
 }
 .ArchiveModel .MuiPaper-root {
   max-width: 400px !important;
@@ -458,6 +459,12 @@
   text-transform: capitalize;
   color: #1c3035;
 }
+.ArchiveModel .ArchiveContent p {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  color: #1c3035e2;
+}
 .ReminderDatePicker .css-epd502 {
   width: 100% !important;
 }
@@ -488,5 +495,6 @@
 }
 .MuiDataGrid-virtualScrollerContent{
   max-height: 640px !important;
+  height: 640px !important;
   padding-bottom: 200px !important;
 }
