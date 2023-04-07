@@ -4,6 +4,22 @@
 .resources {
   padding-right: 10px;
 }
+.resourcesListHead {
+  background: #ffffff;
+  box-shadow: 4px 2px 15px rgba(55, 63, 65, 0.06);
+  border-radius: 10px;
+  padding: 8px 24px;
+  height: 100%;
+  margin-top: 30px !important;
+}
+.resourcesListHead a {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  margin-bottom: 10px;
+  color: #214b5a;
+}
 .resources .resourcesTopHead {
   display: flex;
   justify-content: space-between;
@@ -31,7 +47,7 @@
   margin-right: 8px !important;
   cursor: pointer;
 }
-.resources .resourcesTopHead img{
+.resources .resourcesTopHead img {
   cursor: pointer;
 }
 .resources .resourcesModelHead {
@@ -58,7 +74,7 @@
   color: #ffffff;
   cursor: pointer;
 }
-.resources .saveResources{
+.resources .saveResources {
   width: 180px !important;
   margin-top: 20px !important;
   float: right !important;
@@ -79,10 +95,10 @@
   width: 18px;
   cursor: pointer;
 }
- .uploadFileHead {
+.uploadFileHead {
   position: relative;
 }
- .uploadFileHead .uploadFileBtn {
+.uploadFileHead .uploadFileBtn {
   position: absolute !important;
   top: 0 !important;
   right: 0 !important;
@@ -125,7 +141,7 @@
   top: 20%;
   cursor: pointer;
 }
-.attachmentsModel textarea ,
+.attachmentsModel textarea,
 .LinksModel textarea {
   width: 100%;
   height: 80px;
@@ -149,7 +165,7 @@
   color: #3a606e;
 }
 .attachmentsSaveBtn,
-.linksSaveBtn{
+.linksSaveBtn {
   height: 40px !important;
   max-width: 100% !important;
   width: 100% !important;

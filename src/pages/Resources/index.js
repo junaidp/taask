@@ -7,8 +7,8 @@ import {
   Typography,
   FormGroup,
   TextField,
-  // Pagination,
-  PaginationItem,
+  List,
+  ListItem,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -51,7 +51,8 @@ const Resources = () => {
   const [loading, setLoading] = useState(false);
   let userId = localStorage.getItem("token");
   const [currentItems, setCurrentItems] = useState([]);
-  const [allResources, setAllResources]= useState([])
+  const [allResources, setAllResources] = useState([]);
+  console.log(allResources, "allResources");
 
   const onUpload = (e) => {
     const uploadfile = e?.target?.files[0];
@@ -144,11 +145,6 @@ const Resources = () => {
     data.append("resources", blob);
     await CustomerServices.saveResources(data)
       .then((res) => {
-        if (res?.includes("resources saved successfull")) {
-          toast.success("resources saved successfull", {
-            position: toast.POSITION.TOP_RIGHT,
-          });
-        }
         setLoading(false);
       })
       .catch((err) => {
@@ -162,10 +158,29 @@ const Resources = () => {
     await CustomerServices.getResources(userId)
       .then((res) => {
         if (res) {
-          toast.success("resources here successfull", {
+          setAllResources(res);
+        }
+      })
+      .catch((err) => {
+        toast.error(`${err.data.error}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
+  };
+  const downloadFile = async (e, data) => {
+    await CustomerServices.downloadFile(data.fileId)
+      .then(async (res) => {
+        if (res) {
+          toast.success("file is downloaded!", {
             position: toast.POSITION.TOP_RIGHT,
           });
-          setAllResources(res);
+          const blob = new Blob([res], { type: "application/pdf" });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = "filename.pdf";
+          document.body.appendChild(link);
+          link.click();
         }
       })
       .catch((err) => {
@@ -176,12 +191,11 @@ const Resources = () => {
   };
 
   useEffect(() => {
-    getResources()
+    getResources();
   }, []);
 
   return (
     <Box className="resources">
-      {/* <Button onClick={handleSave}>submit</Button> */}
       <Grid container>
         <Grid item xs={6}>
           <Box className="attachmentHead">
@@ -314,7 +328,7 @@ const Resources = () => {
                 );
               })}
             </Box>
-             <CustomPagination
+            <CustomPagination
               data={allResources}
               count={allResources?.length}
               setCurrentItems={setCurrentItems}
@@ -326,6 +340,16 @@ const Resources = () => {
           </Box>
         </Grid>
       </Grid>
+      <Box className="resourcesListHead">
+        <List className="resourcesList">
+          <h4>All Resources</h4>
+          {allResources.map((item) => (
+            <ListItem disablePadding onClick={(e) => downloadFile(e, item)}>
+              <a href="#">{item?.link}</a>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
       <Button className="btn saveResources" onClick={handleSave}>
         save resources
       </Button>

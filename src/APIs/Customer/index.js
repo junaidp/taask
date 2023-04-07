@@ -60,9 +60,7 @@ const CustomerServices = {
   },
   getResources: async (userId) => {
     try {
-      return await Service.get(
-        `api/resources/getResources?userId=${userId}`
-      );
+      return await Service.get(`api/resources/getResources?userId=${userId}`);
     } catch (error) {
       throw error;
     }
@@ -79,9 +77,14 @@ const CustomerServices = {
   },
   getTasks: async (customerId) => {
     try {
-      return await Service.get(
-        `api/task/getTasks?userid=${customerId}`
-      );
+      return await Service.get(`api/task/getTasks?userid=${customerId}`);
+    } catch (error) {
+      throw error;
+    }
+  },
+  downloadFile: async (fileId) => {
+    try {
+      return await Service.get(`api/files/downloadFile?fileid=${fileId}`);
     } catch (error) {
       throw error;
     }
@@ -89,4 +92,3 @@ const CustomerServices = {
 };
 
 export default CustomerServices;
-

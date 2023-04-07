@@ -25,11 +25,9 @@ import CustomPagination from "../../components/Pagination";
 import moment from "moment";
 
 const UpcomingItemsTable = ({ tasksData }) => {
-  const [page, setPage] = useState("");
+  console.log(tasksData, "klshdlhsald")
   const [currentItems, setCurrentItems] = useState([]);
-  const handleChange = (event) => {
-    setPage(event.target.value);
-  };
+  
   return (
     <TableContainer component={Paper} className="UpcomingItemsCout">
       <Box className="topHead">
@@ -76,7 +74,7 @@ const UpcomingItemsTable = ({ tasksData }) => {
                   {/* <span>
                     <img src={item.photoUrl} alt="img not found" />
                   </span> */}
-                  {item.customer.name}
+                  {item?.customer?.name}
                 </Box>
               </TableCell>
               <TableCell>{item.taskName}</TableCell>
