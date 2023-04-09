@@ -386,36 +386,33 @@ let Customer = () => {
         },
       ],
     },
-    onSubmit: () => {
+    onSubmit: async () => {
       alert("helloo");
-    },
-  });
+      setLoading(true);
+      const customer = formik?.values;
+      const data = new FormData();
+      data.append("file", file);
+      const customerJson = JSON.stringify(customer);
+      const blob = new Blob([customerJson], { type: "application/json" });
+      data.append("customer", blob);
 
-  const handleSave = async () => {
-    setLoading(true);
-    const customer = formik?.values;
-    const data = new FormData();
-    data.append("file", file);
-    const customerJson = JSON.stringify(customer);
-    const blob = new Blob([customerJson], { type: "application/json" });
-    data.append("customer", blob);
-
-    await CustomerServices.saveCustomer(data)
-      .then((res) => {
-        if (res?.includes("saved")) {
-          toast.success("customer successfully saved!", {
+      await CustomerServices.saveCustomer(data)
+        .then((res) => {
+          if (res?.includes("saved")) {
+            toast.success("customer successfully saved!", {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+          }
+          setLoading(false);
+        })
+        .catch((err) => {
+          setLoading(false);
+          toast.error(`${err.data.error}`, {
             position: toast.POSITION.TOP_RIGHT,
           });
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-        toast.error(`${err.data.error}`, {
-          position: toast.POSITION.TOP_RIGHT,
         });
-      });
-  };
+    },
+  });
 
   return (
     <Box className="customer">
@@ -438,9 +435,10 @@ let Customer = () => {
                 onChange={(e) => {
                   formik.setFieldValue("name", e.target.value);
                 }}
-                error={formik.touched.name && Boolean(formik.errors.name)}
-                helperText={formik.touched.name && formik.errors.name}
               />
+              {formik.errors.name && (
+                <p className="input-error">{formik.errors.name}</p>
+              )}
             </FormGroup>
             <FormGroup className="inputHead">
               <label htmlFor="Category" className="Category">
@@ -471,10 +469,6 @@ let Customer = () => {
                     return value;
                   },
                 }}
-                error={
-                  formik.touched.category && Boolean(formik.errors.category)
-                }
-                helperText={formik.touched.category && formik.errors.category}
               >
                 {categoryOption.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -482,6 +476,9 @@ let Customer = () => {
                   </MenuItem>
                 ))}
               </TextField>
+              {formik.errors.category && (
+                <p className="input-error">{formik.errors.category}</p>
+              )}
             </FormGroup>
           </Box>
           <Box className="inputGroup">
@@ -510,20 +507,11 @@ let Customer = () => {
                   }}
                   showDaysOutsideCurrentMonth
                   dayOfWeekFormatter={(day) => getDay(day)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      error={
-                        formik.touched.customerSince &&
-                        Boolean(formik.errors.customerSince)
-                      }
-                      helperText={
-                        formik.touched.customerSince &&
-                        formik.errors.customerSince
-                      }
-                    />
-                  )}
+                  renderInput={(params) => <TextField {...params} />}
                 />
+                {formik.errors.customerSince && (
+                  <p className="input-error">{formik.errors.customerSince}</p>
+                )}
               </LocalizationProvider>
             </FormGroup>
             <FormGroup className="inputHead">
@@ -555,13 +543,6 @@ let Customer = () => {
                     return value;
                   },
                 }}
-                error={
-                  formik.touched.customerStage &&
-                  Boolean(formik.errors.customerStage)
-                }
-                helperText={
-                  formik.touched.customerStage && formik.errors.customerStage
-                }
               >
                 {customerOption.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -569,6 +550,9 @@ let Customer = () => {
                   </MenuItem>
                 ))}
               </TextField>
+              {formik.errors.customerStage && (
+                <p className="input-error">{formik.errors.customerStage}</p>
+              )}
             </FormGroup>
           </Box>
 
@@ -660,15 +644,13 @@ let Customer = () => {
                           e.target.value
                         );
                       }}
-                      error={
-                        formik.touched.contacts &&
-                        Boolean(formik.errors.contacts[0].name)
-                      }
-                      helperText={
-                        formik.touched.contacts &&
-                        formik.errors.contacts[0].name
-                      }
                     />
+
+                    {formik.errors.contacts && formik.errors.contacts[0] && (
+                      <p className="input-error">
+                        {formik.errors.contacts[0].name}
+                      </p>
+                    )}
                   </FormGroup>
                   <FormGroup className="inputHead">
                     <label htmlFor="EmailAddress">Email Address.</label>
@@ -688,15 +670,12 @@ let Customer = () => {
                           e.target.value
                         );
                       }}
-                      error={
-                        formik.touched.contacts &&
-                        Boolean(formik.errors.contacts[0].emailAddress)
-                      }
-                      helperText={
-                        formik.touched.contacts &&
-                        formik.errors.contacts[0].emailAddress
-                      }
                     />
+                    {formik.errors.contacts && formik.errors.contacts[0] && (
+                      <p className="input-error">
+                        {formik.errors.contacts[0].emailAddress}
+                      </p>
+                    )}
                   </FormGroup>
                 </Box>
                 <Box className="inputGroup">
@@ -717,14 +696,6 @@ let Customer = () => {
                           e.target.value
                         );
                       }}
-                      error={
-                        formik.touched.contacts &&
-                        Boolean(formik.errors.contacts[0].jobTitle)
-                      }
-                      helperText={
-                        formik.touched.contacts &&
-                        formik.errors.contacts[0].jobTitle
-                      }
                     />
                   </FormGroup>
                   <FormGroup className="inputHead">
@@ -763,14 +734,6 @@ let Customer = () => {
                           maxHeight: "200px !important",
                         },
                       }}
-                      error={
-                        formik.touched.contacts &&
-                        Boolean(formik.errors.contacts[0].location)
-                      }
-                      helperText={
-                        formik.touched.contacts &&
-                        formik.errors.contacts[0].location
-                      }
                     >
                       {countries.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -810,7 +773,9 @@ let Customer = () => {
           <Button
             className="btn saveChangeBtn"
             content="save"
-            onClick={handleSave}
+            onClick={() => {
+              formik.handleSubmit();
+            }}
           >
             Save Changes
           </Button>

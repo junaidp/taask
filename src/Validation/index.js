@@ -11,7 +11,7 @@ export const customerSchema = yup.object().shape({
       name: yup.string().required("contacts name is required"),
       jobTitle: yup.string().required("job title is required"),
       emailAddress: yup.string().required("email address is required"),
-      location: yup.string().required("location is required"),
+      // location: yup.string().required("location is required"),
     })
   ),
 });
