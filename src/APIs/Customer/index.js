@@ -58,9 +58,26 @@ const CustomerServices = {
       throw error;
     }
   },
+  saveLink: async (data) => {
+    try {
+      return await Service.post({
+        url: "/api/resources/saveLink",
+        data,
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
   getResources: async (userId) => {
     try {
       return await Service.get(`api/resources/getResources?userId=${userId}`);
+    } catch (error) {
+      throw error;
+    }
+  },
+  getLinks: async (userId) => {
+    try {
+      return await Service.get(`/api/resources/getLinks?userId=${userId}`);
     } catch (error) {
       throw error;
     }
@@ -77,7 +94,14 @@ const CustomerServices = {
   },
   getTasks: async (customerId) => {
     try {
-      return await Service.get(`api/task/getTasks?userid=${customerId}`);
+      return await Service.get(`api/task/getTasks?customerId=${customerId}`);
+    } catch (error) {
+      throw error;
+    }
+  },
+  getAllTasks: async () => {
+    try {
+      return await Service.get("https://taaskserver.herokuapp.com/api/task/getAllTasks");
     } catch (error) {
       throw error;
     }
@@ -92,3 +116,4 @@ const CustomerServices = {
 };
 
 export default CustomerServices;
+

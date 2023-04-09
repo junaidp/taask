@@ -19,6 +19,8 @@ import {
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 
+import PlusIcon from "../../assets/icons/plus.svg"
+
 const CustomPagination = ({
   data,
   count,
@@ -26,7 +28,8 @@ const CustomPagination = ({
   customInput,
   customSelect,
   paginationDetail,
-  buttons
+  buttons,
+  addbutton
 }) => {
   const [page, setPage] = React.useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,6 +58,13 @@ const CustomPagination = ({
   return (
     <>
       <Box className="customPagination">
+      {addbutton && (
+          <Box className="entries addbutton">
+            <span>
+              <img src={PlusIcon} /> Showing 1 to {currentItems?.length} of {count ? count : 0} entries{" "}
+            </span>
+          </Box>
+        )}
         {paginationDetail && (
           <Box className="entries">
             <span>

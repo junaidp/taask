@@ -12,14 +12,6 @@
   height: 100%;
   margin-top: 30px !important;
 }
-.resourcesListHead a {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  letter-spacing: 0.01em;
-  margin-bottom: 10px;
-  color: #214b5a;
-}
 .resources .resourcesTopHead {
   display: flex;
   justify-content: space-between;
@@ -74,11 +66,7 @@
   color: #ffffff;
   cursor: pointer;
 }
-.resources .saveResources {
-  width: 180px !important;
-  margin-top: 20px !important;
-  float: right !important;
-}
+
 .resources .btn img {
   filter: saturate(0%) brightness(350%) !important;
   margin-right: 8px !important;

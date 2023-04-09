@@ -24,6 +24,7 @@ import {
 } from "@mui/material";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
+import { customerSchema } from "../../Validation";
 
 // conponent
 import { useFormik } from "formik";
@@ -363,12 +364,9 @@ let Customer = () => {
     setOpen2(false);
   };
 
-  const customerValitadion = Yup.object().shape({
-    name: Yup.string().required(),
-  });
   const formik = useFormik({
     enableReinitialize: false,
-
+    validationSchema: customerSchema,
     initialValues: {
       id: "",
       category: "",
@@ -380,15 +378,17 @@ let Customer = () => {
       customerNotes: "",
       contacts: [
         {
+          name: "",
           emailAddress: "",
           id: "",
           jobTitle: "",
           location: "",
-          name: "",
         },
       ],
     },
-    validationSchema: customerValitadion,
+    onSubmit: () => {
+      alert("helloo");
+    },
   });
 
   const handleSave = async () => {
@@ -424,12 +424,12 @@ let Customer = () => {
           <Box className="inputGroup">
             <FormGroup className="inputHead">
               <label htmlFor="Name" className="Name">
-                Name
+                Name *
               </label>
               <TextField
                 {...{
                   formik,
-                  title: "Name",
+                  title: "name",
                   name: "name",
                   placeholder: "John Doe",
                   checkValidation: true,
@@ -438,11 +438,13 @@ let Customer = () => {
                 onChange={(e) => {
                   formik.setFieldValue("name", e.target.value);
                 }}
+                error={formik.touched.name && Boolean(formik.errors.name)}
+                helperText={formik.touched.name && formik.errors.name}
               />
             </FormGroup>
             <FormGroup className="inputHead">
               <label htmlFor="Category" className="Category">
-                Category
+                Category *
               </label>
               <TextField
                 select
@@ -469,6 +471,10 @@ let Customer = () => {
                     return value;
                   },
                 }}
+                error={
+                  formik.touched.category && Boolean(formik.errors.category)
+                }
+                helperText={formik.touched.category && formik.errors.category}
               >
                 {categoryOption.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -481,7 +487,7 @@ let Customer = () => {
           <Box className="inputGroup">
             <FormGroup className="inputHead">
               <label htmlFor="Customer Since" className="CustomerSince">
-                Customer Since
+                Customer Since *
               </label>
               <LocalizationProvider
                 dateAdapter={AdapterDayjs}
@@ -504,13 +510,25 @@ let Customer = () => {
                   }}
                   showDaysOutsideCurrentMonth
                   dayOfWeekFormatter={(day) => getDay(day)}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      error={
+                        formik.touched.customerSince &&
+                        Boolean(formik.errors.customerSince)
+                      }
+                      helperText={
+                        formik.touched.customerSince &&
+                        formik.errors.customerSince
+                      }
+                    />
+                  )}
                 />
               </LocalizationProvider>
             </FormGroup>
             <FormGroup className="inputHead">
               <label htmlFor="CustomerStage" className="CustomerStage">
-                Customer Stage
+                Customer Stage *
               </label>
               <TextField
                 select
@@ -537,6 +555,13 @@ let Customer = () => {
                     return value;
                   },
                 }}
+                error={
+                  formik.touched.customerStage &&
+                  Boolean(formik.errors.customerStage)
+                }
+                helperText={
+                  formik.touched.customerStage && formik.errors.customerStage
+                }
               >
                 {customerOption.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -619,19 +644,30 @@ let Customer = () => {
               <Box className="mainContactsForm">
                 <Box className="inputGroup">
                   <FormGroup className="inputHead">
-                    <label htmlFor="Name">Name</label>
+                    <label htmlFor="Name">Name *</label>
                     <TextField
                       {...{
                         formik,
                         title: "Name",
-                        name: "name",
+                        name: "contactsName",
                         placeholder: "John Doe",
                         checkValidation: true,
                         value: formik?.values?.contacts.name,
                       }}
                       onChange={(e) => {
-                        formik.setFieldValue("contacts.0.name", e.target.value);
+                        formik.setFieldValue(
+                          "contacts.[0].name",
+                          e.target.value
+                        );
                       }}
+                      error={
+                        formik.touched.contacts &&
+                        Boolean(formik.errors.contacts[0].name)
+                      }
+                      helperText={
+                        formik.touched.contacts &&
+                        formik.errors.contacts[0].name
+                      }
                     />
                   </FormGroup>
                   <FormGroup className="inputHead">
@@ -652,12 +688,20 @@ let Customer = () => {
                           e.target.value
                         );
                       }}
+                      error={
+                        formik.touched.contacts &&
+                        Boolean(formik.errors.contacts[0].emailAddress)
+                      }
+                      helperText={
+                        formik.touched.contacts &&
+                        formik.errors.contacts[0].emailAddress
+                      }
                     />
                   </FormGroup>
                 </Box>
                 <Box className="inputGroup">
                   <FormGroup className="inputHead">
-                    <label htmlFor="JobTitle">Job Title</label>
+                    <label htmlFor="JobTitle">Job Title *</label>
                     <TextField
                       {...{
                         formik,
@@ -673,6 +717,14 @@ let Customer = () => {
                           e.target.value
                         );
                       }}
+                      error={
+                        formik.touched.contacts &&
+                        Boolean(formik.errors.contacts[0].jobTitle)
+                      }
+                      helperText={
+                        formik.touched.contacts &&
+                        formik.errors.contacts[0].jobTitle
+                      }
                     />
                   </FormGroup>
                   <FormGroup className="inputHead">
@@ -711,6 +763,14 @@ let Customer = () => {
                           maxHeight: "200px !important",
                         },
                       }}
+                      error={
+                        formik.touched.contacts &&
+                        Boolean(formik.errors.contacts[0].location)
+                      }
+                      helperText={
+                        formik.touched.contacts &&
+                        formik.errors.contacts[0].location
+                      }
                     >
                       {countries.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -747,7 +807,11 @@ let Customer = () => {
               }}
             ></textarea>
           </FormGroup>
-          <Button className="btn saveChangeBtn" onClick={handleSave}>
+          <Button
+            className="btn saveChangeBtn"
+            content="save"
+            onClick={handleSave}
+          >
             Save Changes
           </Button>
         </Grid>
@@ -820,7 +884,6 @@ let Customer = () => {
           </Box>
         </Grid>
       </Grid>
-
       <Dialog
         open={open1}
         TransitionComponent={Transition}

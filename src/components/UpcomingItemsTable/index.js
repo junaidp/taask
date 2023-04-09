@@ -25,9 +25,9 @@ import CustomPagination from "../../components/Pagination";
 import moment from "moment";
 
 const UpcomingItemsTable = ({ tasksData }) => {
-  console.log(tasksData, "klshdlhsald")
+  console.log(tasksData, "klshdlhsald");
   const [currentItems, setCurrentItems] = useState([]);
-  
+
   return (
     <TableContainer component={Paper} className="UpcomingItemsCout">
       <Box className="topHead">
@@ -77,11 +77,9 @@ const UpcomingItemsTable = ({ tasksData }) => {
                   {item?.customer?.name}
                 </Box>
               </TableCell>
-              <TableCell>{item.taskName}</TableCell>
-              <TableCell>{item.time}</TableCell>
-              <TableCell align="right">
-                {moment(item.dueDate).format("DD/MM/YYYY")}
-              </TableCell>
+              <TableCell>{item?.taskName}</TableCell>
+              <TableCell>{item?.time}</TableCell>
+              <TableCell align="right">{item?.dueDate}</TableCell>
             </TableRow>
           ))}
         </TableBody>

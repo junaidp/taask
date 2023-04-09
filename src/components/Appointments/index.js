@@ -84,8 +84,8 @@ const Appointments = ({ allMeetings }) => {
         setCurrentItems={setCurrentItems}
         customInput={false}
         customSelect={false}
-        paginationDetail={true}
         buttons={true}
+        addbutton={true}
       />
     </TableContainer>
   );

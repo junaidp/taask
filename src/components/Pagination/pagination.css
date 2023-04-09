@@ -20,6 +20,16 @@
 .customPagination .paginationBox {
   width: fit-content;
 }
+.customPagination .addbutton{
+  display: flex;
+  align-items: center;
+}
+.customPagination .addbutton img{
+  margin-right: 4px !important;
+  width: 12px !important;
+  cursor: pointer;
+  transform: translateY(1px);
+}
 .customPagination
   .paginationBox
   .MuiPagination-ul

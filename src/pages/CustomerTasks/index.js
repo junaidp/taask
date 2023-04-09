@@ -134,6 +134,7 @@ const CustomerTasks = (props) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [file, setFile] = useState(null);
   const [tableData, setTableData] = useState([]);
+  console.log(tableData, "saldh")
   const [selectAll, setSelectAll] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open1 = Boolean(anchorEl);
@@ -148,7 +149,7 @@ const CustomerTasks = (props) => {
   const setUpdataForTable = (tasks) => {
     const rows = tasks?.map((item, index) => {
       return {
-        id: index < 10 ? `0${index + 1}` : index + 1,
+        id: index + 1,
         category: item?.customer?.category,
         emailAddress: item?.customer?.contacts[0].emailAddress,
         jobTitle: item?.customer?.contacts[0].jobTitle,
@@ -163,10 +164,13 @@ const CustomerTasks = (props) => {
         customerName: item?.customer?.name,
         website: item?.customer?.website,
         fileId: item?.fileId,
-        subTask: item?.subTask[0]?.name,
+        // subTaskName: item.subTask[0].name,
         taskName: item?.taskName,
+        dueDate: item?.dueDate,
+        time: item?.time,
       };
     });
+    console.log(tasks,"asjkdh")
     setTableData(rows);
   };
 
@@ -232,7 +236,7 @@ const CustomerTasks = (props) => {
   };
   const handleClickOpenModel = (params) => {
     setSelectedRow(params);
-    formik.setFieldValue('customerId', params?.id);
+    formik.setFieldValue("customerId", params?.id);
     setOpen(true);
     setAnchorEl(null);
   };
@@ -340,25 +344,22 @@ const CustomerTasks = (props) => {
     },
     validationSchema: customerValitadion,
   });
-  console.log(formik.values, "skjdakjdj")
+  console.log(formik.values, "skjdakjdj");
 
   const getAllCustomers = async () => {
     await CustomerServices.getAllCustomers()
       .then((res) => {
         if (res) {
           setAllCustomers(res);
-          toast.success("All customer here", {
-            position: toast.POSITION.TOP_RIGHT,
-          });
+          console.log("All customer here");
         }
       })
       .catch((err) => {
-        toast.error(`${err.data.error}`, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        console.log(err.data.error);
       });
   };
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e.preventDefault();
     const task = formik?.values;
     const data = new FormData();
     data.append("file", file);
@@ -374,35 +375,22 @@ const CustomerTasks = (props) => {
         }
       })
       .catch((err) => {
-        toast.error(`${err.data.error}`, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        console.log(err.data.error);
       });
-    getTasks();
     setOpen(false);
   };
-  const [allSnapShot, setAllSnapShot] = useState([]);
-  const getTasks = async () => {
-    let customerId = formik?.values.customerId;
-    await CustomerServices.getTasks(customerId)
-      .then((res) => {
+  const getAllTasks = async () => {
+    await CustomerServices.getAllTasks().then((res) => {
         if (res) {
-          toast.success("task are ready", {
-            position: toast.POSITION.TOP_RIGHT,
-          });
           setCustomerTask(res);
           setUpdataForTable(res);
         }
       })
-      .catch((err) => {
-        toast.error(`${err.data.error}`, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-      });
   };
 
   useEffect(() => {
     getAllCustomers();
+    getAllTasks();
   }, []);
 
   const columns = [
@@ -506,8 +494,8 @@ const CustomerTasks = (props) => {
       ),
     },
     {
-      field: "DueDate",
-      headerName: "Due Date",
+      field: "dueDate",
+      headerName: "dueDate",
       sortable: false,
       disableColumnMenu: true,
       flex: 1,
@@ -526,7 +514,7 @@ const CustomerTasks = (props) => {
                 orientation="portrait"
                 displayStaticWrapperAs="desktop"
                 openTo="day"
-                value={params.value}
+                value={params}
                 showToolbar={false}
                 components={{
                   OpenPickerIcon: CustomCalendarIcon,
@@ -539,7 +527,7 @@ const CustomerTasks = (props) => {
                 }}
                 showDaysOutsideCurrentMonth
                 dayOfWeekFormatter={(day) => getDay(day)}
-                renderInput={(params) => <TextField {...params} className="" />}
+                renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
           </FormGroup>
@@ -779,198 +767,200 @@ const CustomerTasks = (props) => {
         >
           <DialogTitle className="titleHead">task</DialogTitle>
           <DialogContent>
-            <Box className="topHead">
-              <Box>
-                <h6>
-                  Customer ID
-                  <span>
-                    {selectedRow?.id < 10
-                      ? `0${selectedRow?.id}`
-                      : selectedRow?.id}
-                  </span>
-                </h6>
-              </Box>
-              <Box>
-                <h6>
-                  Customer Name <span>{selectedRow?.name}</span>
-                </h6>
-              </Box>
-              <Box>
-                <h6>
-                  Customer Stage <span>{selectedRow?.customerStage}</span>
-                </h6>
-              </Box>
-              {/* <Box className="actionsHead">
+            <form>
+              <Box className="topHead">
+                <Box>
+                  <h6>
+                    Customer ID
+                    <span>
+                      {selectedRow?.id < 10
+                        ? `0${selectedRow?.id}`
+                        : selectedRow?.id}
+                    </span>
+                  </h6>
+                </Box>
+                <Box>
+                  <h6>
+                    Customer Name <span>{selectedRow?.name}</span>
+                  </h6>
+                </Box>
+                <Box>
+                  <h6>
+                    Customer Stage <span>{selectedRow?.customerStage}</span>
+                  </h6>
+                </Box>
+                {/* <Box className="actionsHead">
               <img src={ToDoIcon} />
               <img src={DeleteIcon} className="DeleteIcon" />
             </Box> */}
-              <Box className="badgesHead">
-                <Badge badgeContent={""} className="toDoBadge"></Badge>
-                <Badge badgeContent={""} className="doingBadge"></Badge>
-                <Badge badgeContent={""} className="doneBadge"></Badge>
+                <Box className="badgesHead">
+                  <Badge badgeContent={""} className="toDoBadge"></Badge>
+                  <Badge badgeContent={""} className="doingBadge"></Badge>
+                  <Badge badgeContent={""} className="doneBadge"></Badge>
+                </Box>
               </Box>
-            </Box>
-            <Box
-              sx={{
-                paddingTop: "24px",
-              }}
-            >
-              <FormGroup className="inputHead">
-                <label htmlFor="taskTitle" className="taskTitle">
-                  Task Title
-                </label>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <span>
-                    <Checkbox />
-                  </span>
-                  <TextField
-                    fullWidth
-                    className="taskTitleInput"
-                    {...{
-                      formik,
-                      title: "taskTitle",
-                      name: "taskTitle",
-                      placeholder: "Lorem Ipsum",
-                      checkValidation: true,
-                      value: formik?.values?.taskName,
-                    }}
-                    onChange={(e) => {
-                      formik.setFieldValue("taskName", e.target.value);
-                    }}
-                  />
-                  <span title="Complete">
-                    <img src={ToDoIcon} />
-                  </span>
-                </Box>
-              </FormGroup>
-              <FormGroup className="inputHead">
-                <label htmlFor="taskDescription" className="taskDescription">
-                  Task Description
-                </label>
-                <textarea
-                  name="taskDescription"
-                  placeholder="Lorem Ipsum"
-                ></textarea>
-              </FormGroup>
-            </Box>
-
-            <Box
-              sx={{
-                paddingTop: "24px",
-                paddingBottom: "8px",
-                borderTop: "1px solid #EBEBEB",
-                borderBottom: "1px solid #EBEBEB",
-              }}
-              className="SubtaskHead"
-            >
-              <h5 onClick={handleSubtaskClick}>
-                <img src={PlusIcon} alt="not found" />
-                Subtask
-              </h5>
-              {subtasks?.map((task, index) => {
-                return (
-                  <FormGroup className="inputHead" key={task?.id}>
-                    <label htmlFor="Subtask1" className="Subtask1">
-                      Subtask {index + 1}
-                    </label>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <span>
-                        <Checkbox />
-                      </span>
-                      <TextField
-                        fullWidth
-                        className="taskTitleInput"
-                        {...{
-                          formik,
-                          title: "subTask",
-                          name: "subTask",
-                          placeholder: "Lorem Ipsum",
-                          checkValidation: true,
-                          value: formik?.values?.subTask[0].name,
-                        }}
-                        onChange={(e) => {
-                          formik.setFieldValue(
-                            "subTask[0].name",
-                            e.target.value
-                          );
-                          handleTaskLabelChange(e, index);
-                        }}
-                      />
-                      <span>
-                        {task?.active === true ? (
-                          <img
-                            src={DoneIcon}
-                            onClick={(e) => onTaskActiveChange(e, index)}
-                          />
-                        ) : (
-                          <img
-                            src={ToDoIcon}
-                            onClick={(e) => onTaskActiveChange(e, index)}
-                          />
-                        )}
-                      </span>
-                    </Box>
-                  </FormGroup>
-                );
-              })}
-            </Box>
-            <Box
-              sx={{
-                paddingTop: "24px",
-              }}
-              className="AttachmentHead"
-            >
-              <FormGroup className="inputHead">
-                <label htmlFor="Attachment" className="Attachment">
-                  Attachment
-                </label>
-                <Box className="uploadFileHead">
-                  <TextField
-                    fullWidth
-                    placeholder="Lorem Ipsum"
-                    value={file?.name}
-                    id="Attachment"
-                  />
-                  <Button
-                    variant="contained"
-                    component="label"
-                    className="uploadFileBtn"
-                  >
-                    Upload
-                    <input hidden multiple type="file" onChange={onUpload} />
-                  </Button>
-                </Box>
-              </FormGroup>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                paddingTop: "40px",
-              }}
-            >
-              <Button
-                className="SaveBtn"
-                onClick={() => {
-                  // handleSubmittask();
-                  handleSave();
+              <Box
+                sx={{
+                  paddingTop: "24px",
                 }}
               >
-                save
-              </Button>
-            </Box>
+                <FormGroup className="inputHead">
+                  <label htmlFor="taskTitle" className="taskTitle">
+                    Task Title
+                  </label>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>
+                      <Checkbox />
+                    </span>
+                    <TextField
+                      fullWidth
+                      className="taskTitleInput"
+                      {...{
+                        formik,
+                        title: "taskTitle",
+                        name: "taskTitle",
+                        placeholder: "Lorem Ipsum",
+                        checkValidation: true,
+                        value: formik?.values?.taskName,
+                      }}
+                      onChange={(e) => {
+                        formik.setFieldValue("taskName", e.target.value);
+                      }}
+                    />
+                    <span title="Complete">
+                      <img src={ToDoIcon} />
+                    </span>
+                  </Box>
+                </FormGroup>
+                <FormGroup className="inputHead">
+                  <label htmlFor="taskDescription" className="taskDescription">
+                    Task Description
+                  </label>
+                  <textarea
+                    name="taskDescription"
+                    placeholder="Lorem Ipsum"
+                  ></textarea>
+                </FormGroup>
+              </Box>
+
+              <Box
+                sx={{
+                  paddingTop: "24px",
+                  paddingBottom: "8px",
+                  borderTop: "1px solid #EBEBEB",
+                  borderBottom: "1px solid #EBEBEB",
+                }}
+                className="SubtaskHead"
+              >
+                <h5 onClick={handleSubtaskClick}>
+                  <img src={PlusIcon} alt="not found" />
+                  Subtask
+                </h5>
+                {subtasks?.map((task, index) => {
+                  return (
+                    <FormGroup className="inputHead" key={task?.id}>
+                      <label htmlFor="Subtask1" className="Subtask1">
+                        Subtask {index + 1}
+                      </label>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <span>
+                          <Checkbox />
+                        </span>
+                        <TextField
+                          fullWidth
+                          className="taskTitleInput"
+                          {...{
+                            formik,
+                            title: "subTask",
+                            name: "subTask",
+                            placeholder: "Lorem Ipsum",
+                            checkValidation: true,
+                            value: formik?.values?.subTask[0].name,
+                          }}
+                          onChange={(e) => {
+                            formik.setFieldValue(
+                              "subTask[0].name",
+                              e.target.value
+                            );
+                            handleTaskLabelChange(e, index);
+                          }}
+                        />
+                        <span>
+                          {task?.active === true ? (
+                            <img
+                              src={DoneIcon}
+                              onClick={(e) => onTaskActiveChange(e, index)}
+                            />
+                          ) : (
+                            <img
+                              src={ToDoIcon}
+                              onClick={(e) => onTaskActiveChange(e, index)}
+                            />
+                          )}
+                        </span>
+                      </Box>
+                    </FormGroup>
+                  );
+                })}
+              </Box>
+              <Box
+                sx={{
+                  paddingTop: "24px",
+                }}
+                className="AttachmentHead"
+              >
+                <FormGroup className="inputHead">
+                  <label htmlFor="Attachment" className="Attachment">
+                    Attachment
+                  </label>
+                  <Box className="uploadFileHead">
+                    <TextField
+                      fullWidth
+                      placeholder="Lorem Ipsum"
+                      value={file?.name}
+                      id="Attachment"
+                    />
+                    <Button
+                      variant="contained"
+                      component="label"
+                      className="uploadFileBtn"
+                    >
+                      Upload
+                      <input hidden multiple type="file" onChange={onUpload} />
+                    </Button>
+                  </Box>
+                </FormGroup>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  paddingTop: "40px",
+                }}
+              >
+                <Button
+                  className="SaveBtn"
+                  type="submit"
+                  onClick={(e) => {
+                    handleSave(e);
+                  }}
+                >
+                  save
+                </Button>
+              </Box>
+            </form>
           </DialogContent>
         </Dialog>
 

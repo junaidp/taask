@@ -27,6 +27,7 @@ import FilterMenuImg from "../../assets/icons/filterMenu.svg";
 // component
 import Loader from "../../components/Loader";
 import CustomPagination from "../../components/Pagination";
+import moment from "moment";
 // APIs Services
 import CustomerServices from "../../APIs/Customer";
 
@@ -109,7 +110,7 @@ const Portfolio = () => {
                   </Box>
                 </TableCell>
                 <TableCell>{item?.contacts[0].name}</TableCell>
-                <TableCell>{item?.customerSince}</TableCell>
+                <TableCell>{moment(item.customerSince).format("DD/MM/YYYY")}</TableCell>
                 <TableCell>{item?.customerStage}</TableCell>
                 <TableCell>{item?.location}</TableCell>
                 <TableCell>

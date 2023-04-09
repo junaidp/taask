@@ -52,6 +52,7 @@ const Resources = () => {
   let userId = localStorage.getItem("token");
   const [currentItems, setCurrentItems] = useState([]);
   const [allResources, setAllResources] = useState([]);
+  const [allLinks, setAllLinks] = useState([]);
   console.log(allResources, "allResources");
 
   const onUpload = (e) => {
@@ -131,13 +132,20 @@ const Resources = () => {
     initialValues: {
       id: "",
       link: "",
+      AttachmentsLink: "",
+      description: "",
       userId: userId,
     },
     validationSchema: customerValitadion,
   });
-  const handleSave = async () => {
+  const handleResourcesSave = async () => {
     setLoading(true);
-    const resourcesData = formik?.values;
+    const resourcesData = {
+      id: "",
+      link: formik?.values?.AttachmentsLink,
+      userId: formik?.values?.userId,
+    };
+    console.log(resourcesData, "resourcesData");
     const data = new FormData();
     data.append("file", file);
     const resourcesJson = JSON.stringify(resourcesData);
@@ -154,6 +162,20 @@ const Resources = () => {
         });
       });
   };
+  const handleLinksSave = async () => {
+    const data = {
+      link: formik.values.link,
+      description: formik.values.description,
+      userId: formik.values.userId,
+    };
+    await CustomerServices.saveLink(data)
+      .then((res) => {})
+      .catch((err) => {
+        toast.error(`${err.data.error}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
+  };
   const getResources = async () => {
     await CustomerServices.getResources(userId)
       .then((res) => {
@@ -162,11 +184,22 @@ const Resources = () => {
         }
       })
       .catch((err) => {
-        toast.error(`${err.data.error}`, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        console.log(err.data.error);
       });
   };
+
+  const getLinks = async () => {
+    await CustomerServices.getLinks(userId)
+      .then((res) => {
+        if (res) {
+          setAllLinks(res);
+        }
+      })
+      .catch((err) => {
+        console.log(err.data.error);
+      });
+  };
+
   const downloadFile = async (e, data) => {
     await CustomerServices.downloadFile(data.fileId)
       .then(async (res) => {
@@ -192,6 +225,7 @@ const Resources = () => {
 
   useEffect(() => {
     getResources();
+    getLinks();
   }, []);
 
   return (
@@ -226,7 +260,7 @@ const Resources = () => {
               </Button>
             </Box>
             <Box>
-              {attachments.map((item, index) => {
+              {allResources.map((item, index) => {
                 return (
                   <FormGroup className="inputHead">
                     <Box
@@ -240,12 +274,13 @@ const Resources = () => {
                         fullWidth
                         placeholder="Lorem Ipsum"
                         className="taskTitleInput"
-                        value={item.fileId.name}
+                        value={item.link}
+                        onClick={(e) => downloadFile(e, item)}
                       />
                       <span>
                         <img
                           src={DeleteIcon}
-                          onClick={(e) => deleteAttachment(e, item?.id)}
+                          // onClick={(e) => deleteAttachment(e, item?.id)}
                         />
                       </span>
                     </Box>
@@ -294,7 +329,7 @@ const Resources = () => {
               </Button>
             </Box>
             <Box>
-              {links.map((item) => {
+              {allLinks.map((item) => {
                 return (
                   <FormGroup className="inputHead">
                     <Box
@@ -314,7 +349,7 @@ const Resources = () => {
                       <span>
                         <img
                           src={DeleteIcon}
-                          onClick={(e) => deleteLinks(e, item?.id)}
+                          // onClick={(e) => deleteLinks(e, item?.id)}
                         />
                       </span>
                     </Box>
@@ -329,8 +364,8 @@ const Resources = () => {
               })}
             </Box>
             <CustomPagination
-              data={allResources}
-              count={allResources?.length}
+              data={allLinks}
+              count={allLinks?.length}
               setCurrentItems={setCurrentItems}
               customInput={false}
               customSelect={false}
@@ -340,19 +375,6 @@ const Resources = () => {
           </Box>
         </Grid>
       </Grid>
-      <Box className="resourcesListHead">
-        <List className="resourcesList">
-          <h4>All Resources</h4>
-          {allResources.map((item) => (
-            <ListItem disablePadding onClick={(e) => downloadFile(e, item)}>
-              <a href="#">{item?.link}</a>
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-      <Button className="btn saveResources" onClick={handleSave}>
-        save resources
-      </Button>
       <Dialog
         open={open1}
         TransitionComponent={Transition}
@@ -400,11 +422,20 @@ const Resources = () => {
                 paddingTop: "24px ",
               }}
             >
-              <textarea
-                name="description"
-                placeholder="Description"
-                onChange={(e) => setDescription(e.target.value)}
-              ></textarea>
+              <TextField
+                fullWidth
+                {...{
+                  formik,
+                  title: "AttachmentsLink",
+                  name: "AttachmentsLink",
+                  checkValidation: true,
+                  placeholder: "www.link.com",
+                  value: formik?.values?.AttachmentsLink,
+                }}
+                onChange={(e) => {
+                  formik.setFieldValue("AttachmentsLink", e.target.value);
+                }}
+              />
             </FormGroup>
           </Box>
           <Box
@@ -416,7 +447,7 @@ const Resources = () => {
           >
             <Button
               className="attachmentsSaveBtn"
-              onClick={() => handleUploadAttachment()}
+              onClick={handleResourcesSave}
             >
               Upload Attachment
             </Button>
@@ -468,7 +499,17 @@ const Resources = () => {
               <textarea
                 name="description"
                 placeholder="Description"
-                onChange={(e) => setLinkDescription(e.target.value)}
+                {...{
+                  formik,
+                  title: "link",
+                  name: "link",
+                  checkValidation: true,
+                  placeholder: "www.link.com",
+                  value: formik?.values?.description,
+                }}
+                onChange={(e) => {
+                  formik.setFieldValue("description", e.target.value);
+                }}
               ></textarea>
             </FormGroup>
           </Box>
@@ -479,7 +520,7 @@ const Resources = () => {
               paddingTop: "24px",
             }}
           >
-            <Button className="linksSaveBtn" onClick={() => handleLinks()}>
+            <Button className="linksSaveBtn" onClick={() => handleLinksSave()}>
               Upload Links
             </Button>
           </Box>
