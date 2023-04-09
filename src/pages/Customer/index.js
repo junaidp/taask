@@ -387,7 +387,6 @@ let Customer = () => {
       ],
     },
     onSubmit: async () => {
-      alert("helloo");
       setLoading(true);
       const customer = formik?.values;
       const data = new FormData();
