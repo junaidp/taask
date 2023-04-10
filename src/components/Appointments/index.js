@@ -70,10 +70,10 @@ const Appointments = ({ allMeetings }) => {
           {currentItems?.map((item, index) => (
             <TableRow>
               <TableCell component="th" scope="row">
-                <Box className="userprofile">{item.meetingName}</Box>
+                <Box className="userprofile">{item?.meetingName}</Box>
               </TableCell>
-              <TableCell>{item.time}</TableCell>
-              <TableCell>{moment(item.dueDate).format("DD/MM/YYYY")}</TableCell>
+              <TableCell>{item?.time}</TableCell>
+              <TableCell>{item?.dueDate}</TableCell>
             </TableRow>
           ))}
         </TableBody>

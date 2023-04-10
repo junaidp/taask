@@ -23,7 +23,9 @@ import {
   Menu,
   FormControl,
   ListItemText,
+  Snackbar,
 } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import { DataGrid } from "@mui/x-data-grid";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -37,6 +39,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { DesktopTimePicker } from "@mui/x-date-pickers/DesktopTimePicker";
 import { v4 as uuidv4 } from "uuid";
+import { TaskSchema } from "../../Validation";
 import CustomPagination from "../../components/Pagination";
 import EastRoundedIcon from "@mui/icons-material/EastRounded";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
@@ -124,29 +127,30 @@ const CustomerTasks = (props) => {
   const [allCustomers, setAllCustomers] = useState([]);
   const [searchCustomer, setSearchCustomer] = useState();
   const [customerTask, setCustomerTask] = useState([]);
-  const [value, setValue] = React.useState(dayjs("2023-12-02"));
-  const [eventReminder, setEventReminder] = React.useState(dayjs("2023-5-3"));
-  const [dateReminder, setDateReminder] = React.useState(dayjs("2023-5-11"));
-  const [timeReminder, setTimeReminder] = React.useState(
-    dayjs("2022-04-17T15:30")
-  );
-  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = useState(dayjs());
+  const [duaDate, setDuaDate] = useState(dayjs(""));
+  const [eventReminder, setEventReminder] = useState(dayjs("2023-5-3"));
+  const [dateReminder, setDateReminder] = useState(dayjs("2023-5-11"));
+  const [timeReminder, setTimeReminder] = useState(dayjs("2022-04-17T15:30"));
+  const [open, setOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [file, setFile] = useState(null);
   const [tableData, setTableData] = useState([]);
-  console.log(tableData, "saldh")
+  console.log(tableData, "saldh");
   const [selectAll, setSelectAll] = useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open1 = Boolean(anchorEl);
-  const [openArchive, setOpenArchive] = React.useState(false);
-  const [openReminder, setOpenReminder] = React.useState(false);
-  const [addRemainderOpen, setAddRemainderOpen] = React.useState(false);
+  const [openArchive, setOpenArchive] = useState(false);
+  const [openReminder, setOpenReminder] = useState(false);
+  const [addRemainderOpen, setAddRemainderOpen] = useState(false);
   const [selectedFields, setSelectedFields] = useState([]);
   const [newTaskCustomers, setNewTaskCustomers] = useState([]);
   const [subtasks, setSubtasks] = useState([]);
   const [currentItems, setCurrentItems] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
 
   const setUpdataForTable = (tasks) => {
+    console.log(tasks, "shdlkahd");
     const rows = tasks?.map((item, index) => {
       return {
         id: index + 1,
@@ -164,13 +168,16 @@ const CustomerTasks = (props) => {
         customerName: item?.customer?.name,
         website: item?.customer?.website,
         fileId: item?.fileId,
-        // subTaskName: item.subTask[0].name,
+        subTaskName:
+          item?.subTask &&
+          item?.subTask?.map((ii) => {
+            return ii.name;
+          })[0],
         taskName: item?.taskName,
         dueDate: item?.dueDate,
         time: item?.time,
       };
     });
-    console.log(tasks,"asjkdh")
     setTableData(rows);
   };
 
@@ -257,7 +264,7 @@ const CustomerTasks = (props) => {
     let value = newValue;
     const newRow = {
       ...row?.row,
-      DueDate: value,
+      dueDate: value,
     };
     const updatedItems = tableData?.filter((item) => item.id !== row?.id);
     updatedItems?.unshift(newRow);
@@ -300,7 +307,6 @@ const CustomerTasks = (props) => {
     const obj = {
       id: uuidv4(),
       label: "",
-      active: false,
     };
     setSubtasks((oldState) => [...oldState, obj]);
   };
@@ -315,23 +321,16 @@ const CustomerTasks = (props) => {
       })
     );
   };
-
-  const onTaskActiveChange = (e, index) => {
-    setSubtasks(
-      subtasks.map((obj, i) => {
-        if (i === index) {
-          return { ...obj, active: !obj?.active };
-        }
-        return obj;
-      })
-    );
+  const handlePopupClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setShowPopup(false);
   };
 
-  const customerValitadion = Yup.object().shape({
-    name: Yup.string().required(),
-  });
   const formik = useFormik({
     enableReinitialize: false,
+    validationSchema: TaskSchema,
     initialValues: {
       subTask: [
         {
@@ -340,9 +339,34 @@ const CustomerTasks = (props) => {
       ],
       taskName: "",
       customerId: "",
-      // dueDate: "04/04/2022"
+      dueDate: "",
     },
-    validationSchema: customerValitadion,
+    onSubmit: async () => {
+      const task = formik?.values;
+      const data = new FormData();
+      if (file) {
+        data.append("file", file);
+      } else {
+        setShowPopup(true);
+        return;
+      }
+      const customerJson = JSON.stringify(task);
+      const blob = new Blob([customerJson], { type: "application/json" });
+      data.append("task", blob);
+      await CustomerServices.saveTask(data)
+        .then((res) => {
+          if (res) {
+            getAllTasks()
+            toast.success("task saved", {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err.data.error);
+        });
+      setOpen(false);
+    },
   });
   console.log(formik.values, "skjdakjdj");
 
@@ -351,41 +375,20 @@ const CustomerTasks = (props) => {
       .then((res) => {
         if (res) {
           setAllCustomers(res);
-          console.log("All customer here");
         }
       })
       .catch((err) => {
         console.log(err.data.error);
       });
   };
-  const handleSave = async (e) => {
-    e.preventDefault();
-    const task = formik?.values;
-    const data = new FormData();
-    data.append("file", file);
-    const customerJson = JSON.stringify(task);
-    const blob = new Blob([customerJson], { type: "application/json" });
-    data.append("task", blob);
-    await CustomerServices.saveTask(data)
-      .then((res) => {
-        if (res) {
-          toast.success("task saved", {
-            position: toast.POSITION.TOP_RIGHT,
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err.data.error);
-      });
-    setOpen(false);
-  };
+
   const getAllTasks = async () => {
     await CustomerServices.getAllTasks().then((res) => {
-        if (res) {
-          setCustomerTask(res);
-          setUpdataForTable(res);
-        }
-      })
+      if (res) {
+        setCustomerTask(res);
+        setUpdataForTable(res);
+      }
+    });
   };
 
   useEffect(() => {
@@ -507,6 +510,7 @@ const CustomerTasks = (props) => {
         </React.Fragment>
       ),
       renderCell: (params) => {
+        console.log(params?.value, "parrrrr");
         return (
           <FormGroup className="customertaskDatePicker">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -514,7 +518,7 @@ const CustomerTasks = (props) => {
                 orientation="portrait"
                 displayStaticWrapperAs="desktop"
                 openTo="day"
-                value={params}
+                value={moment(params.value, "DD/MM/YYYY").toISOString()}
                 showToolbar={false}
                 components={{
                   OpenPickerIcon: CustomCalendarIcon,
@@ -801,42 +805,31 @@ const CustomerTasks = (props) => {
               </Box>
               <Box
                 sx={{
-                  paddingTop: "24px",
+                  paddingTop: "14px",
                 }}
               >
                 <FormGroup className="inputHead">
                   <label htmlFor="taskTitle" className="taskTitle">
                     Task Title
                   </label>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
+                  <TextField
+                    fullWidth
+                    className="taskTitleInput"
+                    {...{
+                      formik,
+                      title: "taskTitle",
+                      name: "taskTitle",
+                      placeholder: "Lorem Ipsum",
+                      checkValidation: true,
+                      value: formik?.values?.taskName,
                     }}
-                  >
-                    <span>
-                      <Checkbox />
-                    </span>
-                    <TextField
-                      fullWidth
-                      className="taskTitleInput"
-                      {...{
-                        formik,
-                        title: "taskTitle",
-                        name: "taskTitle",
-                        placeholder: "Lorem Ipsum",
-                        checkValidation: true,
-                        value: formik?.values?.taskName,
-                      }}
-                      onChange={(e) => {
-                        formik.setFieldValue("taskName", e.target.value);
-                      }}
-                    />
-                    <span title="Complete">
-                      <img src={ToDoIcon} />
-                    </span>
-                  </Box>
+                    onChange={(e) => {
+                      formik.setFieldValue("taskName", e.target.value);
+                    }}
+                  />
+                  {formik.errors.taskName && (
+                    <p className="input-error">{formik.errors.taskName}</p>
+                  )}
                 </FormGroup>
                 <FormGroup className="inputHead">
                   <label htmlFor="taskDescription" className="taskDescription">
@@ -868,56 +861,37 @@ const CustomerTasks = (props) => {
                       <label htmlFor="Subtask1" className="Subtask1">
                         Subtask {index + 1}
                       </label>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
+                      <TextField
+                        fullWidth
+                        className="taskTitleInput"
+                        {...{
+                          formik,
+                          title: "subTask",
+                          name: "subTask",
+                          placeholder: "Lorem Ipsum",
+                          checkValidation: true,
+                          value: formik?.values?.subTask[0].name,
                         }}
-                      >
-                        <span>
-                          <Checkbox />
-                        </span>
-                        <TextField
-                          fullWidth
-                          className="taskTitleInput"
-                          {...{
-                            formik,
-                            title: "subTask",
-                            name: "subTask",
-                            placeholder: "Lorem Ipsum",
-                            checkValidation: true,
-                            value: formik?.values?.subTask[0].name,
-                          }}
-                          onChange={(e) => {
-                            formik.setFieldValue(
-                              "subTask[0].name",
-                              e.target.value
-                            );
-                            handleTaskLabelChange(e, index);
-                          }}
-                        />
-                        <span>
-                          {task?.active === true ? (
-                            <img
-                              src={DoneIcon}
-                              onClick={(e) => onTaskActiveChange(e, index)}
-                            />
-                          ) : (
-                            <img
-                              src={ToDoIcon}
-                              onClick={(e) => onTaskActiveChange(e, index)}
-                            />
-                          )}
-                        </span>
-                      </Box>
+                        onChange={(e) => {
+                          formik.setFieldValue(
+                            "subTask[0].name",
+                            e.target.value
+                          );
+                          handleTaskLabelChange(e, index);
+                        }}
+                      />
+                      {formik.errors.subTask && formik.errors.subTask[0] && (
+                        <p className="input-error">
+                          {formik.errors.subTask[0].name}
+                        </p>
+                      )}
                     </FormGroup>
                   );
                 })}
               </Box>
               <Box
                 sx={{
-                  paddingTop: "24px",
+                  paddingTop: "14px",
                 }}
                 className="AttachmentHead"
               >
@@ -942,19 +916,52 @@ const CustomerTasks = (props) => {
                     </Button>
                   </Box>
                 </FormGroup>
+                <FormGroup className="inputHead">
+                  <label htmlFor="duaDate" className="duaDate">
+                    Due Date
+                  </label>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      orientation="portrait"
+                      displayStaticWrapperAs="desktop"
+                      openTo="day"
+                      value={duaDate}
+                      showToolbar={false}
+                      components={{
+                        OpenPickerIcon: CustomCalendarIcon,
+                        RightArrowButton: ArrowRightRoundedIcon,
+                        LeftArrowButton: ArrowLeftRoundedIcon,
+                      }}
+                      onChange={(newValue) => {
+                        const isoString = newValue.toISOString();
+                        setDuaDate(newValue);
+                        formik.setFieldValue("dueDate", isoString);
+                      }}
+                      showDaysOutsideCurrentMonth
+                      dayOfWeekFormatter={(day) => getDay(day)}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                    {formik.errors.dueDate && (
+                      <p className="input-error">{formik.errors.dueDate}</p>
+                    )}
+                  </LocalizationProvider>
+                </FormGroup>
               </Box>
               <Box
                 sx={{
                   display: "flex",
                   justifyContent: "center",
-                  paddingTop: "40px",
+                  paddingTop: "20px",
                 }}
               >
                 <Button
                   className="SaveBtn"
-                  type="submit"
-                  onClick={(e) => {
-                    handleSave(e);
+                  content="save"
+                  // onClick={(e) => {
+                  //   handleSave(e);
+                  // }}
+                  onClick={() => {
+                    formik.handleSubmit();
                   }}
                 >
                   save
@@ -1100,6 +1107,20 @@ const CustomerTasks = (props) => {
             <Button className="reminderBtn">save</Button>
           </DialogContent>
         </Dialog>
+        <Snackbar
+        open={showPopup}
+        autoHideDuration={4000}
+        onClose={handlePopupClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <MuiAlert
+          onClose={handlePopupClose}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          Please select a Attachment.
+        </MuiAlert>
+      </Snackbar>
         <ToastContainer />
       </Box>
     </Box>

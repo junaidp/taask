@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./project.css";
 import "../../index.css";
 import {
@@ -292,38 +292,28 @@ const statusOptions = [
   { value: "done", label: "Done" },
 ];
 
-const RelatedCustomerOptions = [
-  { value: "allCustomer", label: "All Customer" },
-  { value: "contractCustomer", label: "Contract Customer" },
-  { value: "onBoardingCustomer", label: "Onboarding Customer" },
-  { value: "adoptionCustomer", label: "Adoption Customer" },
-  { value: "renewalCustomer", label: "Renewal Customer" },
-  { value: "growthCustomer", label: "Growth Customer" },
-  { value: "multiSelectOption", label: "Multi-Select Option" },
-];
 const Projects = (props) => {
-  const [value, setValue] = React.useState(dayjs("2023-12-02"));
-  const [eventReminder, setEventReminder] = React.useState(dayjs("2023-5-3"));
-  const [dateReminder, setDateReminder] = React.useState(dayjs("2023-5-11"));
-  const [timeReminder, setTimeReminder] = React.useState(
-    dayjs("2022-04-17T15:30")
-  );
-  const [open, setOpen] = React.useState(false);
-  const [open1, setOpen1] = React.useState(false);
-  const [open2, setOpen2] = React.useState(false);
+  const [value, setValue] = useState(dayjs("2023-12-02"));
+  const [eventReminder, setEventReminder] = useState(dayjs("2023-5-3"));
+  const [dateReminder, setDateReminder] = useState(dayjs("2023-5-11"));
+  const [timeReminder, setTimeReminder] = useState(dayjs("2022-04-17T15:30"));
+  const [duaDate, setDuaDate] = useState(dayjs("2023-12-02"));
+  const [open, setOpen] = useState(false);
+  const [open1, setOpen1] = useState(false);
+  const [open2, setOpen2] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [resources, setResources] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [file, setFile] = useState(null);
   const [tableData, setTableData] = useState([]);
-  const [openReminder, setOpenReminder] = React.useState(false);
-  const [addRemainderOpen, setAddRemainderOpen] = React.useState(false);
-  const [openArchive, setOpenArchive] = React.useState(false);
+  const [openReminder, setOpenReminder] = useState(false);
+  const [addRemainderOpen, setAddRemainderOpen] = useState(false);
+  const [openArchive, setOpenArchive] = useState(false);
   const [selectedFields, setSelectedFields] = useState([]);
   const [newTaskCustomers, setNewTaskCustomers] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [filteredCustomers, setFilteredCustomers] = useState(rows);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open3 = Boolean(anchorEl);
   const [subtasks, setSubtasks] = useState([]);
   const [tasksTitle, setTasksTitle] = useState("");
@@ -598,35 +588,6 @@ const Projects = (props) => {
       ),
     },
     {
-      field: "RelatedCustomer",
-      headerName: "Related Customer",
-      sortable: false,
-      disableColumnMenu: true,
-      width: 200,
-      renderHeader: () => (
-        <React.Fragment>
-          <span>Related Customer</span>
-          <img src={FilterImg} className="filterImg" />
-        </React.Fragment>
-      ),
-      renderCell: (params) => {
-        return (
-          <Select
-            defaultValue={params.value === "" ? "allCustomer" : params.value}
-            className="relatedCustomerHead"
-            onChange={(e) => onStatusChange(e, params)}
-          >
-            <p className="para">Related Customer</p>
-            {RelatedCustomerOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-        );
-      },
-    },
-    {
       field: "Resources",
       headerName: "Resources",
       sortable: false,
@@ -829,19 +790,13 @@ const Projects = (props) => {
       align: "right",
     },
   ];
+
   return (
     <Box className="project">
       <Box className="projects">
         <Box className="topHead">
           <Box>
-            <Button
-              className="btn"
-              id="basic-button"
-              aria-controls={open3 ? "basic-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open3 ? "true" : undefined}
-              onClick={handleClick1}
-            >
+            <Button className="btn" onClick={handleClickOpenModel}>
               <img src={PlusIcon} alt="not found" /> New Project
             </Button>
             {selectedFields?.length === tableData?.length &&
@@ -850,74 +805,6 @@ const Projects = (props) => {
                 <img src={DeleteIcon} alt="not found" />
               </span>
             ) : null}
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={open3}
-              onClose={handleClose1}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
-              className="selectCustomerMenu"
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  overflow: "visible",
-                  filter: "drop-shadow(0px 4px 15px rgba(58, 96, 110, 0.15))",
-                  width: "300px",
-                  "&:before": {
-                    content: '""',
-                    display: "block",
-                    position: "absolute",
-                    top: 0,
-                    right: 10,
-                    width: 32,
-                    borderRadius: "4px",
-                    height: 32,
-                    bgcolor: "background.paper",
-                    transform: "translateY(-5px) rotate(45deg)",
-                    zIndex: 0,
-                  },
-                },
-              }}
-              transformOrigin={{ horizontal: "right", vertical: "top" }}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-            >
-              <h3>Select Customer(s)</h3>
-              <TextField
-                variant="outlined"
-                fullWidth
-                onChange={handleFilterChange}
-              />
-              <FormControl sx={{ width: 300 }} className="selectCustomer">
-                <MenuItem value={"selectAll"}>
-                  <Checkbox
-                    checked={
-                      newTaskCustomers?.length === filteredCustomers?.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                  <ListItemText primary={"Select All"} />
-                </MenuItem>
-                {filteredCustomers.map((user) => (
-                  <MenuItem
-                    value={user.customerName}
-                    onClick={() => handleClickOpenModel(user)}
-                  >
-                    <Checkbox
-                      checked={newTaskCustomers?.includes(user?.id)}
-                      onChange={(e) => handleSelectCustomer(e, user?.id)}
-                    />
-                    <Avatar
-                      src={user?.Customer?.img}
-                      alt={user?.Customer?.img}
-                      className="avatar"
-                    />
-                    <ListItemText primary={user?.Customer?.name} />
-                  </MenuItem>
-                ))}
-              </FormControl>
-            </Menu>
           </Box>
           <Box>
             <span>
@@ -1062,67 +949,84 @@ const Projects = (props) => {
         >
           <DialogTitle className="titleHead">Project task </DialogTitle>
           <DialogContent>
-            <Box className="topHead">
-              <Box>
-                <h6>
-                  Customer ID
-                  <span>
-                    {selectedRow?.id < 10
-                      ? `0${selectedRow?.id}`
-                      : selectedRow?.id}
-                  </span>
-                </h6>
-              </Box>
-              <Box>
-                <h6>
-                  Customer Name <span>{selectedRow?.Customer?.name}</span>
-                </h6>
-              </Box>
-              <Box>
-                <h6>
-                  Customer Stage <span>{selectedRow?.CustomerStage}</span>
-                </h6>
-              </Box>
-              <Box className="actionsHead">
-                <img src={ToDoIcon} />
-                <img src={DeleteIcon} className="DeleteIcon" />
-              </Box>
-              <Box className="badgesHead">
-                <Badge badgeContent={""} className="toDoBadge"></Badge>
-                <Badge badgeContent={""} className="doingBadge"></Badge>
-                <Badge badgeContent={""} className="doneBadge"></Badge>
-              </Box>
-            </Box>
+            <Button
+              className="btn"
+              id="basic-button"
+              aria-controls={open3 ? "basic-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open3 ? "true" : undefined}
+              onClick={(e) => handleClick1(e)}
+            >
+              <img src={PlusIcon} alt="not found" /> select customer
+            </Button>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open3}
+              onClose={handleClose1}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+              className="selectCustomerMenu"
+              PaperProps={{
+                elevation: 0,
+                sx: {
+                  overflow: "visible",
+                  filter: "drop-shadow(0px 4px 15px rgba(58, 96, 110, 0.15))",
+                  width: "300px",
+                },
+              }}
+              transformOrigin={{ horizontal: "left", vertical: "top" }}
+              anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+            >
+              <h3>Select Customer(s)</h3>
+              <TextField
+                variant="outlined"
+                fullWidth
+                onChange={handleFilterChange}
+              />
+              <FormControl sx={{ width: 300 }} className="selectCustomer">
+                <MenuItem value={"selectAll"}>
+                  <Checkbox
+                    checked={
+                      newTaskCustomers?.length === filteredCustomers?.length
+                    }
+                    onChange={handleSelectAll}
+                  />
+                  <ListItemText primary={"Select All"} />
+                </MenuItem>
+                {filteredCustomers.map((user) => (
+                  <MenuItem
+                    value={user.customerName}
+                  >
+                    <Checkbox
+                      checked={newTaskCustomers?.includes(user?.id)}
+                      onChange={(e) => handleSelectCustomer(e, user?.id)}
+                    />
+                    <Avatar
+                      src={user?.Customer?.img}
+                      alt={user?.Customer?.img}
+                      className="avatar"
+                    />
+                    <ListItemText primary={user?.Customer?.name} />
+                  </MenuItem>
+                ))}
+              </FormControl>
+            </Menu>
             <Box
               sx={{
-                paddingTop: "24px",
+                paddingTop: "14px",
               }}
             >
               <FormGroup className="inputHead">
                 <label htmlFor="taskTitle" className="taskTitle">
                   Task Title
                 </label>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <span>
-                    <Checkbox />
-                  </span>
-                  <TextField
-                    fullWidth
-                    placeholder="Lorem Ipsum"
-                    id="taskTitle"
-                    className="taskTitleInput"
-                    onChange={(e) => setTasksTitle(e.target.value)}
-                  />
-                  <span>
-                    <img src={ToDoIcon} />
-                  </span>
-                </Box>
+                <TextField
+                  fullWidth
+                  className="taskTitleInput"
+                  placeholder="Lorem Ipsum"
+                />
               </FormGroup>
               <FormGroup className="inputHead">
                 <label htmlFor="taskDescription" className="taskDescription">
@@ -1154,44 +1058,18 @@ const Projects = (props) => {
                     <label htmlFor="Subtask1" className="Subtask1">
                       Subtask {index + 1}
                     </label>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <span>
-                        <Checkbox />
-                      </span>
-                      <TextField
-                        fullWidth
-                        placeholder="Lorem Ipsum"
-                        id="Subtask1"
-                        className="taskTitleInput"
-                        onChange={(e) => handleTaskLabelChange(e, index)}
-                      />
-                      <span>
-                        {task?.active === true ? (
-                          <img
-                            src={DoneIcon}
-                            onClick={(e) => onTaskActiveChange(e, index)}
-                          />
-                        ) : (
-                          <img
-                            src={ToDoIcon}
-                            onClick={(e) => onTaskActiveChange(e, index)}
-                          />
-                        )}
-                      </span>
-                    </Box>
+                    <TextField
+                      fullWidth
+                      className="taskTitleInput"
+                      placeholder="Lorem Ipsum"
+                    />
                   </FormGroup>
                 );
               })}
             </Box>
             <Box
               sx={{
-                paddingTop: "24px",
+                paddingTop: "14px",
               }}
               className="AttachmentHead"
             >
@@ -1212,25 +1090,51 @@ const Projects = (props) => {
                     className="uploadFileBtn"
                   >
                     Upload
-                    <input
-                      hidden
-                      accept="image/*"
-                      multiple
-                      type="file"
-                      onChange={onUpload}
-                    />
+                    <input hidden multiple type="file" onChange={onUpload} />
                   </Button>
                 </Box>
+              </FormGroup>
+              <FormGroup className="inputHead">
+                <label htmlFor="duaDate" className="duaDate">
+                  Due Date
+                </label>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    orientation="portrait"
+                    displayStaticWrapperAs="desktop"
+                    openTo="day"
+                    value={duaDate}
+                    showToolbar={false}
+                    components={{
+                      OpenPickerIcon: CustomCalendarIcon,
+                      RightArrowButton: ArrowRightRoundedIcon,
+                      LeftArrowButton: ArrowLeftRoundedIcon,
+                    }}
+                    onChange={(newValue) => {
+                      const isoString = newValue.toISOString();
+                      setDuaDate(newValue);
+                    }}
+                    showDaysOutsideCurrentMonth
+                    dayOfWeekFormatter={(day) => getDay(day)}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
               </FormGroup>
             </Box>
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "center",
-                paddingTop: "40px",
+                paddingTop: "20px",
               }}
             >
-              <Button className="SaveBtn" onClick={handleSubmitprojecttask}>
+              <Button
+                className="SaveBtn"
+                content="save"
+                onClick={(e) => {
+                  handleClickOpenProjectNameModel(e);
+                }}
+              >
                 save
               </Button>
             </Box>

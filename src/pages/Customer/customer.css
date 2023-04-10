@@ -10,6 +10,17 @@
 .customer .customTableHead {
   margin-bottom: 26px !important;
 }
+.customer .profileHead{
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px !important;
+}
+.profile{
+  border: 2px dotted #2b5b6d !important;
+}
+.profileAvatar{
+  border: 2px solid #2b5b6d !important;
+}
 .customer .inputGroup {
   display: flex;
   justify-content: space-between;

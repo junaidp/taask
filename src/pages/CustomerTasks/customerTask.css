@@ -116,13 +116,13 @@
   font-size: 18px !important;
   text-transform: capitalize;
   color: #1c3035;
-  padding: 0 0 16px !important;
+  padding: 0 0 14px !important;
 }
 .customerTaskModel .topHead {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 27px 0;
+  padding: 20px 0;
   border-bottom: 1px solid #ebebeb;
 }
 .customerTaskModel .topHead h6 {
@@ -202,9 +202,6 @@
 .customerTaskModel .inputHead .MuiButtonBase-root {
   padding: 0 !important;
 }
-.customerTaskModel .taskTitleInput {
-  margin: 0 16px !important;
-}
 .customerTaskModel .inputHead textarea {
   height: 80px;
   background: #ffffff;
@@ -229,7 +226,14 @@
 .customerTaskModel .AttachmentHead label {
   color: #152428 !important;
 }
-
+.customerTaskModel .AttachmentHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+.customerTaskModel .AttachmentHead .inputHead{
+  width: 48% !important;
+}
 .customerTaskModel .SubtaskHead h5 {
   display: flex;
   align-items: center;

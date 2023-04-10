@@ -3,15 +3,29 @@ import moment from "moment";
 
 export const customerSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
-  category: yup.string().required("category is required"),
-  customerSince: yup.string().required("customer since is required"),
-  customerStage: yup.string().required("customer stage is required"),
+  category: yup.string().required("Category is required"),
+  customerSince: yup.string().required("Customer since is required"),
+  customerStage: yup.string().required("Customer stage is required"),
   contacts: yup.array().of(
     yup.object().shape({
-      name: yup.string().required("contacts name is required"),
-      jobTitle: yup.string().required("job title is required"),
-      emailAddress: yup.string().required("email address is required"),
-      // location: yup.string().required("location is required"),
+      name: yup.string().required("Contact name is required"),
+      jobTitle: yup.string().required("Job title is required"),
+      emailAddress: yup.string().email("Invalid email address")
+        .required("Email address is required")
+        .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+          "Invalid email address format"),
+      location: yup.string().required("Location is required"),
     })
   ),
+});
+
+
+export const TaskSchema = yup.object().shape({
+  taskName: yup.string().required("task title is required"),
+  subTask: yup.array().of(
+    yup.object().shape({
+      name: yup.string().required("subtask name is required"),
+    })
+  ),
+  dueDate: yup.string().required("Due Date is required"),
 });

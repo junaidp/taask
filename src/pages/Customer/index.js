@@ -21,7 +21,12 @@ import {
   DialogActions,
   List,
   ListItem,
+  Avatar,
+  IconButton,
+  Snackbar,
 } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import { customerSchema } from "../../Validation";
@@ -317,6 +322,21 @@ let Customer = () => {
   const [link, setlink] = useState();
   const [linkDescription, setLinkDescription] = useState();
   const [Links, setLinks] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+
+  const [photo, setPhoto] = useState(null);
+
+  const handlePhotoUpload = (event) => {
+    const file = event.target.files[0];
+    setPhoto(URL.createObjectURL(file));
+  };
+
+  const handlePopupClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setShowPopup(false);
+  };
 
   const onUpload = (e) => {
     setFile(e?.target?.files[0]);
@@ -390,7 +410,13 @@ let Customer = () => {
       setLoading(true);
       const customer = formik?.values;
       const data = new FormData();
-      data.append("file", file);
+      if (file) {
+        data.append("file", file);
+      } else {
+        setShowPopup(true);
+        setLoading(false);
+        return;
+      }
       const customerJson = JSON.stringify(customer);
       const blob = new Blob([customerJson], { type: "application/json" });
       data.append("customer", blob);
@@ -417,6 +443,37 @@ let Customer = () => {
     <Box className="customer">
       <Grid container>
         <Grid item xs={8} className="customerPart1">
+          <Box className="profileHead">
+            <label htmlFor="photo-upload">
+              <input
+                id="photo-upload"
+                className="photo-upload"
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handlePhotoUpload}
+              />
+              <IconButton
+                sx={{ width: 80, height: 80 }}
+                component="span"
+                color="primary"
+                className="profile"
+              >
+                {photo ? (
+                  <Avatar
+                    sx={{ width: 80, height: 80 }}
+                    alt="Customer photo"
+                    src={photo}
+                    className="profileAvatar"
+                  />
+                ) : (
+                  <AddPhotoAlternateIcon
+                    sx={{ fontSize: 48, color: "#2b5b6d" }}
+                  />
+                )}
+              </IconButton>
+            </label>
+          </Box>
           <Box className="inputGroup">
             <FormGroup className="inputHead">
               <label htmlFor="Name" className="Name">
@@ -696,6 +753,11 @@ let Customer = () => {
                         );
                       }}
                     />
+                    {formik.errors.contacts && formik.errors.contacts[0] && (
+                      <p className="input-error">
+                        {formik.errors.contacts[0].jobTitle}
+                      </p>
+                    )}
                   </FormGroup>
                   <FormGroup className="inputHead">
                     <label htmlFor="location">Location</label>
@@ -740,6 +802,11 @@ let Customer = () => {
                         </MenuItem>
                       ))}
                     </TextField>
+                    {formik.errors.contacts && formik.errors.contacts[0] && (
+                      <p className="input-error">
+                        {formik.errors.contacts[0].location}
+                      </p>
+                    )}
                   </FormGroup>
                 </Box>
               </Box>
@@ -953,6 +1020,20 @@ let Customer = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={showPopup}
+        autoHideDuration={4000}
+        onClose={handlePopupClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <MuiAlert
+          onClose={handlePopupClose}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          Please select a Attachment.
+        </MuiAlert>
+      </Snackbar>
       <ToastContainer />
       <Loader loaderValue={loading} />
     </Box>
