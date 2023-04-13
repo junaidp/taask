@@ -29,6 +29,7 @@ import MuiAlert from "@mui/material/Alert";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { customerSchema } from "../../Validation";
 
 // conponent
@@ -323,12 +324,20 @@ let Customer = () => {
   const [linkDescription, setLinkDescription] = useState();
   const [Links, setLinks] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-
   const [photo, setPhoto] = useState(null);
+  const [showDeleteIcon, setShowDeleteIcon] = useState(false);
+  console.log(photo, "skajdk")
 
   const handlePhotoUpload = (event) => {
     const file = event.target.files[0];
     setPhoto(URL.createObjectURL(file));
+    setShowDeleteIcon(true);
+    event.target.value = "";
+  };
+
+  const handleDeletePhoto = () => {
+    setPhoto(null);
+    setShowDeleteIcon(false);
   };
 
   const handlePopupClose = (event, reason) => {
@@ -417,6 +426,11 @@ let Customer = () => {
         setLoading(false);
         return;
       }
+      if (photo) {
+        const photoFile = await fetch(photo).then((res) => res.blob());
+        data.append("image", photoFile); 
+      }
+      
       const customerJson = JSON.stringify(customer);
       const blob = new Blob([customerJson], { type: "application/json" });
       data.append("customer", blob);
@@ -460,12 +474,27 @@ let Customer = () => {
                 className="profile"
               >
                 {photo ? (
-                  <Avatar
-                    sx={{ width: 80, height: 80 }}
-                    alt="Customer photo"
-                    src={photo}
-                    className="profileAvatar"
-                  />
+                  <>
+                    <Avatar
+                      sx={{ width: 80, height: 80 }}
+                      alt="Customer photo"
+                      src={photo}
+                      className="profileAvatar"
+                    />
+                    {showDeleteIcon && (
+                      <IconButton
+                        sx={{
+                          position: "absolute",
+                          top: 18,
+                          right: -40,
+                          color: "red",
+                        }}
+                        onClick={handleDeletePhoto}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    )}
+                  </>
                 ) : (
                   <AddPhotoAlternateIcon
                     sx={{ fontSize: 48, color: "#2b5b6d" }}

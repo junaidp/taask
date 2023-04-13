@@ -21,14 +21,15 @@ function getWithBody(url, data, token) {
   });
 }
 
-function post({ url, data, token }) {
+function post({ url, data, token,contentType }) {
   return request({
     method: "POST",
     url,
     data,
     headers: {
       // Authorization: `Bearer ${token}`,
-      'Content-Type': 'multipart/form-data'
+      ...(contentType == "multipart/form-data") && {'Content-Type': 'multipart/form-data'},
+      ...(contentType == "application/json") && {'Content-Type': 'application/json'}
     },
   });
 }

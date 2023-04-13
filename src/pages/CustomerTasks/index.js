@@ -123,6 +123,9 @@ const AssignTaskColumn = (props) => {
     </Select>
   );
 };
+
+
+
 const CustomerTasks = (props) => {
   const [allCustomers, setAllCustomers] = useState([]);
   const [searchCustomer, setSearchCustomer] = useState();
@@ -356,7 +359,7 @@ const CustomerTasks = (props) => {
       await CustomerServices.saveTask(data)
         .then((res) => {
           if (res) {
-            getAllTasks()
+            getAllTasks();
             toast.success("task saved", {
               position: toast.POSITION.TOP_RIGHT,
             });
@@ -540,13 +543,13 @@ const CustomerTasks = (props) => {
     },
     {
       field: "AssignTask",
-      headerName: "Assign(ed) Task",
+      headerName: "Assigned Task",
       sortable: false,
       disableColumnMenu: true,
       flex: 1,
       renderHeader: () => (
         <React.Fragment>
-          <span>Assign(ed) Task</span>
+          <span>Assigned Task</span>
           <img src={FilterImg} className="filterImg" />
         </React.Fragment>
       ),
@@ -1108,19 +1111,19 @@ const CustomerTasks = (props) => {
           </DialogContent>
         </Dialog>
         <Snackbar
-        open={showPopup}
-        autoHideDuration={4000}
-        onClose={handlePopupClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <MuiAlert
+          open={showPopup}
+          autoHideDuration={4000}
           onClose={handlePopupClose}
-          severity="error"
-          sx={{ width: "100%" }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
-          Please select a Attachment.
-        </MuiAlert>
-      </Snackbar>
+          <MuiAlert
+            onClose={handlePopupClose}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            Please select a Attachment.
+          </MuiAlert>
+        </Snackbar>
         <ToastContainer />
       </Box>
     </Box>

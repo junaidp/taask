@@ -25,7 +25,9 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import * as Yup from "yup";
+import moment from "moment";
 import dayjs from "dayjs";
+import { useFormik } from "formik";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -37,6 +39,10 @@ import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import { v4 as uuidv4 } from "uuid";
 import CustomPagination from "../../components/Pagination";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+// APIs Services
+import CustomerServices from "../../APIs/Customer";
 // images
 import DummiAvatar from "../../assets/icons/dummiAvatar.svg";
 import CalenderIcon from "../../assets/icons/calender.svg";
@@ -63,7 +69,6 @@ const getDay = (day) => {
   const dayIndex = dayNames.findIndex((name) => name.startsWith(day));
   return dayIndex > -1 ? dayNames[dayIndex] : "";
 };
-
 const AssignTaskColumn = (props) => {
   const { rows } = props;
   const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -71,14 +76,14 @@ const AssignTaskColumn = (props) => {
   const handleCustomerSelect = (event, row) => {
     const selectedCustomerId = event.target.value;
     const selectedCustomer = rows.find(
-      (row) => row.Customer.name === selectedCustomerId
+      (row) => row.customerName === selectedCustomerId
     );
     setSelectedCustomer(selectedCustomer);
   };
 
   return (
     <Select
-      value={selectedCustomer ? selectedCustomer.Customer.name : ""}
+      value={selectedCustomer ? selectedCustomer.customerName : ""}
       onChange={(event) => handleCustomerSelect(event, props.row)}
       displayEmpty
       className="AssignsSelect"
@@ -95,14 +100,10 @@ const AssignTaskColumn = (props) => {
         }
         return (
           <React.Fragment>
-            <Avatar
-              src={selectedCustomer.Customer.img}
-              alt={selectedCustomer.Customer.name}
-              className="AssignsImg"
-            />
+            <Avatar src={null} alt={props.row.customerName} />
             <ListItemIcon>
-              <EastRoundedIcon className="AssignsIcon" />
               {/* <WestRoundedIcon className="AssignsIcon" /> */}
+              <EastRoundedIcon className="AssignsIcon" />
             </ListItemIcon>
           </React.Fragment>
         );
@@ -110,181 +111,177 @@ const AssignTaskColumn = (props) => {
     >
       <p className="para">Assign Task</p>
       {rows.map((row) => (
-        <MenuItem key={row.id} value={row.Customer.name}>
-          <Avatar
-            src={row.Customer.img}
-            alt={row.Customer.name}
-            className="AssignsImg"
-          />
-          <span className="AssignsName">{row.Customer.name}</span>
+        <MenuItem key={row.id} value={row.customerName}>
+          <Avatar src={null} alt={row.customerName} className="AssignsImg" />
+          <span className="AssignsName">{row.customerName}</span>
         </MenuItem>
       ))}
     </Select>
   );
 };
 
-const rows = [
-  {
-    id: 1,
-    ProjectName: "",
-    RelatedCustomer: "allCustomer",
-    Resources: "",
-    Customer: {
-      img: JohnImg,
-      name: "John Doe",
-    },
-    CustomerStage: "Contract",
-    ProjectTask: "New task",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "todo",
-    Action: "",
-  },
-  {
-    id: 2,
-    ProjectName: "Email Campaign",
-    RelatedCustomer: "contractCustomer",
-    Resources: "",
-    Customer: {
-      img: MariahImg,
-      name: "Mariah Betts",
-    },
-    CustomerStage: "Adoption",
-    ProjectTask: "New task",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "doing",
-    Action: "",
-  },
-  {
-    id: 3,
-    ProjectName: "Contract out reach",
-    RelatedCustomer: "onBoardingCustomer",
-    Resources: "",
-    Customer: {
-      img: JohnImg,
-      name: "John Doe",
-    },
-    CustomerStage: "Contract",
-    ProjectTask: "New task",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "done",
-    Action: "",
-  },
-  {
-    id: 4,
-    ProjectName: "",
-    RelatedCustomer: "adoptionCustomer",
-    Resources: "",
-    Customer: {
-      img: MariahImg,
-      name: "Mariah Betts",
-    },
-    CustomerStage: "Adoption",
-    ProjectTask: "New task",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "doing",
-    Action: "",
-  },
-  {
-    id: 5,
-    ProjectName: "Email Campaign",
-    RelatedCustomer: "renewalCustomer",
-    Resources: "",
-    Customer: {
-      img: JohnImg,
-      name: "John Doe",
-    },
-    CustomerStage: "Contract",
-    ProjectTask: "New task",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "done",
-    Action: "",
-  },
-  {
-    id: 6,
-    ProjectName: "Contract out reach",
-    RelatedCustomer: "growthCustomer",
-    Resources: "",
-    Customer: {
-      img: MariahImg,
-      name: "Mariah Betts",
-    },
-    CustomerStage: "Adoption",
-    ProjectTask: "New task",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "doing",
-    Action: "",
-  },
-  {
-    id: 7,
-    ProjectName: "",
-    RelatedCustomer: "multiSelectOption",
-    Resources: "",
-    Customer: {
-      img: JohnImg,
-      name: "John Doe",
-    },
-    CustomerStage: "Contract",
-    ProjectTask: "New task",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "done",
-    Action: "",
-  },
-  {
-    id: 8,
-    ProjectName: "Email Campaign",
-    RelatedCustomer: "allCustomer",
-    Resources: "",
-    Customer: {
-      img: MariahImg,
-      name: "Mariah Betts",
-    },
-    CustomerStage: "Adoption",
-    ProjectTask: "New task",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "doing",
-    Action: "",
-  },
-  {
-    id: 9,
-    ProjectName: "Contract out reach",
-    RelatedCustomer: "contractCustomer",
-    Resources: "",
-    Customer: {
-      img: JohnImg,
-      name: "John Doe",
-    },
-    CustomerStage: "Contract",
-    ProjectTask: "New task",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "done",
-    Action: "",
-  },
-  {
-    id: 10,
-    ProjectName: "",
-    RelatedCustomer: "renewalCustomer",
-    Resources: "",
-    Customer: {
-      img: MariahImg,
-      name: "Mariah Betts",
-    },
-    CustomerStage: "Adoption",
-    ProjectTask: "New task",
-    DueDate: "01/02/2023",
-    AssignTask: "AssignTask",
-    Status: "doing",
-    Action: "",
-  },
-];
+// const rows = [
+//   {
+//     id: 1,
+//     ProjectName: "",
+//     RelatedCustomer: "allCustomer",
+//     Resources: "",
+//     Customer: {
+//       img: JohnImg,
+//       name: "John Doe",
+//     },
+//     CustomerStage: "Contract",
+//     ProjectTask: "New task",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "todo",
+//     Action: "",
+//   },
+//   {
+//     id: 2,
+//     ProjectName: "Email Campaign",
+//     RelatedCustomer: "contractCustomer",
+//     Resources: "",
+//     Customer: {
+//       img: MariahImg,
+//       name: "Mariah Betts",
+//     },
+//     CustomerStage: "Adoption",
+//     ProjectTask: "New task",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "doing",
+//     Action: "",
+//   },
+//   {
+//     id: 3,
+//     ProjectName: "Contract out reach",
+//     RelatedCustomer: "onBoardingCustomer",
+//     Resources: "",
+//     Customer: {
+//       img: JohnImg,
+//       name: "John Doe",
+//     },
+//     CustomerStage: "Contract",
+//     ProjectTask: "New task",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "done",
+//     Action: "",
+//   },
+//   {
+//     id: 4,
+//     ProjectName: "",
+//     RelatedCustomer: "adoptionCustomer",
+//     Resources: "",
+//     Customer: {
+//       img: MariahImg,
+//       name: "Mariah Betts",
+//     },
+//     CustomerStage: "Adoption",
+//     ProjectTask: "New task",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "doing",
+//     Action: "",
+//   },
+//   {
+//     id: 5,
+//     ProjectName: "Email Campaign",
+//     RelatedCustomer: "renewalCustomer",
+//     Resources: "",
+//     Customer: {
+//       img: JohnImg,
+//       name: "John Doe",
+//     },
+//     CustomerStage: "Contract",
+//     ProjectTask: "New task",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "done",
+//     Action: "",
+//   },
+//   {
+//     id: 6,
+//     ProjectName: "Contract out reach",
+//     RelatedCustomer: "growthCustomer",
+//     Resources: "",
+//     Customer: {
+//       img: MariahImg,
+//       name: "Mariah Betts",
+//     },
+//     CustomerStage: "Adoption",
+//     ProjectTask: "New task",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "doing",
+//     Action: "",
+//   },
+//   {
+//     id: 7,
+//     ProjectName: "",
+//     RelatedCustomer: "multiSelectOption",
+//     Resources: "",
+//     Customer: {
+//       img: JohnImg,
+//       name: "John Doe",
+//     },
+//     CustomerStage: "Contract",
+//     ProjectTask: "New task",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "done",
+//     Action: "",
+//   },
+//   {
+//     id: 8,
+//     ProjectName: "Email Campaign",
+//     RelatedCustomer: "allCustomer",
+//     Resources: "",
+//     Customer: {
+//       img: MariahImg,
+//       name: "Mariah Betts",
+//     },
+//     CustomerStage: "Adoption",
+//     ProjectTask: "New task",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "doing",
+//     Action: "",
+//   },
+//   {
+//     id: 9,
+//     ProjectName: "Contract out reach",
+//     RelatedCustomer: "contractCustomer",
+//     Resources: "",
+//     Customer: {
+//       img: JohnImg,
+//       name: "John Doe",
+//     },
+//     CustomerStage: "Contract",
+//     ProjectTask: "New task",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "done",
+//     Action: "",
+//   },
+//   {
+//     id: 10,
+//     ProjectName: "",
+//     RelatedCustomer: "renewalCustomer",
+//     Resources: "",
+//     Customer: {
+//       img: MariahImg,
+//       name: "Mariah Betts",
+//     },
+//     CustomerStage: "Adoption",
+//     ProjectTask: "New task",
+//     DueDate: "01/02/2023",
+//     AssignTask: "AssignTask",
+//     Status: "doing",
+//     Action: "",
+//   },
+// ];
 
 const statusOptions = [
   { value: "todo", label: "To do" },
@@ -293,7 +290,9 @@ const statusOptions = [
 ];
 
 const Projects = (props) => {
-  const [value, setValue] = useState(dayjs("2023-12-02"));
+  const [allCustomers, setAllCustomers] = useState([]);
+  const [searchCustomer, setSearchCustomer] = useState();
+  const [value, setValue] = useState(dayjs());
   const [eventReminder, setEventReminder] = useState(dayjs("2023-5-3"));
   const [dateReminder, setDateReminder] = useState(dayjs("2023-5-11"));
   const [timeReminder, setTimeReminder] = useState(dayjs("2022-04-17T15:30"));
@@ -312,12 +311,31 @@ const Projects = (props) => {
   const [selectedFields, setSelectedFields] = useState([]);
   const [newTaskCustomers, setNewTaskCustomers] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [filteredCustomers, setFilteredCustomers] = useState(rows);
+  const [filteredCustomers, setFilteredCustomers] = useState();
   const [anchorEl, setAnchorEl] = useState(null);
   const open3 = Boolean(anchorEl);
   const [subtasks, setSubtasks] = useState([]);
   const [tasksTitle, setTasksTitle] = useState("");
   const [currentItems, setCurrentItems] = useState([]);
+  const [allResources, setAllResources] = useState([]);
+  let userId = localStorage.getItem("token");
+
+  const setUpdataForTable = (tasks) => {
+    console.log(tasks, "shdlkahd");
+    const rows = tasks?.map((item, index) => {
+      return {
+        id: index + 1,
+        customerId: item?.customerId,
+        projectName: item?.name,
+        resourcesLink: item?.resources[0]?.link,
+        taskIds: item?.taskIds,
+        dueDate: item?.dueDate,
+      };
+    });
+    console.log(rows, "samdksamd");
+    setTableData(rows);
+  };
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -344,8 +362,11 @@ const Projects = (props) => {
     setSelectedRow(params.row);
     setOpen2(true);
   };
+
   const onUpload = (e) => {
+    console.log("onUpload called");
     setFile(e?.target?.files[0]);
+    handleResourcesSave(e?.target?.files[0]);
   };
   const onStatusChange = (e, row) => {
     let value = e.target.value;
@@ -385,7 +406,7 @@ const Projects = (props) => {
     let value = newValue;
     const newRow = {
       ...row?.row,
-      DueDate: value,
+      dueDate: value,
     };
     const updatedItems = tableData?.filter((item) => item.id !== row?.id);
     updatedItems?.unshift(newRow);
@@ -416,10 +437,11 @@ const Projects = (props) => {
   const handleClose1 = () => {
     setAnchorEl(null);
   };
+
   const handleSelectAll = (event) => {
     setSelectAll(event.target.checked);
     if (event.target.checked === true) {
-      const allIDs = filteredCustomers?.map((item) => {
+      const allIDs = allCustomers?.map((item) => {
         return item?.id;
       });
       setNewTaskCustomers(allIDs);
@@ -431,7 +453,6 @@ const Projects = (props) => {
     if (e.target.checked === true) {
       setNewTaskCustomers((oldState) => [...oldState, id]);
     } else {
-      // setSelectedFields([])
       const newIds = newTaskCustomers.filter((item) => {
         if (item !== id) {
           return item;
@@ -443,15 +464,9 @@ const Projects = (props) => {
 
   const handleFilterChange = (event) => {
     const { value } = event.target;
-    if (!value) {
-      setFilteredCustomers(rows);
-      return;
-    }
-    const filtered = rows.filter((customer) =>
-      customer.Customer.name.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredCustomers(filtered);
+    setSearchCustomer(value);
   };
+
   const onSelectAll = (e) => {
     if (e.target.checked === true) {
       const allIds = tableData?.map((item) => {
@@ -522,6 +537,118 @@ const Projects = (props) => {
     setTableData(updatedItems);
     setOpen(false);
   };
+  const formik = useFormik({
+    enableReinitialize: false,
+    // validationSchema: TaskSchema,
+    initialValues: {
+      name: "",
+      customerId: "",
+      resources: [
+        {
+          fileId: allResources[0]?.fileId,
+          link: allResources[0]?.link,
+          userId: allResources[0]?.userId,
+          id: allResources[0]?.id,
+        },
+      ],
+      taskIds: [],
+      dueDate: "",
+      status: "TODO",
+    },
+    onSubmit: async () => {
+      const data = formik?.values;
+      console.log(data, "data");
+      await CustomerServices.saveProject(data)
+        .then((res) => {
+          if (res) {
+            getAllProjects();
+            toast.success("Project Saved", {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err.data.error);
+        });
+      setOpen(false);
+    },
+  });
+  console.log(formik.values, "sjdnksnd");
+
+  const getAllCustomers = async () => {
+    await CustomerServices.getAllCustomers()
+      .then((res) => {
+        if (res) {
+          setAllCustomers(res);
+        }
+      })
+      .catch((err) => {
+        console.log(err.data.error);
+      });
+  };
+
+  const getAllProjects = async () => {
+    await CustomerServices.getAllProjects().then((res) => {
+      if (res) {
+        setUpdataForTable(res);
+      }
+    });
+  };
+
+  const handleResourcesSave = async (attachment) => {
+    console.log("handleResourcesSave");
+    const resourcesData = {
+      link: attachment?.name,
+      userId: userId,
+    };
+    const data = new FormData();
+    const resourcesJson = JSON.stringify(resourcesData);
+    const blob = new Blob([resourcesJson], { type: "application/json" });
+    data.append("file", attachment);
+    data.append("resources", blob);
+    if (attachment) {
+      await CustomerServices.saveResources(data)
+        .then((res) => {
+          getResources();
+        })
+        .catch((err) => {
+          console.log(err.data.error);
+        });
+    } else {
+      console.log("resourcesData: empty");
+    }
+  };
+
+  const getResources = async () => {
+    await CustomerServices.getResources(userId)
+      .then((res) => {
+        if (res) {
+          setAllResources(res);
+          const uplodedFile = {
+            fileId: res[res?.length - 1]?.fileId,
+            link: res[res?.length - 1]?.link,
+            userId: res[res?.length - 1]?.userId,
+            id: res[res?.length - 1]?.id,
+          };
+          formik?.setFieldValue("resources[0]", uplodedFile);
+        }
+      })
+      .catch((err) => {
+        console.log(err.data.error);
+      });
+    };
+
+
+  const setCustomer = (customer) => {
+    const selectedCustomer = customer?.id;
+    formik.values.customerId = selectedCustomer;
+    setAnchorEl(null);
+  };
+
+  useEffect(() => {
+    getAllCustomers();
+    getAllProjects();
+  }, []);
 
   const columns = [
     {
@@ -561,7 +688,7 @@ const Projects = (props) => {
       ),
     },
     {
-      field: "ProjectName",
+      field: "projectName",
       headerName: "Project Name",
       sortable: false,
       disableColumnMenu: true,
@@ -588,7 +715,7 @@ const Projects = (props) => {
       ),
     },
     {
-      field: "Resources",
+      field: "resourcesLink",
       headerName: "Resources",
       sortable: false,
       disableColumnMenu: true,
@@ -616,7 +743,7 @@ const Projects = (props) => {
       ),
     },
     {
-      field: "Customer",
+      field: "customerId",
       headerName: "Customer",
       sortable: false,
       disableColumnMenu: true,
@@ -628,27 +755,14 @@ const Projects = (props) => {
         </React.Fragment>
       ),
       renderCell: (params) => (
-        <div className="CustomerNameHead">
-          <Avatar src={params.value.img} alt={params.value.name} />
-          {params.value.name}
+        <div className="CustomerNameHead" title={params.value}>
+          {/* <Avatar src={params.value.img} alt={params.value.name} /> */}
+          {params.value}
         </div>
       ),
     },
     {
-      field: "CustomerStage",
-      headerName: "Customer Stage",
-      sortable: false,
-      disableColumnMenu: true,
-      flex: 1,
-      renderHeader: () => (
-        <React.Fragment>
-          <span>Customer Stage</span>
-          <img src={FilterImg} className="filterImg" />
-        </React.Fragment>
-      ),
-    },
-    {
-      field: "ProjectTask",
+      field: "taskIds",
       headerName: "Project Task",
       sortable: false,
       disableColumnMenu: true,
@@ -660,7 +774,7 @@ const Projects = (props) => {
         </React.Fragment>
       ),
       renderCell: (params) => (
-        <span className="customerTaskBtn">
+        <span className="customerTaskBtn" title={params.value}>
           <Box className="badgesHead">
             {params?.row?.Status === "todo" ? (
               <Badge badgeContent={""} className="toDoBadge tableBadge"></Badge>
@@ -673,12 +787,12 @@ const Projects = (props) => {
               <Badge badgeContent={""} className="doneBadge tableBadge"></Badge>
             )}
           </Box>
-          {tasksTitle}
+          {params.value}
         </span>
       ),
     },
     {
-      field: "DueDate",
+      field: "dueDate",
       headerName: "Due Date",
       sortable: false,
       disableColumnMenu: true,
@@ -690,6 +804,7 @@ const Projects = (props) => {
         </React.Fragment>
       ),
       renderCell: (params) => {
+        console.log(moment(params?.value).format("MM/DD//YYYY"), "sadn");
         return (
           <FormGroup className="customertaskDatePicker">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -697,7 +812,7 @@ const Projects = (props) => {
                 orientation="portrait"
                 displayStaticWrapperAs="desktop"
                 openTo="day"
-                value={params.value}
+                value={moment(params?.value).format("MM/DD//YYYY")}
                 showToolbar={false}
                 components={{
                   OpenPickerIcon: CustomCalendarIcon,
@@ -710,7 +825,7 @@ const Projects = (props) => {
                 }}
                 showDaysOutsideCurrentMonth
                 dayOfWeekFormatter={(day) => getDay(day)}
-                renderInput={(params) => <TextField {...params} className="" />}
+                renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
           </FormGroup>
@@ -719,17 +834,19 @@ const Projects = (props) => {
     },
     {
       field: "AssignTask",
-      headerName: "Assign(ed) Task",
+      headerName: "Assigned Task",
       sortable: false,
       disableColumnMenu: true,
       flex: 1,
       renderHeader: () => (
         <React.Fragment>
-          <span>Assign(ed) Task</span>
+          <span>Assigned Task</span>
           <img src={FilterImg} className="filterImg" />
         </React.Fragment>
       ),
-      renderCell: (params) => <AssignTaskColumn rows={rows} row={params.row} />,
+      renderCell: (params) => (
+        <AssignTaskColumn rows={tableData} row={params.row} />
+      ),
     },
     {
       field: "Status",
@@ -995,22 +1112,49 @@ const Projects = (props) => {
                   />
                   <ListItemText primary={"Select All"} />
                 </MenuItem>
-                {filteredCustomers.map((user) => (
-                  <MenuItem
-                    value={user.customerName}
-                  >
-                    <Checkbox
-                      checked={newTaskCustomers?.includes(user?.id)}
-                      onChange={(e) => handleSelectCustomer(e, user?.id)}
-                    />
-                    <Avatar
-                      src={user?.Customer?.img}
-                      alt={user?.Customer?.img}
-                      className="avatar"
-                    />
-                    <ListItemText primary={user?.Customer?.name} />
-                  </MenuItem>
-                ))}
+                {allCustomers?.map((customer) =>
+                  searchCustomer ? (
+                    customer?.name
+                      ?.toLowerCase()
+                      ?.includes(searchCustomer?.toLowerCase()) ? (
+                      <MenuItem
+                        value={customer.customerName}
+                        onClick={() => setCustomer(customer)}
+                      >
+                        <Checkbox
+                          checked={newTaskCustomers?.includes(customer?.id)}
+                          onChange={(e) =>
+                            handleSelectCustomer(e, customer?.id)
+                          }
+                        />
+                        {/* <Avatar
+                   src={customer?.Customer?.img}
+                   alt={customer?.Customer?.img}
+                   className="avatar"
+                 /> */}
+                        <ListItemText primary={customer?.name} />
+                      </MenuItem>
+                    ) : (
+                      ""
+                    )
+                  ) : (
+                    <MenuItem
+                      value={customer.customerName}
+                      onClick={() => setCustomer(customer)}
+                    >
+                      <Checkbox
+                        checked={newTaskCustomers?.includes(customer?.id)}
+                        onChange={(e) => handleSelectCustomer(e, customer?.id)}
+                      />
+                      {/* <Avatar
+                   src={customer?.Customer?.img}
+                   alt={customer?.Customer?.img}
+                   className="avatar"
+                 /> */}
+                      <ListItemText primary={customer?.name} />
+                    </MenuItem>
+                  )
+                )}
               </FormControl>
             </Menu>
             <Box
@@ -1020,17 +1164,26 @@ const Projects = (props) => {
             >
               <FormGroup className="inputHead">
                 <label htmlFor="taskTitle" className="taskTitle">
-                  Task Title
+                  Project Title
                 </label>
                 <TextField
                   fullWidth
-                  className="taskTitleInput"
-                  placeholder="Lorem Ipsum"
+                  {...{
+                    formik,
+                    title: "projectTitle",
+                    name: "projectTitle",
+                    placeholder: "Lorem Ipsum",
+                    checkValidation: true,
+                    value: formik?.values?.name,
+                  }}
+                  onChange={(e) => {
+                    formik.setFieldValue("name", e.target.value);
+                  }}
                 />
               </FormGroup>
               <FormGroup className="inputHead">
                 <label htmlFor="taskDescription" className="taskDescription">
-                  Task Description
+                  Project Description
                 </label>
                 <textarea
                   name="taskDescription"
@@ -1050,18 +1203,27 @@ const Projects = (props) => {
             >
               <h5 onClick={handleSubtaskClick}>
                 <img src={PlusIcon} alt="not found" />
-                Subtask
+                taskIds
               </h5>
               {subtasks?.map((task, index) => {
                 return (
                   <FormGroup className="inputHead" key={task?.id}>
-                    <label htmlFor="Subtask1" className="Subtask1">
-                      Subtask {index + 1}
+                    <label htmlFor="taskIds" className="taskIds">
+                      taskIds {index + 1}
                     </label>
                     <TextField
                       fullWidth
-                      className="taskTitleInput"
-                      placeholder="Lorem Ipsum"
+                      {...{
+                        formik,
+                        title: "projectTaskIds",
+                        name: "projectTaskIds",
+                        placeholder: "Lorem Ipsum",
+                        checkValidation: true,
+                        value: formik?.values?.taskIds[0],
+                      }}
+                      onChange={(e) => {
+                        formik.setFieldValue("taskIds[0]", e.target.value);
+                      }}
                     />
                   </FormGroup>
                 );
@@ -1113,6 +1275,7 @@ const Projects = (props) => {
                     onChange={(newValue) => {
                       const isoString = newValue.toISOString();
                       setDuaDate(newValue);
+                      formik.setFieldValue("dueDate", isoString);
                     }}
                     showDaysOutsideCurrentMonth
                     dayOfWeekFormatter={(day) => getDay(day)}
@@ -1131,8 +1294,8 @@ const Projects = (props) => {
               <Button
                 className="SaveBtn"
                 content="save"
-                onClick={(e) => {
-                  handleClickOpenProjectNameModel(e);
+                onClick={() => {
+                  formik.handleSubmit();
                 }}
               >
                 save

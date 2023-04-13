@@ -13,6 +13,7 @@ const CustomerServices = {
       return await Service.post({
         url: "/api/customer/saveCustomer",
         data,
+        contentType:'multipart/form-data'
       });
     } catch (error) {
       throw error;
@@ -53,6 +54,7 @@ const CustomerServices = {
       return await Service.post({
         url: "/api/resources/saveResources",
         data,
+        contentType:'multipart/form-data'
       });
     } catch (error) {
       throw error;
@@ -63,6 +65,7 @@ const CustomerServices = {
       return await Service.post({
         url: "/api/resources/saveLink",
         data,
+        contentType:'application/json'
       });
     } catch (error) {
       throw error;
@@ -87,6 +90,7 @@ const CustomerServices = {
       return await Service.post({
         url: "/api/task/saveTask",
         data,
+        contentType:'multipart/form-data'
       });
     } catch (error) {
       throw error;
@@ -101,7 +105,25 @@ const CustomerServices = {
   },
   getAllTasks: async () => {
     try {
-      return await Service.get("https://taaskserver.herokuapp.com/api/task/getAllTasks");
+      return await Service.get("api/task/getAllTasks");
+    } catch (error) {
+      throw error;
+    }
+  },
+  getAllProjects: async () => {
+    try {
+      return await Service.get("api/project/getAllProjects");
+    } catch (error) {
+      throw error;
+    }
+  },
+  saveProject: async (data) => {
+    try {
+      return await Service.post({
+        url: "/api/project/saveProject",
+        data,
+        contentType:'application/json'
+      });
     } catch (error) {
       throw error;
     }
@@ -116,4 +138,3 @@ const CustomerServices = {
 };
 
 export default CustomerServices;
-

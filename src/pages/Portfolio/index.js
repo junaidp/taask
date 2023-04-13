@@ -104,7 +104,7 @@ const Portfolio = () => {
                 <TableCell component="th" scope="row">
                   <Box className="userprofile">
                     {/* <span>
-                      <img src={item.photoUrl} alt="img not found" />
+                      <img src={item?.imageId} alt="img not found" />
                     </span> */}
                     {item?.name}
                   </Box>
