@@ -25,7 +25,6 @@ import CustomPagination from "../../components/Pagination";
 import moment from "moment";
 
 const UpcomingItemsTable = ({ tasksData }) => {
-  console.log(tasksData, "klshdlhsald");
   const [currentItems, setCurrentItems] = useState([]);
 
   return (

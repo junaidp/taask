@@ -53,7 +53,6 @@ const Resources = () => {
   const [currentItems, setCurrentItems] = useState([]);
   const [allResources, setAllResources] = useState([]);
   const [allLinks, setAllLinks] = useState([]);
-  console.log(allResources, "allResources");
 
   const onUpload = (e) => {
     const uploadfile = e?.target?.files[0];
@@ -145,7 +144,6 @@ const Resources = () => {
       link: formik?.values?.AttachmentsLink,
       userId: formik?.values?.userId,
     };
-    console.log(resourcesData, "resourcesData");
     const data = new FormData();
     data.append("file", file);
     const resourcesJson = JSON.stringify(resourcesData);

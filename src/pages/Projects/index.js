@@ -17,8 +17,6 @@ import {
   FormGroup,
   Avatar,
   ListItemIcon,
-  // Pagination,
-  // PaginationItem,
   Menu,
   FormControl,
   ListItemText,
@@ -28,6 +26,7 @@ import * as Yup from "yup";
 import moment from "moment";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
+import { ProjectSchema } from "../../Validation";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -321,7 +320,6 @@ const Projects = (props) => {
   let userId = localStorage.getItem("token");
 
   const setUpdataForTable = (tasks) => {
-    console.log(tasks, "shdlkahd");
     const rows = tasks?.map((item, index) => {
       return {
         id: index + 1,
@@ -332,7 +330,6 @@ const Projects = (props) => {
         dueDate: item?.dueDate,
       };
     });
-    console.log(rows, "samdksamd");
     setTableData(rows);
   };
 
@@ -364,7 +361,6 @@ const Projects = (props) => {
   };
 
   const onUpload = (e) => {
-    console.log("onUpload called");
     setFile(e?.target?.files[0]);
     handleResourcesSave(e?.target?.files[0]);
   };
@@ -539,7 +535,7 @@ const Projects = (props) => {
   };
   const formik = useFormik({
     enableReinitialize: false,
-    // validationSchema: TaskSchema,
+    validationSchema: ProjectSchema,
     initialValues: {
       name: "",
       customerId: "",
@@ -551,7 +547,7 @@ const Projects = (props) => {
           id: allResources[0]?.id,
         },
       ],
-      taskIds: [],
+      taskIds: "",
       dueDate: "",
       status: "TODO",
     },
@@ -573,7 +569,6 @@ const Projects = (props) => {
       setOpen(false);
     },
   });
-  console.log(formik.values, "sjdnksnd");
 
   const getAllCustomers = async () => {
     await CustomerServices.getAllCustomers()
@@ -596,7 +591,6 @@ const Projects = (props) => {
   };
 
   const handleResourcesSave = async (attachment) => {
-    console.log("handleResourcesSave");
     const resourcesData = {
       link: attachment?.name,
       userId: userId,
@@ -615,7 +609,6 @@ const Projects = (props) => {
           console.log(err.data.error);
         });
     } else {
-      console.log("resourcesData: empty");
     }
   };
 
@@ -636,8 +629,7 @@ const Projects = (props) => {
       .catch((err) => {
         console.log(err.data.error);
       });
-    };
-
+  };
 
   const setCustomer = (customer) => {
     const selectedCustomer = customer?.id;
@@ -804,7 +796,6 @@ const Projects = (props) => {
         </React.Fragment>
       ),
       renderCell: (params) => {
-        console.log(moment(params?.value).format("MM/DD//YYYY"), "sadn");
         return (
           <FormGroup className="customertaskDatePicker">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -863,7 +854,7 @@ const Projects = (props) => {
       renderCell: (params) => {
         return (
           <Select
-            defaultValue={params.value}
+            defaultValue="todo"
             className="StatusHead"
             onChange={(e) => onStatusChange(e, params)}
           >
@@ -1180,6 +1171,9 @@ const Projects = (props) => {
                     formik.setFieldValue("name", e.target.value);
                   }}
                 />
+                {formik.errors.name && (
+                  <p className="input-error">{formik.errors.name}</p>
+                )}
               </FormGroup>
               <FormGroup className="inputHead">
                 <label htmlFor="taskDescription" className="taskDescription">
@@ -1216,15 +1210,18 @@ const Projects = (props) => {
                       {...{
                         formik,
                         title: "projectTaskIds",
-                        name: "projectTaskIds",
+                        name: "taskIds",
                         placeholder: "Lorem Ipsum",
                         checkValidation: true,
-                        value: formik?.values?.taskIds[0],
+                        value: formik?.values?.taskIds,
                       }}
                       onChange={(e) => {
-                        formik.setFieldValue("taskIds[0]", e.target.value);
+                        formik.setFieldValue("taskIds", [e.target.value]);
                       }}
                     />
+                    {formik.errors.taskIds && (
+                      <p className="input-error">{formik.errors.taskIds}</p>
+                    )}
                   </FormGroup>
                 );
               })}
@@ -1246,6 +1243,11 @@ const Projects = (props) => {
                     value={file?.name}
                     id="Attachment"
                   />
+                  {formik.errors.resources && formik.errors.resources[0] && (
+                    <p className="input-error">
+                      {formik.errors.resources[0].fileId}
+                    </p>
+                  )}
                   <Button
                     variant="contained"
                     component="label"
@@ -1281,6 +1283,9 @@ const Projects = (props) => {
                     dayOfWeekFormatter={(day) => getDay(day)}
                     renderInput={(params) => <TextField {...params} />}
                   />
+                  {formik.errors.dueDate && (
+                    <p className="input-error">{formik.errors.dueDate}</p>
+                  )}
                 </LocalizationProvider>
               </FormGroup>
             </Box>
@@ -1319,7 +1324,10 @@ const Projects = (props) => {
                 if (item?.Status === "done") {
                   return (
                     <Box className="ArchiveContent">
-                      <h4>{item.Customer.name}</h4>
+                      <div>
+                        <h4>{item.customerName}</h4>
+                        <p>{item.taskName}</p>
+                      </div>
                       <span>
                         <img src={DoneIcon} alt="not found" />
                       </span>

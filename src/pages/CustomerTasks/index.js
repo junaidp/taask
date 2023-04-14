@@ -139,7 +139,6 @@ const CustomerTasks = (props) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [file, setFile] = useState(null);
   const [tableData, setTableData] = useState([]);
-  console.log(tableData, "saldh");
   const [selectAll, setSelectAll] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open1 = Boolean(anchorEl);
@@ -153,7 +152,6 @@ const CustomerTasks = (props) => {
   const [showPopup, setShowPopup] = useState(false);
 
   const setUpdataForTable = (tasks) => {
-    console.log(tasks, "shdlkahd");
     const rows = tasks?.map((item, index) => {
       return {
         id: index + 1,
@@ -371,7 +369,6 @@ const CustomerTasks = (props) => {
       setOpen(false);
     },
   });
-  console.log(formik.values, "skjdakjdj");
 
   const getAllCustomers = async () => {
     await CustomerServices.getAllCustomers()
@@ -513,7 +510,6 @@ const CustomerTasks = (props) => {
         </React.Fragment>
       ),
       renderCell: (params) => {
-        console.log(params?.value, "parrrrr");
         return (
           <FormGroup className="customertaskDatePicker">
             <LocalizationProvider dateAdapter={AdapterDayjs}>

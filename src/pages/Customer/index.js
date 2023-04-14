@@ -326,7 +326,6 @@ let Customer = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [photo, setPhoto] = useState(null);
   const [showDeleteIcon, setShowDeleteIcon] = useState(false);
-  console.log(photo, "skajdk")
 
   const handlePhotoUpload = (event) => {
     const file = event.target.files[0];

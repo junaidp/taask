@@ -192,7 +192,6 @@
   position: absolute !important;
   top: 0 !important;
   right: 0 !important;
-  height: 100% !important;
   max-width: 120px !important;
   width: 120px !important;
   background: linear-gradient(180deg, #2e6073 0%, #214b5a 100%) !important;
@@ -202,6 +201,8 @@
   font-size: 16px;
   text-align: center;
   color: #ffffff !important;
+  padding: 10.5px 16px !important;
+  height: unset !important;
 }
 
 .SaveBtn,
