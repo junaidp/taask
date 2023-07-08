@@ -43,3 +43,7 @@ export const ProjectSchema = yup.object().shape({
   taskIds: yup.array().required("taskIds is required"),
   dueDate: yup.string().required("Due Date is required"),
 });
+export const loginSchema = yup.object().shape({
+  password: yup.string().required('Password is required'),
+  email: yup.string().email('Invalid email address').required('Email is required'),
+});

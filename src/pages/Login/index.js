@@ -11,29 +11,38 @@ import {
   Checkbox,
 } from "@mui/material";
 import * as Yup from "yup";
-import { useFormik } from "formik";
+import { ErrorMessage, useFormik } from "formik";
 import { useAuth } from "../../Auth";
 
 // image
 import Logo from "../../assets/icons/logo.svg";
+import { loginSchema } from "../../Validation";
+import { toast, ToastContainer } from "react-toastify";
+import Loader from "../../components/Loader";
 
 const Login = () => {
   const { user, login } = useAuth();
-  const customerValitadion = Yup.object().shape({
-    name: Yup.string().required(),
-  });
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       email: "",
       password: "",
     },
-    validationSchema: customerValitadion,
+    validationSchema: loginSchema,
   });
 
-  const handleClick= ()=>{
-    login(formik?.values?.email, formik?.values?.password)
+  const handleClick= async ()=>{
+
+    if(formik.isValid){
+      login(formik.values);
+    }
+    else{
+      toast.error(formik.errors.email||formik.errors.password, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+
+    }
+    
   }
   return (
     <Box className="loginPage">
@@ -56,6 +65,7 @@ const Login = () => {
               formik.setFieldValue("email", e.target.value);
             }}
           />
+          {/* <ErrorMessage name="email" component="div" className="error-message" /> */}
         </FormGroup>
         <FormGroup className="inputHead">
           <TextField
@@ -74,6 +84,7 @@ const Login = () => {
               formik.setFieldValue("password", e.target.value);
             }}
           />
+          {/* <ErrorMessage name="password" component="div" className="error-message" /> */}
         </FormGroup>
         <Box>
           <a href="#">Forgot Password?</a>
@@ -83,6 +94,7 @@ const Login = () => {
           not a member? <a href="#">Signup</a>
         </p>
       </form>
+      <ToastContainer />
     </Box>
   );
 };

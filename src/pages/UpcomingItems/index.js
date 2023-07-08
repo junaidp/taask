@@ -12,6 +12,7 @@ import Appointments from "../../components/Appointments";
 
 // APIs Services
 import CustomerServices from "../../APIs/Customer";
+import { ToastContainer } from "react-toastify";
 
 const UpcomingItems = () => {
   const [allTasks, setAllTask] = useState([])
@@ -48,6 +49,7 @@ const UpcomingItems = () => {
           <Appointments allMeetings={allMeetings} />
         </Grid>
       </Grid>
+      <ToastContainer/>
     </Box>
   );
 };
