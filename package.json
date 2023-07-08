@@ -16,6 +16,7 @@
     "dayjs": "^1.11.7",
     "file-saver": "^2.0.5",
     "formik": "^2.2.9",
+    "iconify": "^1.4.0",
     "moment": "^2.29.4",
     "pdfjs-dist": "^3.5.141",
     "react": "^18.2.0",

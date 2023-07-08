@@ -20,29 +20,29 @@ import { useAuth } from "../../Auth";
 
 // image
 import Logo from "../../assets/icons/logo.svg";
-import { loginSchema } from "../../Validation";
+import { loginSchema, registerSchema } from "../../Validation";
 import { toast, ToastContainer } from "react-toastify";
-import Loader from "../../components/Loader";
-
-const Login = () => {
-  const { user, login } = useAuth();
+const Register = () => {
+  const { register} = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
+      firstName:"",
+      lastName:"",
       email: "",
       password: "",
     },
-    validationSchema: loginSchema,
+    validationSchema: registerSchema,
   });
 
   const handleClick= async ()=>{
-
+    debugger;
     if(formik.isValid){
-      login(formik.values);
+      register(formik.values);
     }
     else{
-      toast.error(formik.errors.email||formik.errors.password, {
+      toast.error(formik.errors.firstName||formik.errors.lastName||formik.errors.email||formik.errors.password, {
         position: toast.POSITION.TOP_RIGHT,
       });
 
@@ -55,6 +55,39 @@ const Login = () => {
         <Box className="logoHead">
           <img src={Logo} alt="not found" className="logo" />
         </Box>
+        <FormGroup className="inputHead">
+          <TextField
+            type="text"
+            {...{
+              formik,
+              title: "First Name",
+              name: "firstname",
+              placeholder: "First Name",
+              checkValidation: true,
+              value: formik?.values?.firstName,
+            }}
+            onChange={(e) => {
+              formik.setFieldValue("firstName", e.target.value);
+            }}
+          />
+          {/* <ErrorMessage name="email" component="div" className="error-message" /> */}
+        </FormGroup>
+        <FormGroup className="inputHead">
+          <TextField
+            type="text"
+            {...{
+              formik,
+              title: "Last Name",
+              name: "lastname",
+              placeholder: "Last Name",
+              checkValidation: true,
+              value: formik?.values?.lastName,
+            }}
+            onChange={(e) => {
+              formik.setFieldValue("lastName", e.target.value);
+            }}
+          />
+        </FormGroup>
         <FormGroup className="inputHead">
           <TextField
             type="email"
@@ -75,8 +108,9 @@ const Login = () => {
         <FormGroup className="inputHead">
           <TextField
             id="password-input"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             autoComplete="current-password"
+            
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -100,12 +134,9 @@ const Login = () => {
           />
           {/* <ErrorMessage name="password" component="div" className="error-message" /> */}
         </FormGroup>
-        <Box>
-          <a href="#">Forgot Password?</a>
-        </Box>
-        <Button className="btn" onClick={handleClick}>Sign in</Button>
+        <Button className="btn" onClick={handleClick}>Sign Up</Button>
         <p>
-          not a member? <a href = "/register">Signup</a>
+          not a member? <a href="/">SignIn</a>
         </p>
       </form>
       <ToastContainer />
@@ -113,4 +144,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

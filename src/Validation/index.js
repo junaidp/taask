@@ -44,6 +44,18 @@ export const ProjectSchema = yup.object().shape({
   dueDate: yup.string().required("Due Date is required"),
 });
 export const loginSchema = yup.object().shape({
-  password: yup.string().required('Password is required'),
+  password: yup.string().required('Password is required').matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,}$/,
+    'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, and one digit'
+  ),
+  email: yup.string().email('Invalid email address').required('Email is required'),
+});
+export const registerSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  password: yup.string().required('Password is required').matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,}$/,
+    'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, and one digit'
+  ),
   email: yup.string().email('Invalid email address').required('Email is required'),
 });

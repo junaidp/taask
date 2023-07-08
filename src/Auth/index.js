@@ -49,11 +49,43 @@ export const AuthProvider = ({ children }) => {
         throw error;
       });
   };
+  const register = async (body) => {
+    return axios
+      .post(`${baseURL}/register`,{
+        firstname:body.firstName,
+        lastname:body.lastName,
+        email:body.email,
+        password:body.password
+      })
+      .then((res) => {
+        debugger;
+        if(typeof res.data == "string"){
+          toast.error(res.data, {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+        }
+        else{
+          toast.success("Register Sucessfully", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          window.location.href = "/"
+          return res;
+
+        }
+        
+      })
+      .catch((error) => {
+        toast.error(error.message, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        throw error;
+      });
+  };
   const logout = () => {
     localStorage.clear();
     setUser(null);
   };
 
-  const value = { user, login, logout, isLoading };
+  const value = { user, login, logout, isLoading,register };
   return <AuthContext.Provider value={value}>{!isLoading && children}</AuthContext.Provider>;
 };

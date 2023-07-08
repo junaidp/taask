@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 // Mui imports
 import { Box } from "@mui/material";
 import { useAuth } from "./Auth";
+import Register from "./pages/RegisterPage";
 
 const App = () => {
   const [token, setToken] = useState();
@@ -39,6 +40,7 @@ const App = () => {
       ) : (
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       )}
     </>
