@@ -75,7 +75,7 @@ const Login = () => {
         <FormGroup className="inputHead">
           <TextField
             id="password-input"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             autoComplete="current-password"
             InputProps={{
               endAdornment: (
