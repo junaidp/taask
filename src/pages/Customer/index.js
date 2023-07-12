@@ -45,6 +45,7 @@ import AttachmentIcon from "../../assets/icons/Attachment.svg";
 import LinksIcon from "../../assets/icons/Links.svg";
 import PlusIcon from "../../assets/icons/plus.svg";
 import CloseIcon from "../../assets/icons/close.svg";
+import { saveCustomer } from "../../services/customer.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -396,7 +397,6 @@ let Customer = () => {
     enableReinitialize: false,
     validationSchema: customerSchema,
     initialValues: {
-      id: "",
       category: "",
       name: "",
       location: "",
@@ -414,43 +414,52 @@ let Customer = () => {
         },
       ],
     },
-    onSubmit: async () => {
-      setLoading(true);
-      const customer = formik?.values;
-      const data = new FormData();
-      if (file) {
-        data.append("file", file);
-      } else {
-        setShowPopup(true);
-        setLoading(false);
-        return;
-      }
-      if (photo) {
-        const photoFile = await fetch(photo).then((res) => res.blob());
-        data.append("image", photoFile); 
-      }
-      
-      const customerJson = JSON.stringify(customer);
-      const blob = new Blob([customerJson], { type: "application/json" });
-      data.append("customer", blob);
-
-      await CustomerServices.saveCustomer(data)
-        .then((res) => {
-          if (res?.includes("saved")) {
-            toast.success("customer successfully saved!", {
-              position: toast.POSITION.TOP_RIGHT,
-            });
-          }
-          setLoading(false);
-        })
-        .catch((err) => {
-          setLoading(false);
-          toast.error(`${err.data.error}`, {
+    
+  });
+  const handleSubmit = async () => {
+    debugger;
+    if(!formik.isValid){
+      return;
+    }
+    setLoading(true);
+    const customer = formik?.values;
+    customer.contacts = customer.contacts[0];
+    const data = new FormData();
+    // if (file) {
+    //   data.append("file", file);
+    // } else {
+    //   setShowPopup(true);
+    //   setLoading(false);
+    //   return;
+    // }
+    // if (photo) {
+    //   const photoFile = await fetch(photo).then((res) => res.blob());
+    //   data.append("image", photoFile); 
+    // }
+    
+    const customerJson = JSON.stringify(customer);
+    // const blob = new Blob([customerJson], { type: "application/json" });
+    data.append("customer", customerJson);
+    data.append("link",JSON.stringify({
+      "link": "https://example.com",
+      "description": "This is a description"
+    }))
+    await saveCustomer(data)
+      .then((res) => {
+        if (res?.includes("saved")) {
+          toast.success("customer successfully saved!", {
             position: toast.POSITION.TOP_RIGHT,
           });
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+        toast.error(`${err.message}`, {
+          position: toast.POSITION.TOP_RIGHT,
         });
-    },
-  });
+      });
+    }
 
   return (
     <Box className="customer">
@@ -867,9 +876,7 @@ let Customer = () => {
           <Button
             className="btn saveChangeBtn"
             content="save"
-            onClick={() => {
-              formik.handleSubmit();
-            }}
+            onClick={handleSubmit}
           >
             Save Changes
           </Button>
@@ -939,7 +946,7 @@ let Customer = () => {
               </label>
               <textarea name="Notes" placeholder="Lorem Ipsum"></textarea>
             </FormGroup>
-            <Button className="btn">Save link</Button>
+            {/* <Button className="btn">Save link</Button> */}
           </Box>
         </Grid>
       </Grid>

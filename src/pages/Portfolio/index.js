@@ -33,7 +33,7 @@ import CustomerServices from "../../APIs/Customer";
 
 const Portfolio = () => {
   const [allCustomers, setAllCustomers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(0);
   const [currentItems, setCurrentItems] = useState([]);
 
@@ -44,11 +44,11 @@ const Portfolio = () => {
           const data = res;
           setAllCustomers(data);
           setCount(data?.length);
-          setLoading(false);
+          // setLoading(false);
         }
       })
       .catch((err) => {
-        setLoading(false);
+        // setLoading(false);
       });
   };
   useEffect(() => {

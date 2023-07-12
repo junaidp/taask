@@ -1,3 +1,4 @@
+import axios from "axios";
 import Service from "../Service";
 
 const CustomerServices = {
@@ -10,13 +11,15 @@ const CustomerServices = {
   },
   saveCustomer: async (data) => {
     try {
-      return await Service.post({
-        url: "/api/customer/saveCustomer",
-        data,
-        contentType:'multipart/form-data'
+      const response = await axios.post(process.env.REACT_APP_BASE_URL+'/customer/saveCustomer', data, {
+        headers: {
+          Authorization: localStorage.getItem('token'),
+          'Content-Type': 'multipart/form-data',
+        },
       });
+      console.log(response.data);
     } catch (error) {
-      throw error;
+      console.error(error);
     }
   },
   getAllMettings: async () => {
@@ -44,7 +47,7 @@ const CustomerServices = {
   },
   getAllCustomers: async () => {
     try {
-      return await Service.get("/api/customer/getAllCustomers");
+      return await Service.get("/customer/list");
     } catch (error) {
       throw error;
     }

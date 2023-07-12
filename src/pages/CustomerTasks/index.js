@@ -371,8 +371,10 @@ const CustomerTasks = (props) => {
   });
 
   const getAllCustomers = async () => {
+    debugger;
     await CustomerServices.getAllCustomers()
       .then((res) => {
+        debugger;
         if (res) {
           setAllCustomers(res);
         }
@@ -393,7 +395,7 @@ const CustomerTasks = (props) => {
 
   useEffect(() => {
     getAllCustomers();
-    getAllTasks();
+    // getAllTasks();
   }, []);
 
   const columns = [

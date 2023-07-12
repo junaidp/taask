@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 /**
  * Create an Axios Client with defaults
  */
@@ -8,8 +9,9 @@ const client = axios.create({
 });
 
 client.interceptors.request.use((req) => {
-  if (req?.token) {
-    req.headers.Authorization = `Bearer ${req?.token}`;
+  let token = localStorage.getItem('token')
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
   }
   return req;
 });
@@ -29,6 +31,7 @@ const request = (options) => {
 
   const onError = (error) => {
     if (error.response) {
+      debugger;
       if (error.response.status === 401) {
         // Router.push(redirectTo);
       }
@@ -36,6 +39,9 @@ const request = (options) => {
       // Something else happened while setting up the request
       // triggered the error
     }
+    // toast.error(error.response || error.message, {
+    //   position: toast.POSITION.TOP_RIGHT,
+    // });
 
     return Promise.reject(error.response || error.message);
   };
