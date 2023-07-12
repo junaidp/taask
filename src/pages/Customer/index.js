@@ -319,6 +319,7 @@ let Customer = () => {
   const [open1, setOpen1] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [file, setFile] = useState(null);
+  const [iamge, setImage] = useState(null);
   const [description, setDescription] = useState(null);
   const [uplodedFiles, setUploadedFiles] = useState([]);
   const [link, setlink] = useState();
@@ -330,6 +331,7 @@ let Customer = () => {
 
   const handlePhotoUpload = (event) => {
     const file = event.target.files[0];
+    setImage(file);
     setPhoto(URL.createObjectURL(file));
     setShowDeleteIcon(true);
     event.target.value = "";
@@ -338,7 +340,14 @@ let Customer = () => {
   const handleDeletePhoto = () => {
     setPhoto(null);
     setShowDeleteIcon(false);
+    setImage(null);
   };
+  const reset =()=>{
+    formik.handleReset()
+    handleDeletePhoto();
+    setFile(null);
+    setLinks([]);
+  }
 
   const handlePopupClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -376,7 +385,6 @@ let Customer = () => {
       ...uplodedFiles,
       {
         file: file,
-        description: description,
       },
     ]);
     setOpen1(false);
@@ -408,7 +416,6 @@ let Customer = () => {
         {
           name: "",
           emailAddress: "",
-          id: "",
           jobTitle: "",
           location: "",
         },
@@ -422,31 +429,46 @@ let Customer = () => {
       return;
     }
     setLoading(true);
-    const customer = formik?.values;
+    const customer = {...formik?.values};
     customer.contacts = customer.contacts[0];
     const data = new FormData();
-    // if (file) {
-    //   data.append("file", file);
-    // } else {
-    //   setShowPopup(true);
-    //   setLoading(false);
-    //   return;
-    // }
-    // if (photo) {
-    //   const photoFile = await fetch(photo).then((res) => res.blob());
-    //   data.append("image", photoFile); 
-    // }
+    if (file) {
+      data.append("file", file);
+    } else {
+      setShowPopup(true);
+      setLoading(false);
+      return;
+    }
+    if (iamge) {
+      // const photoFile = await fetch(photo).then((res) => res.blob());
+      data.append("image", iamge); 
+    }
+    else{
+      setLoading(false);
+      toast.error(`${'image is required'}`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return;
+    }
     
     const customerJson = JSON.stringify(customer);
-    // const blob = new Blob([customerJson], { type: "application/json" });
-    data.append("customer", customerJson);
-    data.append("link",JSON.stringify({
-      "link": "https://example.com",
-      "description": "This is a description"
-    }))
+    const blob = new Blob([customerJson], { type: "application/json" });
+    data.append("customer", blob);
+    if(!Links.length){
+      toast.error(`${'Link is Required'}`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      setLoading(false);
+      return;
+    }
+    const linkJson = JSON.stringify(Links[0]);
+    const blob3 = new Blob([linkJson], { type: "application/json" });
+    data.append("link",blob3)
     await saveCustomer(data)
       .then((res) => {
-        if (res?.includes("saved")) {
+        debugger;
+        if (res?.data.includes("saved")) {
+          reset();
           toast.success("customer successfully saved!", {
             position: toast.POSITION.TOP_RIGHT,
           });
@@ -523,7 +545,7 @@ let Customer = () => {
                   name: "name",
                   placeholder: "John Doe",
                   checkValidation: true,
-                  value: formik?.values?.name,
+                  // value: formik?.values?.name,
                 }}
                 onChange={(e) => {
                   formik.setFieldValue("name", e.target.value);
@@ -544,7 +566,7 @@ let Customer = () => {
                   title: "Category",
                   name: "category",
                   checkValidation: true,
-                  value: formik?.values?.category,
+                  // value: formik?.values?.category,
                 }}
                 onChange={(e) => {
                   formik.setFieldValue("category", e.target.value);
@@ -618,7 +640,7 @@ let Customer = () => {
                   title: "Customer Stage",
                   name: "customerStage",
                   checkValidation: true,
-                  value: formik?.values?.customerStage,
+                  // value: formik?.values?.customerStage,
                 }}
                 onChange={(e) => {
                   formik.setFieldValue("customerStage", e.target.value);
@@ -660,7 +682,7 @@ let Customer = () => {
                   name: "location",
                   placeholder: "Lorem Ipsum",
                   checkValidation: true,
-                  value: formik?.values?.location,
+                  // value: formik?.values?.location,
                 }}
                 onChange={(e) => {
                   formik.setFieldValue("location", e.target.value);
@@ -702,7 +724,7 @@ let Customer = () => {
                   name: "website",
                   placeholder: "www.loremipsum.com",
                   checkValidation: true,
-                  value: formik?.values?.website,
+                  // value: formik?.values?.website,
                 }}
                 onChange={(e) => {
                   formik.setFieldValue("website", e.target.value);
@@ -729,7 +751,7 @@ let Customer = () => {
                         name: "contactsName",
                         placeholder: "John Doe",
                         checkValidation: true,
-                        value: formik?.values?.contacts.name,
+                        // value: formik?.values?.contacts.name,
                       }}
                       onChange={(e) => {
                         formik.setFieldValue(
@@ -755,7 +777,7 @@ let Customer = () => {
                         name: "emailAddress",
                         placeholder: "Email Address",
                         checkValidation: true,
-                        value: formik?.values?.contacts?.emailAddress,
+                        // value: formik?.values?.contacts?.emailAddress,
                       }}
                       onChange={(e) => {
                         formik.setFieldValue(
@@ -781,7 +803,7 @@ let Customer = () => {
                         name: "jobTitle",
                         placeholder: "Job Title",
                         checkValidation: true,
-                        value: formik?.values?.contacts?.jobTitle,
+                        // value: formik?.values?.contacts?.jobTitle,
                       }}
                       onChange={(e) => {
                         formik.setFieldValue(
@@ -806,7 +828,7 @@ let Customer = () => {
                         name: "location",
                         placeholder: "Lorem Ipsum",
                         checkValidation: true,
-                        value: formik?.values?.contacts.location,
+                        // value: formik?.values?.contacts.location,
                       }}
                       onChange={(e) => {
                         formik.setFieldValue(
@@ -866,7 +888,7 @@ let Customer = () => {
                 name: "customerNotes",
                 placeholder: "Lorem Ipsum",
                 checkValidation: true,
-                value: formik?.values?.customerNotes,
+                // value: formik?.values?.customerNotes,
               }}
               onChange={(e) => {
                 formik.setFieldValue("customerNotes", e.target.value);
@@ -910,7 +932,7 @@ let Customer = () => {
                 {uplodedFiles?.map((item) => (
                   <ListItem disablePadding>
                     <p>{item.file?.name}</p>
-                    <span title={item.description}>{item.description}</span>
+                    {/* <span title={item.description}>{item.description}</span> */}
                   </ListItem>
                 ))}
               </List>
@@ -940,12 +962,12 @@ let Customer = () => {
                 </List>
               </Box>
             </Box>
-            <FormGroup className="inputHead">
+            {/* <FormGroup className="inputHead">
               <label htmlFor="Notes" className="Notes">
                 Notes
               </label>
               <textarea name="Notes" placeholder="Lorem Ipsum"></textarea>
-            </FormGroup>
+            </FormGroup> */}
             {/* <Button className="btn">Save link</Button> */}
           </Box>
         </Grid>
@@ -990,13 +1012,13 @@ let Customer = () => {
                 </Button>
               </Box>
             </FormGroup>
-            <FormGroup className="inputHead">
+            {/* <FormGroup className="inputHead">
               <textarea
                 name="description"
                 placeholder="Description"
                 onChange={(e) => setDescription(e.target.value)}
               ></textarea>
-            </FormGroup>
+            </FormGroup> */}
           </Box>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "end" }}>

@@ -42,6 +42,7 @@ const Portfolio = () => {
       .then((res) => {
         if (res) {
           const data = res;
+          console.log(data)
           setAllCustomers(data);
           setCount(data?.length);
           // setLoading(false);
@@ -96,7 +97,7 @@ const Portfolio = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {currentItems.map((item, index) => (
+            {currentItems.length>0 && currentItems.map((item, index) => (
               <TableRow key={item.clientName}>
                 <TableCell>
                   {index + 1 < 10 ? `0${index + 1}` : index + 1}
@@ -109,7 +110,7 @@ const Portfolio = () => {
                     {item?.name}
                   </Box>
                 </TableCell>
-                <TableCell>{item?.contacts[0].name}</TableCell>
+                <TableCell>{item?.contacts?.name}</TableCell>
                 <TableCell>{moment(item.customerSince).format("DD/MM/YYYY")}</TableCell>
                 <TableCell>{item?.customerStage}</TableCell>
                 <TableCell>{item?.location}</TableCell>
