@@ -6,3 +6,6 @@ export async function saveCustomer(formData){
           'Content-Type': 'multipart/form-data',
         }});
 }
+export async function getAllCustomer(){
+  return await api.get("/customer/list");
+}
