@@ -38,7 +38,7 @@ export default function Router() {
       children: [
         { element: <Navigate to="/upcoming-tasks" />, index: true },
         { path: 'upcoming-tasks', element: <UpcomingItems /> },
-        { path: 'customer', element: <CustomerDetail /> },
+        { path: 'customer', element: <Customer /> },
         { path: 'portfolio', element: <Portfolio /> },
         { path: 'customer/:cusId', element: <CustomerDetail /> },
         { path: 'customerTasks', element: <CustomerTasks /> },
