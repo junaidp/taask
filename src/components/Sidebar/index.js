@@ -25,13 +25,13 @@ import CustomerTasks from "../../assets/icons/Customer Tasks.svg";
 import Snapshots from "../../assets/icons/Snapshots.svg";
 import Integrations from "../../assets/icons/Integrations.svg"
 
-const Sidebar = ({ setActivePage }) => {
+const Sidebar = () => {
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(getActiveIndex());
 
   function getActiveIndex() {
     const paths = [
-      "/",
+      "/upcomingItems",
       "/Customer",
       "/Portfolio",
       "/Customer Tasks",
@@ -60,7 +60,6 @@ const Sidebar = ({ setActivePage }) => {
     const activePageName = pageNames[index] || "UpcomingItemsTable";
     localStorage.setItem("activeIndex", index);
     localStorage.setItem("activeIndexName", activePageName);
-    setActivePage(activePageName);
   };
   
   useEffect(() => {
@@ -68,7 +67,6 @@ const Sidebar = ({ setActivePage }) => {
     const activeIndexNameFromStorage = localStorage.getItem("activeIndexName");
     if (activeIndexFromStorage !== null) {
       setActiveIndex(parseInt(activeIndexFromStorage));
-      setActivePage(activeIndexNameFromStorage);
     }
   }, []);
   return (
@@ -77,7 +75,7 @@ const Sidebar = ({ setActivePage }) => {
         <img src={Logo} alt="img not found" />
       </a>
       <List>
-        <Link to="/">
+        <Link to="/upcoming-tasks">
           <ListItem disablePadding>
             <ListItemButton
               variant="soft"

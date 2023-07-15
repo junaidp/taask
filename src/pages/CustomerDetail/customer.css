@@ -1,0 +1,201 @@
+.customer .customerPart1 {
+  padding-right: 15px !important;
+}
+.customer {
+  padding-right: 10px !important;
+}
+.customer .customerPart2 {
+  padding-left: 15px !important;
+}
+.customer .customTableHead {
+  margin-bottom: 26px !important;
+}
+.customer .profileHead{
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px !important;
+}
+.profile{
+  border: 2px dotted #2b5b6d !important;
+}
+.profileAvatar{
+  border: 2px solid #2b5b6d !important;
+}
+.customer .inputGroup {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 26px !important;
+}
+.customer .inputGroup * {
+  box-sizing: border-box !important;
+}
+.customer .inputGroup .inputHead {
+  width: 48% !important;
+}
+.customer .inputHead {
+  width: 100% !important;
+}
+.customer .inputHead label {
+  margin-bottom: 8px !important;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #152428;
+  display: block;
+}
+.customer .CustomerNotes {
+  display: flex;
+  align-items: center;
+}
+.customer .CustomerNotes img {
+  display: inline-block;
+  transform: translate(16px, 2px);
+  cursor: pointer;
+}
+.customer .inputHead textarea {
+  width: 100%;
+  height: 168px;
+  background: #ffffff;
+  border: 1px solid #3a606e;
+  box-shadow: 4px 2px 15px rgba(58, 96, 110, 0.06);
+  border-radius: 8px;
+  resize: unset !important;
+  padding: 16px;
+  outline: none;
+}
+
+.customer .quickAccess {
+  background: #ffffff !important;
+  box-shadow: 0px 4px 15px rgba(58, 96, 110, 0.15) !important;
+  border-radius: 16px !important;
+  padding: 24px !important;
+  height: 100%;
+}
+.customer .quickAccess .heading {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #373f41;
+  margin-bottom: 24px !important;
+}
+
+.customer .quickAccess .heading img {
+  display: inline-block;
+  transform: translate(16px, 2px);
+  cursor: pointer;
+}
+
+.customer .quickAccess .MuiOutlinedInput-root {
+  padding: 13px 16px !important;
+}
+.customer .quickAccess label {
+  margin-bottom: 16px !important;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #214b5a;
+  display: flex;
+  align-items: center;
+}
+.customer .quickAccess label img {
+  display: block;
+  margin-right: 8px !important;
+  cursor: pointer;
+}
+.customer .quickAccess .inputHead {
+  margin-bottom: 24px !important;
+}
+.customer .btn,
+.btn2 {
+  width: 100%;
+  background: linear-gradient(180deg, #2e6073 0%, #214b5a 100%);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 12px 12px !important;
+  border: none;
+  cursor: pointer;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #ffffff !important;
+  margin-bottom: 26px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: unset !important;
+}
+.customer .saveChangeBtn,
+.btn3 {
+  margin-bottom: unset !important;
+  width: 48% !important;
+}
+.customer .mainContactsBtn {
+  width: 48% !important;
+}
+.customer .btn img {
+  filter: saturate(0%) brightness(350%) !important;
+  margin-right: 8px !important;
+}
+.customer .quickAccess textarea {
+  height: 120px !important;
+}
+.customer .quickAccess .AttachmentHead h6 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #214b5a;
+}
+.customer .quickAccess .AttachmentHead h6 img {
+  transform: translateY(4px);
+  cursor: pointer;
+}
+.customer .quickAccess .AttachmentHead .Icon {
+  margin-right: 8px !important;
+}
+.customerAttachmentsModel .MuiDialogActions-root {
+  display: flex !important;
+  opacity: 100% !important;
+}
+.customerAttachmentsModel .inputHead:first-child {
+  margin-bottom: 20px !important;
+}
+.customer .list .MuiListItem-root {
+  flex-direction: column !important;
+  align-items: start !important;
+  border-bottom: 1px solid #2c49544f;
+  padding: 10px 0 !important;
+}
+.customer .list p {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #3a606e;
+}
+.customer .list span {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  width: 100%;
+  color: #152428;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

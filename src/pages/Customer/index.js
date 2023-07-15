@@ -1,56 +1,46 @@
-import React, { useState, useEffect } from "react";
-import "./customer.css";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import * as Yup from "yup";
-import dayjs from "dayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import {
-  Box,
-  Grid,
-  TextField,
-  FormGroup,
-  MenuItem,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Slide,
-  DialogActions,
-  List,
-  ListItem,
-  Avatar,
-  IconButton,
-  Snackbar,
-} from "@mui/material";
-import MuiAlert from "@mui/material/Alert";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
-import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Formik } from "formik";
 import { customerSchema } from "../../Validation";
-
-// conponent
-import { useFormik } from "formik";
-import CustomerServices from "../../APIs/Customer";
-import Loader from "../../components/Loader";
-import FormData from "form-data";
-
-// Images
+import "./customer.css";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CalenderIcon from "../../assets/icons/calender.svg";
 import CustomerNotes from "../../assets/icons/CustomerNotes.svg";
 import AttachmentIcon from "../../assets/icons/Attachment.svg";
 import LinksIcon from "../../assets/icons/Links.svg";
 import PlusIcon from "../../assets/icons/plus.svg";
 import CloseIcon from "../../assets/icons/close.svg";
-import { saveCustomer } from "../../services/customer.service";
+import MuiAlert from "@mui/material/Alert";
+import {
+  Avatar,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormGroup,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  MenuItem,
+  Snackbar,
+  TextField,
+} from "@mui/material";
+import { useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { ToastContainer, toast } from "react-toastify";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
+import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
+import { forwardRef } from "react";
+import Slide from "@mui/material/Slide/Slide";
+import Loader from "../../components/Loader";
+import {saveCustomer} from '../../services/customer.service'
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
 let CustomCalendarIcon = (props) => {
   return <img src={CalenderIcon} alt="" {...props} />;
 };
@@ -59,7 +49,28 @@ const getDay = (day) => {
   const dayIndex = dayNames.findIndex((name) => name.startsWith(day));
   return dayIndex > -1 ? dayNames[dayIndex] : "";
 };
-
+const categoryOption = [
+  {
+    value: "Tier 1",
+    label: "Tier 1",
+  },
+  {
+    value: "Tier 2",
+    label: "Tier 2",
+  },
+  {
+    value: "Tier 3",
+    label: "Tier 3",
+  },
+  {
+    value: "Tier 4",
+    label: "Tier 4",
+  },
+  {
+    value: "Tier 5",
+    label: "Tier 5",
+  },
+];
 const customerOption = [
   {
     value: "PreBoarding",
@@ -86,29 +97,6 @@ const customerOption = [
     label: "Growth",
   },
 ];
-const categoryOption = [
-  {
-    value: "Tier 1",
-    label: "Tier 1",
-  },
-  {
-    value: "Tier 2",
-    label: "Tier 2",
-  },
-  {
-    value: "Tier 3",
-    label: "Tier 3",
-  },
-  {
-    value: "Tier 4",
-    label: "Tier 4",
-  },
-  {
-    value: "Tier 5",
-    label: "Tier 5",
-  },
-];
-
 const countries = [
   { label: "Afghanistan", value: "Afghanistan" },
   { label: "Albania", value: "Albania" },
@@ -310,141 +298,92 @@ const countries = [
   { label: "Zambia", value: "Zambia" },
   { label: "Zimbabwe", value: "Zimbabwe" },
 ];
-let Customer = () => {
-  const [value, setValue] = React.useState(dayjs("2023-12-02"));
-  const [loading, setLoading] = useState(false);
-  const [mainContacts, setMainContacts] = useState(false);
-  const [allContacts, setAllContacts] = useState([]);
-  const [country, setCountry] = useState("United Kingdom");
-  const [open1, setOpen1] = React.useState(false);
-  const [open2, setOpen2] = React.useState(false);
-  const [file, setFile] = useState(null);
-  const [iamge, setImage] = useState(null);
-  const [description, setDescription] = useState(null);
-  const [uplodedFiles, setUploadedFiles] = useState([]);
-  const [link, setlink] = useState();
-  const [linkDescription, setLinkDescription] = useState();
-  const [Links, setLinks] = useState([]);
-  const [showPopup, setShowPopup] = useState(false);
+const Customer = () => {
+  const [value, setValue] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [showDeleteIcon, setShowDeleteIcon] = useState(false);
-
-  const handlePhotoUpload = (event) => {
-    const file = event.target.files[0];
-    setImage(file);
-    setPhoto(URL.createObjectURL(file));
-    setShowDeleteIcon(true);
-    event.target.value = "";
-  };
-
-  const handleDeletePhoto = () => {
-    setPhoto(null);
-    setShowDeleteIcon(false);
-    setImage(null);
-  };
-  const reset =()=>{
-    formik.handleReset()
-    handleDeletePhoto();
-    setFile(null);
-    setLinks([]);
-  }
-
-  const handlePopupClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setShowPopup(false);
-  };
-
-  const onUpload = (e) => {
-    setFile(e?.target?.files[0]);
-  };
-  const handleCloseAttachments = () => {
-    setOpen1(false);
-  };
-  const handleClickOpenAttachmentsModel = () => {
-    if (uplodedFiles?.length < 3) {
-      setOpen1(true);
-    }
-  };
-  const handleCloseLink = () => {
-    setOpen2(false);
-  };
-  const handleClickOpenLinkModel = () => {
-    if (Links?.length < 3) {
-      setOpen2(true);
-    }
-  };
-
-  const handleMainContacts = () => {
-    setMainContacts(!mainContacts);
-  };
-
+  const [mainContacts, setMainContacts] = useState(false);
+  const [open1, setOpen1] = useState(false);
+  const [open2, setOpen2] = useState(false);
+  const [file, setFile] = useState(null);
+  const [uplodedFiles, setUploadedFiles] = useState([]);
+  const [Links, setLinks] = useState([]);
+  const [link, setlink] = useState();
+  const [showPopup, setShowPopup] = useState(false);
+  const [linkDescription, setLinkDescription] = useState();
+  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(null);
   const handleAttachmentSubmit = () => {
     setUploadedFiles([
-      ...uplodedFiles,
+      // ...uplodedFiles,
       {
         file: file,
       },
     ]);
     setOpen1(false);
   };
-
-  const handleLinksSubmit = () => {
-    setLinks([
-      ...Links,
-      {
-        link: link,
-        description: linkDescription,
-      },
-    ]);
+  const handleCloseLink = () => {
     setOpen2(false);
   };
-
-  const formik = useFormik({
-    enableReinitialize: false,
-    validationSchema: customerSchema,
-    initialValues: {
-      category: "",
-      name: "",
-      location: "",
-      website: "",
-      customerStage: "",
-      customerSince: "",
-      customerNotes: "",
-      contacts: [
-        {
-          name: "",
-          emailAddress: "",
-          jobTitle: "",
-          location: "",
-        },
-      ],
-    },
-    
-  });
-  const handleSubmit = async () => {
-    debugger;
-    if(!formik.isValid){
+  const handlePhotoUpload = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setPhoto(URL.createObjectURL(file));
+      setImage(file);
+      setShowDeleteIcon(true);
+      event.target.value = "";
+    } else {
+      event.target.value = "";
+      toast.error("Only image file is allowed", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
       return;
     }
-    setLoading(true);
-    const customer = {...formik?.values};
+  };
+  const handleDeletePhoto = () => {
+    setPhoto(null);
+    setImage(null);
+    setShowDeleteIcon(false);
+  };
+  const onUpload = (e) => {
+    const file = e.target.files[0];
+    debugger;
+    if (file && file.type.startsWith("application/pdf")) {
+      setFile(file);
+      e.target.value = "";
+    } else {
+      e.target.value = "";
+      toast.error("Only pdf file is allowed", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return;
+    }
+  };
+  const resetData = ()=>{
+    setFile(null);
+      setImage(null);
+      setPhoto(null);
+      setShowDeleteIcon(false);
+      setLinks([]);
+      setlink([]);
+      setUploadedFiles([]);
+  }
+  const handleSubmit = async (values, actions) => {
+    debugger;
+    const customer = {...values};
     customer.contacts = customer.contacts[0];
     const data = new FormData();
     if (file) {
       data.append("file", file);
     } else {
       setShowPopup(true);
-      setLoading(false);
       return;
     }
-    if (iamge) {
+    if (image) {
       // const photoFile = await fetch(photo).then((res) => res.blob());
-      data.append("image", iamge); 
+      data.append("image", image); 
     }
     else{
-      setLoading(false);
       toast.error(`${'image is required'}`, {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -458,288 +397,318 @@ let Customer = () => {
       toast.error(`${'Link is Required'}`, {
         position: toast.POSITION.TOP_RIGHT,
       });
-      setLoading(false);
       return;
     }
     const linkJson = JSON.stringify(Links[0]);
     const blob3 = new Blob([linkJson], { type: "application/json" });
-    data.append("link",blob3)
-    await saveCustomer(data)
-      .then((res) => {
-        debugger;
-        if (res?.data.includes("saved")) {
-          reset();
-          toast.success("customer successfully saved!", {
-            position: toast.POSITION.TOP_RIGHT,
-          });
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-        toast.error(`${err.message}`, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+    data.append("link",blob3);
+    setLoading(true);
+    const res = await saveCustomer(data).catch((err)=>{
+      setLoading(false);
+    });
+    setLoading(false);
+    if (res.data.includes("saved")) {
+      actions.resetForm();
+      resetData();
+      toast.success("customer successfully saved!", {
+        position: toast.POSITION.TOP_RIGHT,
       });
     }
-
+    else{
+      toast.error(`${'Something went wrong on'}`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
+  };
+  const handleMainContacts = () => {
+    setMainContacts(!mainContacts);
+  };
+  const handleCloseAttachments = () => {
+    setOpen1(false);
+  };
+  const handleClickOpenAttachmentsModel = () => {
+    if (uplodedFiles?.length < 3) {
+      setOpen1(true);
+    }
+  };
+  const handleClickOpenLinkModel = () => {
+    if (Links?.length < 3) {
+      setOpen2(true);
+    }
+  };
+  const handleLinksSubmit = () => {
+    setLinks([
+      // ...Links,
+      {
+        link: link,
+        description: linkDescription,
+      },
+    ]);
+    setOpen2(false);
+  };
+  const handlePopupClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setShowPopup(false);
+  };
   return (
-    <Box className="customer">
-      <Grid container>
-        <Grid item xs={8} className="customerPart1">
-          <Box className="profileHead">
-            <label htmlFor="photo-upload">
-              <input
-                id="photo-upload"
-                className="photo-upload"
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handlePhotoUpload}
-              />
-              <IconButton
-                sx={{ width: 80, height: 80 }}
-                component="span"
-                color="primary"
-                className="profile"
-              >
-                {photo ? (
-                  <>
-                    <Avatar
-                      sx={{ width: 80, height: 80 }}
-                      alt="Customer photo"
-                      src={photo}
-                      className="profileAvatar"
-                    />
-                    {showDeleteIcon && (
-                      <IconButton
-                        sx={{
-                          position: "absolute",
-                          top: 18,
-                          right: -40,
-                          color: "red",
-                        }}
-                        onClick={handleDeletePhoto}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    )}
-                  </>
-                ) : (
-                  <AddPhotoAlternateIcon
-                    sx={{ fontSize: 48, color: "#2b5b6d" }}
+    <Formik
+      initialValues={{
+        category: "",
+        name: "",
+        location: "",
+        website: "",
+        customerStage: "",
+        customerSince: "",
+        customerNotes: "",
+        contacts: [
+          {
+            name: "",
+            emailAddress: "",
+            jobTitle: "",
+            location: "",
+          },
+        ],
+      }}
+      validationSchema={customerSchema}
+      onSubmit={handleSubmit}
+    >
+      {(formik) => (
+        <Box className="customer">
+          <Grid container>
+            <Grid item xs={8} className="customerPart1">
+              <Box className="profileHead">
+                <label htmlFor="photo-upload">
+                  <input
+                    id="photo-upload"
+                    className="photo-upload"
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handlePhotoUpload}
                   />
-                )}
-              </IconButton>
-            </label>
-          </Box>
-          <Box className="inputGroup">
-            <FormGroup className="inputHead">
-              <label htmlFor="Name" className="Name">
-                Name *
-              </label>
-              <TextField
-                {...{
-                  formik,
-                  title: "name",
-                  name: "name",
-                  placeholder: "John Doe",
-                  checkValidation: true,
-                  // value: formik?.values?.name,
-                }}
-                onChange={(e) => {
-                  formik.setFieldValue("name", e.target.value);
-                }}
-              />
-              {formik.errors.name && (
-                <p className="input-error">{formik.errors.name}</p>
-              )}
-            </FormGroup>
-            <FormGroup className="inputHead">
-              <label htmlFor="Category" className="Category">
-                Category *
-              </label>
-              <TextField
-                select
-                {...{
-                  formik,
-                  title: "Category",
-                  name: "category",
-                  checkValidation: true,
-                  // value: formik?.values?.category,
-                }}
-                onChange={(e) => {
-                  formik.setFieldValue("category", e.target.value);
-                }}
-                InputProps={{
-                  placeholder: "Select a Category",
-                  disableUnderline: true,
-                }}
-                SelectProps={{
-                  displayEmpty: true,
-                  renderValue: (value) => {
-                    if (!value) {
-                      return <p>Category</p>;
-                    }
-                    return value;
-                  },
-                }}
-              >
-                {categoryOption.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-              {formik.errors.category && (
-                <p className="input-error">{formik.errors.category}</p>
-              )}
-            </FormGroup>
-          </Box>
-          <Box className="inputGroup">
-            <FormGroup className="inputHead">
-              <label htmlFor="Customer Since" className="CustomerSince">
-                Customer Since *
-              </label>
-              <LocalizationProvider
-                dateAdapter={AdapterDayjs}
-                className="customerCalander"
-              >
-                <DatePicker
-                  orientation="portrait"
-                  displayStaticWrapperAs="desktop"
-                  openTo="day"
-                  value={value}
-                  showToolbar={false}
-                  components={{
-                    OpenPickerIcon: CustomCalendarIcon,
-                    RightArrowButton: ArrowRightRoundedIcon,
-                    LeftArrowButton: ArrowLeftRoundedIcon,
-                  }}
-                  onChange={(newValue) => {
-                    setValue(newValue);
-                    formik.setFieldValue("customerSince", newValue);
-                  }}
-                  showDaysOutsideCurrentMonth
-                  dayOfWeekFormatter={(day) => getDay(day)}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-                {formik.errors.customerSince && (
-                  <p className="input-error">{formik.errors.customerSince}</p>
-                )}
-              </LocalizationProvider>
-            </FormGroup>
-            <FormGroup className="inputHead">
-              <label htmlFor="CustomerStage" className="CustomerStage">
-                Customer Stage *
-              </label>
-              <TextField
-                select
-                {...{
-                  formik,
-                  title: "Customer Stage",
-                  name: "customerStage",
-                  checkValidation: true,
-                  // value: formik?.values?.customerStage,
-                }}
-                onChange={(e) => {
-                  formik.setFieldValue("customerStage", e.target.value);
-                }}
-                InputProps={{
-                  placeholder: "Select a customer stage",
-                  disableUnderline: true,
-                }}
-                SelectProps={{
-                  displayEmpty: true,
-                  renderValue: (value) => {
-                    if (!value) {
-                      return <p>Customer Stage</p>;
-                    }
-                    return value;
-                  },
-                }}
-              >
-                {customerOption.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-              {formik.errors.customerStage && (
-                <p className="input-error">{formik.errors.customerStage}</p>
-              )}
-            </FormGroup>
-          </Box>
-
-          <Box className="inputGroup">
-            <FormGroup className="inputHead">
-              <label htmlFor="location">Location</label>
-              <TextField
-                select
-                {...{
-                  formik,
-                  title: "Location",
-                  name: "location",
-                  placeholder: "Lorem Ipsum",
-                  checkValidation: true,
-                  // value: formik?.values?.location,
-                }}
-                onChange={(e) => {
-                  formik.setFieldValue("location", e.target.value);
-                }}
-                InputProps={{
-                  placeholder: "Select Your Country",
-                  disableUnderline: true,
-                }}
-                SelectProps={{
-                  displayEmpty: true,
-                  renderValue: (label, value) => {
-                    if (!label) {
-                      return <p>Select Your Country</p>;
-                    }
-                    return label;
-                  },
-                }}
-                MenuProps={{
-                  style: {
-                    maxHeight: "200px !important",
-                  },
-                }}
-              >
-                {countries.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FormGroup>
-            <FormGroup className="inputHead">
-              <label htmlFor="Website" className="Website">
-                Website
-              </label>
-              <TextField
-                {...{
-                  formik,
-                  title: "Website",
-                  name: "website",
-                  placeholder: "www.loremipsum.com",
-                  checkValidation: true,
-                  // value: formik?.values?.website,
-                }}
-                onChange={(e) => {
-                  formik.setFieldValue("website", e.target.value);
-                }}
-              />
-            </FormGroup>
-          </Box>
-          <Box className="customTableHead">
-            <Button
-              className="btn mainContactsBtn"
-              onClick={handleMainContacts}
-            >
-              <img src={PlusIcon} alt="not found" /> Main Contacts
-            </Button>
-            {mainContacts == true ? (
+                  <IconButton
+                    sx={{ width: 80, height: 80 }}
+                    component="span"
+                    color="primary"
+                    className="profile"
+                  >
+                    {photo ? (
+                      <>
+                        <Avatar
+                          sx={{ width: 80, height: 80 }}
+                          alt="Customer photo"
+                          src={photo}
+                          className="profileAvatar"
+                        />
+                        {showDeleteIcon && (
+                          <IconButton
+                            sx={{
+                              position: "absolute",
+                              top: 18,
+                              right: -40,
+                              color: "red",
+                            }}
+                            onClick={handleDeletePhoto}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        )}
+                      </>
+                    ) : (
+                      <AddPhotoAlternateIcon
+                        sx={{ fontSize: 48, color: "#2b5b6d" }}
+                      />
+                    )}
+                  </IconButton>
+                </label>
+              </Box>
+              <Box className="inputGroup">
+                <FormGroup className="inputHead">
+                  <label htmlFor="Name" className="Name">
+                    Name *
+                  </label>
+                  <TextField
+                    name="name"
+                    placeholder="Name"
+                    value={formik.values.name}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.name && formik.errors.name && (
+                    <p className="input-error">{formik.errors.name}</p>
+                  )}
+                </FormGroup>
+                <FormGroup className="inputHead">
+                  <label htmlFor="Category" className="Category">
+                    Category *
+                  </label>
+                  <TextField
+                    select
+                    name="category"
+                    placeholder="Select Category"
+                    value={formik.values.category}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    InputProps={{
+                      placeholder: "Select Category",
+                      disableUnderline: true,
+                    }}
+                    SelectProps={{
+                      displayEmpty: true,
+                      renderValue: (label, value) => {
+                        if (!label) {
+                          return <p>Select Category</p>;
+                        }
+                        return label;
+                      },
+                    }}
+                  >
+                    {categoryOption.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  {formik.touched.category && formik.errors.category ? (
+                    <p className="input-error">{formik.errors.category}</p>
+                  ) : null}
+                </FormGroup>
+              </Box>
+              <Box className="inputGroup">
+                <FormGroup className="inputHead">
+                  <label htmlFor="Customer Since" className="CustomerSince">
+                    Customer Since *
+                  </label>
+                  <LocalizationProvider
+                    dateAdapter={AdapterDayjs}
+                    className="customerCalander"
+                  >
+                    <DatePicker
+                      orientation="portrait"
+                      displayStaticWrapperAs="desktop"
+                      openTo="day"
+                      value={value}
+                      showToolbar={false}
+                      components={{
+                        OpenPickerIcon: CustomCalendarIcon,
+                        RightArrowButton: ArrowRightRoundedIcon,
+                        LeftArrowButton: ArrowLeftRoundedIcon,
+                      }}
+                      onChange={(newValue) => {
+                        setValue(newValue);
+                        formik.setFieldValue("customerSince", newValue);
+                      }}
+                      showDaysOutsideCurrentMonth
+                      dayOfWeekFormatter={(day) => getDay(day)}
+                      renderInput={(params) => (
+                        <TextField {...params} name="customerSince" />
+                      )}
+                    />
+                    {formik.touched.customerSince &&
+                      formik.errors.customerSince && (
+                        <p className="input-error">
+                          {formik.errors.customerSince}
+                        </p>
+                      )}
+                  </LocalizationProvider>
+                </FormGroup>
+                <FormGroup className="inputHead">
+                  <label htmlFor="CustomerStage" className="CustomerStage">
+                    Customer Stage *
+                  </label>
+                  <TextField
+                    select
+                    name="customerStage"
+                    placeholder="Select a customer stage"
+                    value={formik.values.customerStage}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    InputProps={{
+                      placeholder: "Select a customer stage",
+                      disableUnderline: true,
+                    }}
+                    SelectProps={{
+                      displayEmpty: true,
+                      renderValue: (label, value) => {
+                        if (!label) {
+                          return <p>Select a customer stage</p>;
+                        }
+                        return label;
+                      },
+                    }}
+                  >
+                    {customerOption.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  {formik.touched.customerStage &&
+                  formik.errors.customerStage ? (
+                    <p className="input-error">{formik.errors.customerStage}</p>
+                  ) : null}
+                </FormGroup>
+              </Box>
+              <Box className="inputGroup">
+                <FormGroup className="inputHead">
+                  <label htmlFor="location">Location</label>
+                  <TextField
+                    select
+                    name="location"
+                    placeholder="location"
+                    value={formik.values.location}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    InputProps={{
+                      placeholder: "Select Your Location",
+                      disableUnderline: true,
+                    }}
+                    SelectProps={{
+                      displayEmpty: true,
+                      renderValue: (label, value) => {
+                        if (!label) {
+                          return <p>Select Your Location</p>;
+                        }
+                        return label;
+                      },
+                    }}
+                  >
+                    {countries.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  {formik.touched.location && formik.errors.location ? (
+                    <p className="input-error">{formik.errors.location}</p>
+                  ) : null}
+                </FormGroup>
+                <FormGroup className="inputHead">
+                  <label htmlFor="Website" className="Website">
+                    Website
+                  </label>
+                  <TextField
+                    name="webiste"
+                    placeholder="webiste"
+                    value={formik.values.webiste}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.webiste && formik.errors.webiste ? (
+                    <p className="input-error">{formik.errors.webiste}</p>
+                  ) : null}
+                </FormGroup>
+              </Box>
+              <Box className="customTableHead">
+                <Button
+                  className="btn mainContactsBtn"
+                  onClick={handleMainContacts}
+                >
+                  <img src={PlusIcon} alt="not found" /> Main Contacts
+                </Button>
+                {mainContacts == true ? (
               <Box className="mainContactsForm">
                 <Box className="inputGroup">
                   <FormGroup className="inputHead">
@@ -872,229 +841,223 @@ let Customer = () => {
             ) : (
               ""
             )}
-          </Box>
-          <FormGroup
-            className="inputHead"
-            sx={{ marginBottom: "20px !important" }}
-          >
-            <label htmlFor="CustomerNotes" className="CustomerNotes">
-              Customer Notes
-              <img src={CustomerNotes} alt="img not found" />
-            </label>
-            <textarea
-              {...{
-                formik,
-                title: "CustomerNotes",
-                name: "customerNotes",
-                placeholder: "Lorem Ipsum",
-                checkValidation: true,
-                // value: formik?.values?.customerNotes,
-              }}
-              onChange={(e) => {
-                formik.setFieldValue("customerNotes", e.target.value);
-              }}
-            ></textarea>
-          </FormGroup>
-          <Button
-            className="btn saveChangeBtn"
-            content="save"
-            onClick={handleSubmit}
-          >
-            Save Changes
-          </Button>
-        </Grid>
-        <Grid item xs={4} className="customerPart2">
-          <Box className="quickAccess">
-            <h5 className="heading">
-              Quick Access <img src={CustomerNotes} alt="img not found" />
-            </h5>
-            <Box className="AttachmentHead">
-              <h6>
-                <span>
-                  <img
-                    src={AttachmentIcon}
-                    alt="img not found"
-                    className="Icon"
-                  />
-                  Attachment
-                </span>
-                <span>
-                  <img
-                    src={PlusIcon}
-                    alt="img not found"
-                    onClick={() => handleClickOpenAttachmentsModel()}
-                  />
-                </span>
-              </h6>
-            </Box>
-            <Box>
-              <List className="list">
-                {uplodedFiles?.map((item) => (
-                  <ListItem disablePadding>
-                    <p>{item.file?.name}</p>
-                    {/* <span title={item.description}>{item.description}</span> */}
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-            <Box className="AttachmentHead" sx={{ marginBottom: "16px" }}>
-              <h6>
-                <span>
-                  <img src={LinksIcon} alt="img not found" className="Icon" />
-                  Links
-                </span>
-                <span>
-                  <img
-                    src={PlusIcon}
-                    alt="img not found"
-                    onClick={() => handleClickOpenLinkModel()}
-                  />
-                </span>
-              </h6>
-              <Box>
-                <List className="list">
-                  {Links?.map((item) => (
-                    <ListItem disablePadding>
-                      <p>{item.link}</p>
-                      <span title={item.description}>{item.description}</span>
-                    </ListItem>
-                  ))}
-                </List>
               </Box>
-            </Box>
-            {/* <FormGroup className="inputHead">
-              <label htmlFor="Notes" className="Notes">
-                Notes
-              </label>
-              <textarea name="Notes" placeholder="Lorem Ipsum"></textarea>
-            </FormGroup> */}
-            {/* <Button className="btn">Save link</Button> */}
-          </Box>
-        </Grid>
-      </Grid>
-      <Dialog
-        open={open1}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleCloseAttachments}
-        aria-describedby="alert-dialog-slide-description"
-        className="attachmentsModel customerAttachmentsModel"
-      >
-        <DialogTitle className="titleHead">
-          Upload Attachments
-          <img
-            src={CloseIcon}
-            alt="not found"
-            onClick={handleCloseAttachments}
-          />
-        </DialogTitle>
-        <DialogContent>
-          <Box
-            sx={{
-              paddingTop: "24px",
-            }}
-          >
-            <FormGroup className="inputHead">
-              <Box className="uploadFileHead">
-                <TextField
-                  fullWidth
-                  placeholder="Lorem Ipsum"
-                  value={file?.name}
-                  id="file"
-                />
-                <Button
-                  variant="contained"
-                  component="label"
-                  className="uploadFileBtn"
-                >
-                  Browse
-                  <input hidden multiple type="file" onChange={onUpload} />
-                </Button>
+              <FormGroup
+                className="inputHead"
+                sx={{ marginBottom: "20px !important" }}
+              >
+                <label htmlFor="CustomerNotes" className="CustomerNotes">
+                  Customer Notes
+                  <img src={CustomerNotes} alt="img not found" />
+                </label>
+                <textarea
+                  name="customerNotes"
+                  placeholder="customerNotes"
+                  value={formik.values.customerNotes}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                ></textarea>
+              </FormGroup>
+              <Button
+                className="btn saveChangeBtn"
+                content="save"
+                onClick={formik.handleSubmit}
+              >
+                Save Changes
+              </Button>
+            </Grid>
+            <Grid item xs={4} className="customerPart2">
+              <Box className="quickAccess">
+                <h5 className="heading">
+                  Quick Access <img src={CustomerNotes} alt="img not found" />
+                </h5>
+                <Box className="AttachmentHead">
+                  <h6>
+                    <span>
+                      <img
+                        src={AttachmentIcon}
+                        alt="img not found"
+                        className="Icon"
+                      />
+                      Attachment
+                    </span>
+                    <span>
+                      <img
+                        src={PlusIcon}
+                        alt="img not found"
+                        onClick={handleClickOpenAttachmentsModel}
+                      />
+                    </span>
+                  </h6>
+                </Box>
+                <Box>
+                  <List className="list">
+                    {uplodedFiles?.map((item) => (
+                      <ListItem disablePadding>
+                        <p>{item.file?.name}</p>
+                        {/* <span title={item.description}>{item.description}</span> */}
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+                <Box className="AttachmentHead" sx={{ marginBottom: "16px" }}>
+                  <h6>
+                    <span>
+                      <img
+                        src={LinksIcon}
+                        alt="img not found"
+                        className="Icon"
+                      />
+                      Links
+                    </span>
+                    <span>
+                      <img
+                        src={PlusIcon}
+                        alt="img not found"
+                        onClick={() => handleClickOpenLinkModel()}
+                      />
+                    </span>
+                  </h6>
+                  <Box>
+                    <List className="list">
+                      {Links?.map((item) => (
+                        <ListItem disablePadding>
+                          <p>{item.link}</p>
+                          <span title={item.description}>
+                            {item.description}
+                          </span>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                </Box>
               </Box>
-            </FormGroup>
-            {/* <FormGroup className="inputHead">
+            </Grid>
+          </Grid>
+          <Dialog
+            open={open1}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={handleCloseAttachments}
+            aria-describedby="alert-dialog-slide-description"
+            className="attachmentsModel customerAttachmentsModel"
+          >
+            <DialogTitle className="titleHead">
+              Upload Attachments
+              <img
+                src={CloseIcon}
+                alt="not found"
+                onClick={handleCloseAttachments}
+              />
+            </DialogTitle>
+            <DialogContent>
+              <Box
+                sx={{
+                  paddingTop: "24px",
+                }}
+              >
+                <FormGroup className="inputHead">
+                  <Box className="uploadFileHead">
+                    <TextField
+                      fullWidth
+                      placeholder="Lorem Ipsum"
+                      value={file?.name}
+                      id="file"
+                    />
+                    <Button
+                      variant="contained"
+                      component="label"
+                      className="uploadFileBtn"
+                    >
+                      Browse
+                      <input hidden multiple type="file" onChange={onUpload} />
+                    </Button>
+                  </Box>
+                </FormGroup>
+                {/* <FormGroup className="inputHead">
               <textarea
                 name="description"
                 placeholder="Description"
                 onChange={(e) => setDescription(e.target.value)}
               ></textarea>
             </FormGroup> */}
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: "end" }}>
-          <Button
-            className="btn2 btn3"
-            sx={{ fontSize: "10px", width: "150px !important" }}
-            onClick={handleAttachmentSubmit}
-          >
-            Save Attachment
-          </Button>
-        </DialogActions>
-      </Dialog>
+              </Box>
+            </DialogContent>
+            <DialogActions sx={{ justifyContent: "end" }}>
+              <Button
+                className="btn2 btn3"
+                sx={{ fontSize: "10px", width: "150px !important" }}
+                onClick={handleAttachmentSubmit}
+              >
+                Save Attachment
+              </Button>
+            </DialogActions>
+          </Dialog>
 
-      <Dialog
-        open={open2}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleCloseLink}
-        aria-describedby="alert-dialog-slide-description"
-        className="attachmentsModel customerAttachmentsModel"
-      >
-        <DialogTitle className="titleHead">
-          save links
-          <img src={CloseIcon} alt="not found" onClick={handleCloseLink} />
-        </DialogTitle>
-        <DialogContent>
-          <Box
-            sx={{
-              paddingTop: "24px",
-            }}
+          <Dialog
+            open={open2}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={handleCloseLink}
+            aria-describedby="alert-dialog-slide-description"
+            className="attachmentsModel customerAttachmentsModel"
           >
-            <FormGroup className="inputHead">
-              <TextField
-                fullWidth
-                placeholder="www.link.com"
-                id="link"
-                onChange={(e) => setlink(e.target.value)}
-              />
-            </FormGroup>
-            <FormGroup className="inputHead">
-              <textarea
-                name="description"
-                placeholder="description"
-                onChange={(e) => setLinkDescription(e.target.value)}
-              ></textarea>
-            </FormGroup>
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: "end" }}>
-          <Button
-            className="btn2 btn3"
-            sx={{ fontSize: "10px", width: "150px !important" }}
-            onClick={handleLinksSubmit}
+            <DialogTitle className="titleHead">
+              save links
+              <img src={CloseIcon} alt="not found" onClick={handleCloseLink} />
+            </DialogTitle>
+            <DialogContent>
+              <Box
+                sx={{
+                  paddingTop: "24px",
+                }}
+              >
+                <FormGroup className="inputHead">
+                  <TextField
+                    fullWidth
+                    placeholder="www.link.com"
+                    id="link"
+                    onChange={(e) => setlink(e.target.value)}
+                  />
+                </FormGroup>
+                <FormGroup className="inputHead">
+                  <textarea
+                    name="description"
+                    placeholder="description"
+                    onChange={(e) => setLinkDescription(e.target.value)}
+                  ></textarea>
+                </FormGroup>
+              </Box>
+            </DialogContent>
+            <DialogActions sx={{ justifyContent: "end" }}>
+              <Button
+                className="btn2 btn3"
+                sx={{ fontSize: "10px", width: "150px !important" }}
+                onClick={handleLinksSubmit}
+              >
+                save Link
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Snackbar
+            open={showPopup}
+            autoHideDuration={4000}
+            onClose={handlePopupClose}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
           >
-            save Link
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Snackbar
-        open={showPopup}
-        autoHideDuration={4000}
-        onClose={handlePopupClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <MuiAlert
-          onClose={handlePopupClose}
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          Please select a Attachment.
-        </MuiAlert>
-      </Snackbar>
-      <ToastContainer />
-      <Loader loaderValue={loading} />
-    </Box>
+            <MuiAlert
+              onClose={handlePopupClose}
+              severity="error"
+              sx={{ width: "100%" }}
+            >
+              Please select a Attachment.
+            </MuiAlert>
+          </Snackbar>
+          <ToastContainer />
+          <Loader loaderValue={loading} />
+        </Box>
+      )}
+    </Formik>
   );
 };
-
 export default Customer;

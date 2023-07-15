@@ -1,6 +1,5 @@
 import React from "react";
 import "./navbar.css";
-import { useAuth } from "../../Auth";
 
 // Mui imports
 import {
@@ -35,7 +34,7 @@ const fakeNotifications = [
 const Navbar = ({ activePage }) => {
   const navigate = useNavigate()
   const [anchorElPopover, setAnchorElPopover] = React.useState(null);
-  const {logout} = useAuth()
+  // const {logout} = useAuth()
   const handleClickPopover = (event) => {
     setAnchorElPopover(event.currentTarget);
   };
@@ -57,8 +56,8 @@ const Navbar = ({ activePage }) => {
   };
   
   const handleLogout = () => {
-    logout()
-    navigate("/")
+    localStorage.clear();
+    navigate("/login")
   };
   const [anchorEl1, setAnchorEl1] = React.useState(null);
   const open1 = Boolean(anchorEl1);

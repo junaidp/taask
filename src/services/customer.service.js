@@ -7,5 +7,9 @@ export async function saveCustomer(formData){
         }});
 }
 export async function getAllCustomer(){
-  return await api.get("/customer/list");
+    return await api.get("/customer/list");
+}
+
+export async function getCustomerBySerialNumber(serialNumber){
+  return await api.get("/customer/getCustomer?userid="+serialNumber);
 }

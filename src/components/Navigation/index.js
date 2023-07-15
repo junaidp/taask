@@ -13,8 +13,9 @@ import Integrations from "../../pages/Integrations";
 
 const Navigation = () => {
   return (
-    <Routes>
-      <Route path="/" element={<UpcomingItems />} />
+    <Routes >
+      {/* <Route path="/" element={<Navigate to="/upcoming-tasks" />} /> */}
+      <Route path="/upcoming-tasks" element={<UpcomingItems />} />
       <Route path="/customer" element={<Customer />} />
       <Route path="/portfolio" element={<Portfolio />} />
       <Route path="/customerTasks" element={<CustomerTasks />} />

@@ -12,15 +12,10 @@ import {
   TableHead,
   TableRow,
   Paper,
-  MenuItem,
-  FormGroup,
-  TextField,
-  PaginationItem,
+  Skeleton
 } from "@mui/material";
 
 // images
-import JohnImg from "../../assets/Images/john.png";
-import MariahImg from "../../assets/Images/Mariah.png";
 import FilterImg from "../../assets/icons/filter.svg";
 import SearchImg from "../../assets/icons/search.svg";
 import FilterMenuImg from "../../assets/icons/filterMenu.svg";
@@ -30,12 +25,14 @@ import CustomPagination from "../../components/Pagination";
 import moment from "moment";
 // APIs Services
 import CustomerServices from "../../APIs/Customer";
+import { useNavigate } from "react-router-dom";
 
 const Portfolio = () => {
   const [allCustomers, setAllCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(0);
   const [currentItems, setCurrentItems] = useState([]);
+  const navigate = useNavigate();
 
   const getAllCustomers = async () => {
     await CustomerServices.getAllCustomers()
@@ -98,9 +95,9 @@ const Portfolio = () => {
           </TableHead>
           <TableBody>
             {currentItems.length>0 && currentItems.map((item, index) => (
-              <TableRow key={item.clientName}>
+              <TableRow onClick={()=>navigate('/customer/'+item.serialNumber)} key={item.serialNumber} style={{ cursor: 'pointer' }}>
                 <TableCell>
-                  {index + 1 < 10 ? `0${index + 1}` : index + 1}
+                  {item.serialNumber}
                 </TableCell>
                 <TableCell component="th" scope="row">
                   <Box className="userprofile">
@@ -119,6 +116,28 @@ const Portfolio = () => {
                 </TableCell>
               </TableRow>
             ))}
+            {currentItems.length<=0 &&(
+              Array(4)
+              .fill()
+              .map((_, index) =>(
+                <TableRow >
+              <TableCell>
+              <Skeleton animation="wave" />
+              </TableCell>
+              <TableCell component="th" scope="row">
+              <Skeleton animation="wave" />
+              </TableCell>
+              <TableCell><Skeleton animation="wave" /></TableCell>
+              <TableCell><Skeleton animation="wave" /></TableCell>
+              <TableCell><Skeleton animation="wave" /></TableCell>
+              <TableCell><Skeleton animation="wave" /></TableCell>
+              <TableCell>
+              <Skeleton animation="wave" />
+              </TableCell>
+            </TableRow>
+              ))
+              
+            )}
           </TableBody>
         </Table>
         <CustomPagination

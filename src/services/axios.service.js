@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
 // Create an instance of Axios
 export const api = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
@@ -28,6 +29,9 @@ api.interceptors.response.use(
       localStorage.clear();
       window.location.href = '/'
     }
+    toast.error(`${error.message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
     return Promise.reject(error);
   }
 );
