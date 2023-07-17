@@ -35,12 +35,12 @@ export const TaskSchema = yup.object().shape({
 
 export const ProjectSchema = yup.object().shape({
   name: yup.string().required("project name is required"),
-  resources: yup.array().of(
-    yup.object().shape({
-      fileId: yup.string().required("file name is required"),
-    })
-  ),
-  taskIds: yup.array().required("taskIds is required"),
+  // resources: yup.array().of(
+  //   yup.object().shape({
+  //     fileId: yup.string().required("file name is required"),
+  //   })
+  // ),
+  // taskIds: yup.array().required("taskIds is required"),
   dueDate: yup.string().required("Due Date is required"),
 });
 export const loginSchema = yup.object().shape({

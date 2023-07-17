@@ -290,6 +290,7 @@ const statusOptions = [
 
 const Projects = (props) => {
   const [allCustomers, setAllCustomers] = useState([]);
+  const [allCustomers2, setAllCustomers2] = useState([]);
   const [searchCustomer, setSearchCustomer] = useState();
   const [value, setValue] = useState(dayjs());
   const [eventReminder, setEventReminder] = useState(dayjs("2023-5-3"));
@@ -309,6 +310,7 @@ const Projects = (props) => {
   const [openArchive, setOpenArchive] = useState(false);
   const [selectedFields, setSelectedFields] = useState([]);
   const [newTaskCustomers, setNewTaskCustomers] = useState([]);
+  const [serialNumber,setSerialNumber] = useState('');
   const [selectAll, setSelectAll] = useState(false);
   const [filteredCustomers, setFilteredCustomers] = useState();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -445,22 +447,27 @@ const Projects = (props) => {
       setNewTaskCustomers([]);
     }
   };
-  const handleSelectCustomer = (e, id) => {
-    if (e.target.checked === true) {
-      setNewTaskCustomers((oldState) => [...oldState, id]);
-    } else {
-      const newIds = newTaskCustomers.filter((item) => {
-        if (item !== id) {
-          return item;
-        }
-      });
-      setNewTaskCustomers(newIds);
-    }
+  const handleSelectCustomer = (e, customer) => {
+    setAnchorEl(null);
+    setSerialNumber(customer.serialNumber);
+    // if (e.target.checked === true) {
+    //   setNewTaskCustomers((oldState) => [...oldState, id]);
+    // } else {
+    //   const newIds = newTaskCustomers.filter((item) => {
+    //     if (item !== id) {
+    //       return item;
+    //     }
+    //   });
+    //   setNewTaskCustomers(newIds);
+    // }
   };
 
   const handleFilterChange = (event) => {
     const { value } = event.target;
-    setSearchCustomer(value);
+    const data = value.toLocaleLowerCase().trim()?
+    allCustomers2.filter((x)=>x.name.toLocaleLowerCase().includes(value)):
+    allCustomers2;
+    setAllCustomers(data);
   };
 
   const onSelectAll = (e) => {
@@ -538,34 +545,11 @@ const Projects = (props) => {
     validationSchema: ProjectSchema,
     initialValues: {
       name: "",
-      customerId: "",
-      resources: [
-        {
-          fileId: allResources[0]?.fileId,
-          link: allResources[0]?.link,
-          userId: allResources[0]?.userId,
-          id: allResources[0]?.id,
-        },
-      ],
-      taskIds: "",
       dueDate: "",
-      status: "TODO",
     },
     onSubmit: async () => {
       const data = formik?.values;
       console.log(data, "data");
-      await CustomerServices.saveProject(data)
-        .then((res) => {
-          if (res) {
-            getAllProjects();
-            toast.success("Project Saved", {
-              position: toast.POSITION.TOP_RIGHT,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err.data.error);
-        });
       setOpen(false);
     },
   });
@@ -575,6 +559,7 @@ const Projects = (props) => {
       .then((res) => {
         if (res) {
           setAllCustomers(res);
+          setAllCustomers2(res);
         }
       })
       .catch((err) => {
@@ -1087,65 +1072,31 @@ const Projects = (props) => {
               transformOrigin={{ horizontal: "left", vertical: "top" }}
               anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
             >
-              <h3>Select Customer(s)</h3>
+              {/* Select Customer(s) */}
               <TextField
-                variant="outlined"
-                fullWidth
+              placeholder="Search Customer"
+                // variant="outlined"
+                // fullWidth
                 onChange={handleFilterChange}
               />
               <FormControl sx={{ width: 300 }} className="selectCustomer">
-                <MenuItem value={"selectAll"}>
-                  <Checkbox
-                    checked={
-                      newTaskCustomers?.length === filteredCustomers?.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                  <ListItemText primary={"Select All"} />
-                </MenuItem>
-                {allCustomers?.map((customer) =>
-                  searchCustomer ? (
-                    customer?.name
-                      ?.toLowerCase()
-                      ?.includes(searchCustomer?.toLowerCase()) ? (
-                      <MenuItem
-                        value={customer.customerName}
-                        onClick={() => setCustomer(customer)}
-                      >
-                        <Checkbox
-                          checked={newTaskCustomers?.includes(customer?.id)}
-                          onChange={(e) =>
-                            handleSelectCustomer(e, customer?.id)
-                          }
-                        />
-                        {/* <Avatar
-                   src={customer?.Customer?.img}
-                   alt={customer?.Customer?.img}
-                   className="avatar"
-                 /> */}
-                        <ListItemText primary={customer?.name} />
-                      </MenuItem>
-                    ) : (
-                      ""
-                    )
-                  ) : (
-                    <MenuItem
-                      value={customer.customerName}
-                      onClick={() => setCustomer(customer)}
-                    >
-                      <Checkbox
-                        checked={newTaskCustomers?.includes(customer?.id)}
-                        onChange={(e) => handleSelectCustomer(e, customer?.id)}
-                      />
-                      {/* <Avatar
-                   src={customer?.Customer?.img}
-                   alt={customer?.Customer?.img}
-                   className="avatar"
-                 /> */}
-                      <ListItemText primary={customer?.name} />
-                    </MenuItem>
-                  )
-                )}
+                {allCustomers?.map((customer) => (
+                  <MenuItem
+                    // value={customer.customerName}
+                    onClick={(e) => handleSelectCustomer(e, customer)}
+                  >
+                    <Checkbox
+                      checked={customer?.id}
+                      
+                    />
+                    <Avatar
+                      src={customer?.Customer?.img}
+                      alt={customer?.Customer?.img}
+                      className="avatar"
+                    />
+                    <ListItemText primary={customer?.name} />
+                  </MenuItem>
+                ))}
               </FormControl>
             </Menu>
             <Box
@@ -1299,9 +1250,7 @@ const Projects = (props) => {
               <Button
                 className="SaveBtn"
                 content="save"
-                onClick={() => {
-                  formik.handleSubmit();
-                }}
+                onClick={formik.handleSubmit}
               >
                 save
               </Button>

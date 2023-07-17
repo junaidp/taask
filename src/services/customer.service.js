@@ -6,6 +6,13 @@ export async function saveCustomer(formData){
           'Content-Type': 'multipart/form-data',
         }});
 }
+
+export async function updateCustomer(formData,userId){
+  return await api.put("/customer/updateCustomer?userid="+userId, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }});
+}
 export async function getAllCustomer(){
     return await api.get("/customer/list");
 }
@@ -13,3 +20,15 @@ export async function getAllCustomer(){
 export async function getCustomerBySerialNumber(serialNumber){
   return await api.get("/customer/getCustomer?userid="+serialNumber);
 }
+
+
+export async function deleteCustomerBySerialNumber(userid){
+  return await api.delete("/customer/DeleteCustomer?userid="+userid);
+}
+export async function addResources(userid,data){
+  return await api.post("/resources?customerId="+userid,data);
+}
+export async function deleteResource(userid,type){
+  return await api.delete("/resources?resourceId="+userid+"&resourceType="+type);
+}
+

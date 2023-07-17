@@ -14,7 +14,6 @@ import IntegrationsCard from "./card";
 // images
 import JohnImg from "../../assets/Images/john.png";
 import MariahImg from "../../assets/Images/Mariah.png";
-import IImg from "../../assets/icons/i.svg";
 import SearchImg from "../../assets/icons/search.svg";
 import FilterMenuImg from "../../assets/icons/filterMenu.svg";
 import ZendeskImg from "../../assets/Images/Zendesk.png";

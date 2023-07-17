@@ -16,6 +16,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   FormGroup,
   Grid,
@@ -36,7 +37,13 @@ import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import { forwardRef } from "react";
 import Slide from "@mui/material/Slide/Slide";
 import Loader from "../../components/Loader";
-import {getCustomerBySerialNumber, saveCustomer} from '../../services/customer.service'
+import {
+  addResources,
+  deleteResource,
+  getCustomerBySerialNumber,
+  saveCustomer,
+  updateCustomer,
+} from "../../services/customer.service";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -316,7 +323,12 @@ const CustomerDetail = () => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
   const location = useLocation();
-  const [customerDetail,setCustomerDetail] = useState({
+  const [customerId, setCustomerId] = useState("");
+  const [index, setIndex] = useState(null);
+  const [attachment, setAttachment] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [isLink, setisLink] = useState(false);
+  const [customerDetail, setCustomerDetail] = useState({
     category: "",
     name: "",
     location: "",
@@ -333,63 +345,83 @@ const CustomerDetail = () => {
       },
     ],
   });
-  useEffect(()=>{
-    getCustomer(location.pathname.split('/').pop())
-  },[])
-  const getCustomer = async (serialNumber)=>{
-    try{
+  useEffect(() => {
+    getCustomer(location.pathname.split("/").pop());
+  }, []);
+  const getCustomer = async (serialNumber) => {
+    try {
       setLoading(true);
-      const {data} = await getCustomerBySerialNumber(serialNumber)
+      const { data } = await getCustomerBySerialNumber(serialNumber);
       setLoading(false);
-      if(typeof data == 'object'){
-        setCustomerDetail
-        ({
+      debugger;
+      if (typeof data == "object") {
+        setCustomerId(data.serialNumber);
+        setValue(data.customerSince);
+        setCustomerDetail({
           category: data.category,
-        name: data.name,
-        location: data.location,
-        website: data.webiste,
-        customerStage: data.customerStage,
-        customerSince: data.customerSince,
-        customerNotes: data.customerNotes,
-        contacts: [
-          {
-            name: data.contacts.name,
-            emailAddress: data.contacts.emailAddress,
-            jobTitle: data.contacts.jobTitle,
-            location: data.contacts.location,
-          },
-        ],
-        })
+          name: data.name,
+          location: data.location,
+          website: data.website,
+          customerStage: data.customerStage,
+          customerSince: data.customerSince,
+          customerNotes: data.customerNotes,
+          contacts: [
+            {
+              name: data.contacts.name,
+              emailAddress: data.contacts.emailAddress,
+              jobTitle: data.contacts.jobTitle,
+              location: data.contacts.location,
+            },
+          ],
+        });
         debugger;
-         const  photoURL = data.image.data;
+        const photoURL = data.image.data;
         setPhoto(photoURL);
         setShowDeleteIcon(true);
-        setUploadedFiles([
-          ...data.customerFiles
-        ]);
-        setLinks([
-          ...data.customerLink
-        ])
-        console.log(uplodedFiles)
-      }
-      else{
+        setUploadedFiles([...data.customerFiles]);
+        setLinks([...data.customerLink]);
+        console.log(customerDetail);
+      } else {
         toast.error("Record Not Found", {
           position: toast.POSITION.TOP_RIGHT,
         });
         setLoading(false);
       }
-    }
-    catch(err){
-
-    }
-  }
-  const handleAttachmentSubmit = () => {
+    } catch (err) {}
+  };
+  const handleAttachmentSubmit = async () => {
     setUploadedFiles([
       // ...uplodedFiles,
       {
         file: file,
       },
     ]);
+    try {
+      const data = new FormData();
+      if (file) {
+        data.append("file", file);
+      } else {
+        setShowPopup(true);
+        return;
+      }
+      setLoading(true);
+      const { data: resp } = await addResources(customerId,data);
+      if(resp){
+        setLoading(false);
+        toast.success("File added sucessfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+
+      }
+      else{
+        setLoading(false);
+        toast.error("Something went wrong on adding file", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+    }
     setOpen1(false);
   };
   const handleCloseLink = () => {
@@ -429,63 +461,73 @@ const CustomerDetail = () => {
       return;
     }
   };
-  const resetData = ()=>{
-    setFile(null);
-      setImage(null);
-      setPhoto(null);
-      setShowDeleteIcon(false);
-      setLinks([]);
-      setlink([]);
-      setUploadedFiles([]);
-  }
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const deleteAttachment = async () => {
+    try {
+      setLoading(true);
+      const { data: resp } = await deleteResource(attachment.uuid,'file');
+      setLoading(false);
+      if (resp) {
+        toast.success("Attachemnt Deleted Sucessfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        uplodedFiles.splice(index, 1);
+        setOpen(false);
+      } else {
+        toast.error("Something went wrong on deleting attachment", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+  const deleteLink = async () => {
+    try {
+      setLoading(true);
+      const { data: resp } = await deleteResource(attachment.uuid,'link');
+      setLoading(false);
+      if (resp) {
+        toast.success("Link Deleted Sucessfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        Links.splice(index, 1);
+        setOpen(false);
+      } else {
+        toast.error("Something went wrong on deleting link", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+    }
+  };
   const handleSubmit = async (values, actions) => {
     debugger;
-    const customer = {...values};
+    const customer = { ...values };
     customer.contacts = customer.contacts[0];
     const data = new FormData();
-    if (file) {
-      data.append("file", file);
-    } else {
-      setShowPopup(true);
-      return;
-    }
     if (image) {
-      // const photoFile = await fetch(photo).then((res) => res.blob());
-      data.append("image", image); 
+      data.append("image", image);
     }
-    else{
-      toast.error(`${'image is required'}`, {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-      return;
-    }
-    
+
     const customerJson = JSON.stringify(customer);
     const blob = new Blob([customerJson], { type: "application/json" });
     data.append("customer", blob);
-    if(!Links.length){
-      toast.error(`${'Link is Required'}`, {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-      return;
-    }
-    const linkJson = JSON.stringify(Links[0]);
-    const blob3 = new Blob([linkJson], { type: "application/json" });
-    data.append("link",blob3);
     setLoading(true);
-    const res = await saveCustomer(data).catch((err)=>{
+    const res = await updateCustomer(data, customerId).catch((err) => {
       setLoading(false);
     });
     setLoading(false);
-    if (res.data.includes("saved")) {
-      actions.resetForm();
-      resetData();
-      toast.success("customer successfully saved!", {
+    if (typeof res.data == "string") {
+      toast.success("customer successfully updated!", {
         position: toast.POSITION.TOP_RIGHT,
       });
-    }
-    else{
-      toast.error(`${'Something went wrong on'}`, {
+    } else {
+      toast.error(`${"Something went wrong on updating customer"}`, {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
@@ -497,16 +539,16 @@ const CustomerDetail = () => {
     setOpen1(false);
   };
   const handleClickOpenAttachmentsModel = () => {
-    if (uplodedFiles?.length < 3) {
-      setOpen1(true);
-    }
+    // if (uplodedFiles?.length < 3) {
+    setOpen1(true);
+    // }
   };
   const handleClickOpenLinkModel = () => {
-    if (Links?.length < 3) {
-      setOpen2(true);
-    }
+    // if (Links?.length < 3) {
+    setOpen2(true);
+    // }
   };
-  const handleLinksSubmit = () => {
+  const handleLinksSubmit = async () => {
     setLinks([
       // ...Links,
       {
@@ -514,7 +556,34 @@ const CustomerDetail = () => {
         description: linkDescription,
       },
     ]);
-    setOpen2(false);
+    try {
+      const data =  new FormData();
+      const linkJson = JSON.stringify({
+        link: link,
+        description: linkDescription,
+      },);
+      const blob3 = new Blob([linkJson], { type: "application/json" });
+      data.append("link",blob3);
+      setLoading(true);
+      const { data: resp } = await addResources(customerId,data);
+      if(resp){
+        setLoading(false);
+        toast.success("File added sucessfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        setOpen2(false);
+
+      }
+      else{
+        setLoading(false);
+        toast.error("Something went wrong on adding file", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+      
+    } catch (error) {
+      setLoading(false);
+    }
   };
   const handlePopupClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -524,13 +593,29 @@ const CustomerDetail = () => {
   };
   return (
     <Formik
-    enableReinitialize={true}
+      enableReinitialize={true}
       initialValues={customerDetail}
       validationSchema={customerSchema}
       onSubmit={handleSubmit}
     >
       {(formik) => (
         <Box className="customer">
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Are you sure you want to delete this {isLink?'Link':'Attachment'}?
+              </DialogContentText>
+            </DialogContent>
+            {/* <DialogActions> */}
+            <Button onClick={handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={isLink?deleteLink:deleteAttachment} color="secondary" autoFocus>
+              Delete
+            </Button>
+            {/* </DialogActions> */}
+          </Dialog>
           <Grid container>
             <Grid item xs={8} className="customerPart1">
               <Box className="profileHead">
@@ -745,14 +830,14 @@ const CustomerDetail = () => {
                     Website
                   </label>
                   <TextField
-                    name="webiste"
-                    placeholder="webiste"
-                    value={formik.values.webiste}
+                    name="website"
+                    placeholder="website"
+                    value={formik.values.website}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
-                  {formik.touched.webiste && formik.errors.webiste ? (
-                    <p className="input-error">{formik.errors.webiste}</p>
+                  {formik.touched.website && formik.errors.website ? (
+                    <p className="input-error">{formik.errors.website}</p>
                   ) : null}
                 </FormGroup>
               </Box>
@@ -764,138 +849,142 @@ const CustomerDetail = () => {
                   <img src={PlusIcon} alt="not found" /> Main Contacts
                 </Button>
                 {mainContacts == true ? (
-              <Box className="mainContactsForm">
-                <Box className="inputGroup">
-                  <FormGroup className="inputHead">
-                    <label htmlFor="Name">Name *</label>
-                    <TextField
-                      {...{
-                        formik,
-                        title: "Name",
-                        name: "contactsName",
-                        placeholder: "John Doe",
-                        checkValidation: true,
-                        // value: formik?.values?.contacts.name,
-                      }}
-                      onChange={(e) => {
-                        formik.setFieldValue(
-                          "contacts.[0].name",
-                          e.target.value
-                        );
-                      }}
-                    />
+                  <Box className="mainContactsForm">
+                    <Box className="inputGroup">
+                      <FormGroup className="inputHead">
+                        <label htmlFor="Name">Name *</label>
+                        <TextField
+                          {...{
+                            formik,
+                            title: "Name",
+                            name: "contactsName",
+                            placeholder: "John Doe",
+                            checkValidation: true,
+                            // value: formik?.values?.contacts.name,
+                          }}
+                          onChange={(e) => {
+                            formik.setFieldValue(
+                              "contacts.[0].name",
+                              e.target.value
+                            );
+                          }}
+                        />
 
-                    {formik.errors.contacts && formik.errors.contacts[0] && (
-                      <p className="input-error">
-                        {formik.errors.contacts[0].name}
-                      </p>
-                    )}
-                  </FormGroup>
-                  <FormGroup className="inputHead">
-                    <label htmlFor="EmailAddress">Email Address.</label>
-                    <TextField
-                      type="email"
-                      {...{
-                        formik,
-                        title: "EmailAddress",
-                        name: "emailAddress",
-                        placeholder: "Email Address",
-                        checkValidation: true,
-                        // value: formik?.values?.contacts?.emailAddress,
-                      }}
-                      onChange={(e) => {
-                        formik.setFieldValue(
-                          "contacts.0.emailAddress",
-                          e.target.value
-                        );
-                      }}
-                    />
-                    {formik.errors.contacts && formik.errors.contacts[0] && (
-                      <p className="input-error">
-                        {formik.errors.contacts[0].emailAddress}
-                      </p>
-                    )}
-                  </FormGroup>
-                </Box>
-                <Box className="inputGroup">
-                  <FormGroup className="inputHead">
-                    <label htmlFor="JobTitle">Job Title *</label>
-                    <TextField
-                      {...{
-                        formik,
-                        title: "JobTitle",
-                        name: "jobTitle",
-                        placeholder: "Job Title",
-                        checkValidation: true,
-                        // value: formik?.values?.contacts?.jobTitle,
-                      }}
-                      onChange={(e) => {
-                        formik.setFieldValue(
-                          "contacts.0.jobTitle",
-                          e.target.value
-                        );
-                      }}
-                    />
-                    {formik.errors.contacts && formik.errors.contacts[0] && (
-                      <p className="input-error">
-                        {formik.errors.contacts[0].jobTitle}
-                      </p>
-                    )}
-                  </FormGroup>
-                  <FormGroup className="inputHead">
-                    <label htmlFor="location">Location</label>
-                    <TextField
-                      select
-                      {...{
-                        formik,
-                        title: "Location",
-                        name: "location",
-                        placeholder: "Lorem Ipsum",
-                        checkValidation: true,
-                        // value: formik?.values?.contacts.location,
-                      }}
-                      onChange={(e) => {
-                        formik.setFieldValue(
-                          "contacts.0.location",
-                          e.target.value
-                        );
-                      }}
-                      InputProps={{
-                        placeholder: "Select Your Country",
-                        disableUnderline: true,
-                      }}
-                      SelectProps={{
-                        displayEmpty: true,
-                        renderValue: (label, value) => {
-                          if (!label) {
-                            return <p>Select Your Country</p>;
-                          }
-                          return label;
-                        },
-                      }}
-                      MenuProps={{
-                        style: {
-                          maxHeight: "200px !important",
-                        },
-                      }}
-                    >
-                      {countries.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                    {formik.errors.contacts && formik.errors.contacts[0] && (
-                      <p className="input-error">
-                        {formik.errors.contacts[0].location}
-                      </p>
-                    )}
-                  </FormGroup>
-                </Box>
-              </Box>
-            ) : (
-              ""
-            )}
+                        {formik.errors.contacts &&
+                          formik.errors.contacts[0] && (
+                            <p className="input-error">
+                              {formik.errors.contacts[0].name}
+                            </p>
+                          )}
+                      </FormGroup>
+                      <FormGroup className="inputHead">
+                        <label htmlFor="EmailAddress">Email Address.</label>
+                        <TextField
+                          type="email"
+                          {...{
+                            formik,
+                            title: "EmailAddress",
+                            name: "emailAddress",
+                            placeholder: "Email Address",
+                            checkValidation: true,
+                            // value: formik?.values?.contacts?.emailAddress,
+                          }}
+                          onChange={(e) => {
+                            formik.setFieldValue(
+                              "contacts.0.emailAddress",
+                              e.target.value
+                            );
+                          }}
+                        />
+                        {formik.errors.contacts &&
+                          formik.errors.contacts[0] && (
+                            <p className="input-error">
+                              {formik.errors.contacts[0].emailAddress}
+                            </p>
+                          )}
+                      </FormGroup>
+                    </Box>
+                    <Box className="inputGroup">
+                      <FormGroup className="inputHead">
+                        <label htmlFor="JobTitle">Job Title *</label>
+                        <TextField
+                          {...{
+                            formik,
+                            title: "JobTitle",
+                            name: "jobTitle",
+                            placeholder: "Job Title",
+                            checkValidation: true,
+                            // value: formik?.values?.contacts?.jobTitle,
+                          }}
+                          onChange={(e) => {
+                            formik.setFieldValue(
+                              "contacts.0.jobTitle",
+                              e.target.value
+                            );
+                          }}
+                        />
+                        {formik.errors.contacts &&
+                          formik.errors.contacts[0] && (
+                            <p className="input-error">
+                              {formik.errors.contacts[0].jobTitle}
+                            </p>
+                          )}
+                      </FormGroup>
+                      <FormGroup className="inputHead">
+                        <label htmlFor="location">Location</label>
+                        <TextField
+                          select
+                          {...{
+                            formik,
+                            title: "Location",
+                            name: "location",
+                            placeholder: "Lorem Ipsum",
+                            checkValidation: true,
+                            // value: formik?.values?.contacts.location,
+                          }}
+                          onChange={(e) => {
+                            formik.setFieldValue(
+                              "contacts.0.location",
+                              e.target.value
+                            );
+                          }}
+                          InputProps={{
+                            placeholder: "Select Your Country",
+                            disableUnderline: true,
+                          }}
+                          SelectProps={{
+                            displayEmpty: true,
+                            renderValue: (label, value) => {
+                              if (!label) {
+                                return <p>Select Your Country</p>;
+                              }
+                              return label;
+                            },
+                          }}
+                          MenuProps={{
+                            style: {
+                              maxHeight: "200px !important",
+                            },
+                          }}
+                        >
+                          {countries.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                        {formik.errors.contacts &&
+                          formik.errors.contacts[0] && (
+                            <p className="input-error">
+                              {formik.errors.contacts[0].location}
+                            </p>
+                          )}
+                      </FormGroup>
+                    </Box>
+                  </Box>
+                ) : (
+                  ""
+                )}
               </Box>
               <FormGroup
                 className="inputHead"
@@ -913,13 +1002,13 @@ const CustomerDetail = () => {
                   onBlur={formik.handleBlur}
                 ></textarea>
               </FormGroup>
-              {/* <Button
+              <Button
                 className="btn saveChangeBtn"
                 content="save"
                 onClick={formik.handleSubmit}
               >
                 Save Changes
-              </Button> */}
+              </Button>
             </Grid>
             <Grid item xs={4} className="customerPart2">
               <Box className="quickAccess">
@@ -949,8 +1038,20 @@ const CustomerDetail = () => {
                   <List className="list">
                     {uplodedFiles?.map((item) => (
                       <ListItem disablePadding>
-                        <p>{item.file?.name?item.file?.name:item?.filename}</p>
-                        {/* <span title={item.description}>{item.description}</span> */}
+                        <p>
+                          {item.file?.name ? item.file?.name : item?.filename}
+                        </p>
+                        <MenuItem sx={{ color: "error.main" }}>
+                          <DeleteIcon
+                            sx={{ mr: 2 }}
+                            onClick={() => {
+                              setOpen(true);
+                              setAttachment(item);
+                              setIndex(index);
+                              setisLink(false)
+                            }}
+                          />
+                        </MenuItem>
                       </ListItem>
                     ))}
                   </List>
@@ -981,6 +1082,17 @@ const CustomerDetail = () => {
                           <span title={item.description}>
                             {item.description}
                           </span>
+                          <MenuItem sx={{ color: "error.main" }}>
+                          <DeleteIcon
+                            sx={{ mr: 2 }}
+                            onClick={() => {
+                              setOpen(true);
+                              setAttachment(item);
+                              setIndex(index);
+                              setisLink(true)
+                            }}
+                          />
+                        </MenuItem>
                         </ListItem>
                       ))}
                     </List>
