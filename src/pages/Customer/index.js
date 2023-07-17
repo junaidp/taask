@@ -690,14 +690,14 @@ const Customer = () => {
                     Website
                   </label>
                   <TextField
-                    name="webiste"
-                    placeholder="webiste"
-                    value={formik.values.webiste}
+                    name="website"
+                    placeholder="website"
+                    value={formik.values.website}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
-                  {formik.touched.webiste && formik.errors.webiste ? (
-                    <p className="input-error">{formik.errors.webiste}</p>
+                  {formik.touched.website && formik.errors.website ? (
+                    <p className="input-error">{formik.errors.website}</p>
                   ) : null}
                 </FormGroup>
               </Box>

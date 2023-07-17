@@ -33,6 +33,7 @@ import PlusIcon from "../../assets/icons/plus.svg";
 import LinksIcon from "../../assets/icons/Links.svg";
 import DeleteIcon from "../../assets/icons/delete.svg";
 import CloseIcon from "../../assets/icons/close.svg";
+import { addResources, deleteResource, getResource } from "../../services/customer.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -77,50 +78,46 @@ const Resources = () => {
     setOpen3(true);
   };
 
-  const handleUploadAttachment = () => {
-    const obj = {
-      id: uuidv4(),
-      fileId: file,
-      description: description,
-    };
-    setAttachments((oldState) => [...oldState, obj]);
-    setOpen1(false);
-    toast.success("Attachment saved!", {
-      position: toast.POSITION.TOP_RIGHT,
-    });
+
+  const deleteAttachment = async (id) => {
+    try {
+      setLoading(true);
+      const { data: resp } = await deleteResource(id,'file');
+      setLoading(false);
+      if (resp) {
+        toast.success("Attachemnt Deleted Sucessfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        allResources.splice(allResources.findIndex((x)=>x.uuid==id), 1);
+      } else {
+        toast.error("Something went wrong on deleting attachment", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
-  const deleteAttachment = (e, id) => {
-    setAttachments(
-      attachments?.filter((obj, i) => {
-        if (obj?.id !== id) {
-          return obj;
-        }
-      })
-    );
-  };
 
-  const handleLinks = () => {
-    const obj = {
-      id: uuidv4(),
-      link: link,
-      description: linkDescription,
-    };
-    setLinks((oldState) => [...oldState, obj]);
-    setOpen2(false);
-    toast.success("Link saved!", {
-      position: toast.POSITION.TOP_RIGHT,
-    });
-  };
-
-  const deleteLinks = (e, id) => {
-    setLinks(
-      links?.filter((obj) => {
-        if (obj?.id !== id) {
-          return obj;
-        }
-      })
-    );
+  const deleteLinks = async (id) => {
+    try {
+      setLoading(true);
+      const { data: resp } = await deleteResource(id,'link');
+      setLoading(false);
+      if (resp) {
+        toast.success("Link Deleted Sucessfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        allLinks.splice(allLinks.findIndex((x)=>x.uuid==id), 1);
+      } else {
+        toast.error("Something went wrong on deleting link", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   const customerValitadion = Yup.object().shape({
@@ -139,19 +136,23 @@ const Resources = () => {
   });
   const handleResourcesSave = async () => {
     setLoading(true);
-    const resourcesData = {
-      id: "",
-      link: formik?.values?.AttachmentsLink,
-      userId: formik?.values?.userId,
-    };
     const data = new FormData();
     data.append("file", file);
-    const resourcesJson = JSON.stringify(resourcesData);
-    const blob = new Blob([resourcesJson], { type: "application/json" });
-    data.append("resources", blob);
-    await CustomerServices.saveResources(data)
+    await addResources('',data)
       .then((res) => {
         setLoading(false);
+        if(typeof res.data == "string"){
+          setOpen1(false);
+          toast.success(`File Added Sucessfully`, {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          getResources()
+        }
+        else{
+          toast.error(`Something went wrong on adding file`, {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+        }
       })
       .catch((err) => {
         setLoading(false);
@@ -164,21 +165,40 @@ const Resources = () => {
     const data = {
       link: formik.values.link,
       description: formik.values.description,
-      userId: formik.values.userId,
     };
-    await CustomerServices.saveLink(data)
-      .then((res) => {})
+    const formData = new FormData();
+    const linkJson = JSON.stringify(data);
+    const blob3 = new Blob([linkJson], { type: "application/json" });
+    formData.append("link",blob3);
+    await addResources('',formData)
+      .then((res) => {
+        setLoading(false);
+        if(typeof res.data == "string"){
+          setOpen2(false);
+          toast.success(`Link Added Sucessfully`, {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          getResources()
+        }
+        else{
+          toast.error(`Something went wrong on adding link`, {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+        }
+      })
       .catch((err) => {
+        setLoading(false);
         toast.error(`${err.data.error}`, {
           position: toast.POSITION.TOP_RIGHT,
         });
       });
   };
   const getResources = async () => {
-    await CustomerServices.getResources(userId)
+    await getResource()
       .then((res) => {
-        if (res) {
-          setAllResources(res);
+        if (res.data) {
+          setAllResources(res.data.userFiles);
+          setAllLinks(res.data.userLinks)
         }
       })
       .catch((err) => {
@@ -186,44 +206,17 @@ const Resources = () => {
       });
   };
 
-  const getLinks = async () => {
-    await CustomerServices.getLinks(userId)
-      .then((res) => {
-        if (res) {
-          setAllLinks(res);
-        }
-      })
-      .catch((err) => {
-        console.log(err.data.error);
-      });
-  };
-
-  const downloadFile = async (e, data) => {
-    await CustomerServices.downloadFile(data.fileId)
-      .then(async (res) => {
-        if (res) {
-          toast.success("file is downloaded!", {
-            position: toast.POSITION.TOP_RIGHT,
-          });
-          const blob = new Blob([res], { type: "application/pdf" });
-          const url = URL.createObjectURL(blob);
+  const downloadFile = (item) => {
+          // const url = URL.createObjectURL(blob);
           const link = document.createElement("a");
-          link.href = url;
-          link.download = "filename.pdf";
+          link.href = `data:${item.filetype};base64,` +item.file;
+          link.download = item.filename;
           document.body.appendChild(link);
           link.click();
         }
-      })
-      .catch((err) => {
-        toast.error(`${err.data.error}`, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-      });
-  };
 
   useEffect(() => {
     getResources();
-    getLinks();
   }, []);
 
   return (
@@ -272,13 +265,13 @@ const Resources = () => {
                         fullWidth
                         placeholder="Lorem Ipsum"
                         className="taskTitleInput"
-                        value={item.link}
-                        onClick={(e) => downloadFile(e, item)}
+                        value={item.filename}
+                        onClick={() => downloadFile(item)}
                       />
                       <span>
                         <img
                           src={DeleteIcon}
-                          // onClick={(e) => deleteAttachment(e, item?.id)}
+                          onClick={() => deleteAttachment(item?.uuid)}
                         />
                       </span>
                     </Box>
@@ -347,7 +340,7 @@ const Resources = () => {
                       <span>
                         <img
                           src={DeleteIcon}
-                          // onClick={(e) => deleteLinks(e, item?.id)}
+                          onClick={() => deleteLinks(item?.uuid)}
                         />
                       </span>
                     </Box>
@@ -414,27 +407,6 @@ const Resources = () => {
                 </Button>
               </Box>
             </FormGroup>
-            <FormGroup
-              className="inputHead"
-              sx={{
-                paddingTop: "24px ",
-              }}
-            >
-              <TextField
-                fullWidth
-                {...{
-                  formik,
-                  title: "AttachmentsLink",
-                  name: "AttachmentsLink",
-                  checkValidation: true,
-                  placeholder: "www.link.com",
-                  value: formik?.values?.AttachmentsLink,
-                }}
-                onChange={(e) => {
-                  formik.setFieldValue("AttachmentsLink", e.target.value);
-                }}
-              />
-            </FormGroup>
           </Box>
           <Box
             sx={{
@@ -499,10 +471,10 @@ const Resources = () => {
                 placeholder="Description"
                 {...{
                   formik,
-                  title: "link",
-                  name: "link",
+                  title: "description",
+                  name: "description",
                   checkValidation: true,
-                  placeholder: "www.link.com",
+                  placeholder: "description",
                   value: formik?.values?.description,
                 }}
                 onChange={(e) => {

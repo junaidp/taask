@@ -38,7 +38,7 @@ const Login = () => {
         });
         const { token, ...result } = data;
         localStorage.setItem("token", token);
-        localStorage.setItem("user", result);
+        localStorage.setItem("user", JSON.stringify(result));
         navigate("/upcoming-tasks");
       }
     } catch (err) {
