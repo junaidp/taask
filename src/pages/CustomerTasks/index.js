@@ -507,9 +507,9 @@ const CustomerTasks = (props) => {
       renderCell: (params) => (
         <span className="customerTaskBtn">
           <Box className="badgesHead">
-          {(params?.row?.Status === "high") ?
+          {(params?.value === "high") ?
           <Badge badgeContent={""} className="toDoBadge"></Badge>:
-          (params?.row?.Status === "moderate")?
+          (params?.value === "moderate")?
           <Badge badgeContent={""} className="doingBadge"></Badge>:
           <Badge badgeContent={""} className="doneBadge"></Badge>
           }

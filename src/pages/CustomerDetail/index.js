@@ -311,7 +311,7 @@ const CustomerDetail = () => {
   const [value, setValue] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [showDeleteIcon, setShowDeleteIcon] = useState(false);
-  const [mainContacts, setMainContacts] = useState(false);
+  const [mainContacts, setMainContacts] = useState(true);
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [file, setFile] = useState(null);
@@ -375,7 +375,8 @@ const CustomerDetail = () => {
           ],
         });
         debugger;
-        const photoURL = data.image.data;
+        
+        const photoURL = `data:${data.image.contentType};base64,` +data.image.data
         setPhoto(photoURL);
         setShowDeleteIcon(true);
         setUploadedFiles([...data.customerFiles]);
@@ -848,7 +849,7 @@ const CustomerDetail = () => {
                 >
                   <img src={PlusIcon} alt="not found" /> Main Contacts
                 </Button>
-                {mainContacts == true ? (
+                {mainContacts == true && formik?.values?.contacts ? (
                   <Box className="mainContactsForm">
                     <Box className="inputGroup">
                       <FormGroup className="inputHead">
@@ -857,10 +858,10 @@ const CustomerDetail = () => {
                           {...{
                             formik,
                             title: "Name",
-                            name: "contactsName",
+                            // name: "contactsName",
                             placeholder: "John Doe",
                             checkValidation: true,
-                            // value: formik?.values?.contacts.name,
+                            value: formik?.values?.contacts[0].name,
                           }}
                           onChange={(e) => {
                             formik.setFieldValue(
@@ -887,7 +888,7 @@ const CustomerDetail = () => {
                             name: "emailAddress",
                             placeholder: "Email Address",
                             checkValidation: true,
-                            // value: formik?.values?.contacts?.emailAddress,
+                            value: formik?.values?.contacts[0]?.emailAddress,
                           }}
                           onChange={(e) => {
                             formik.setFieldValue(
@@ -914,7 +915,7 @@ const CustomerDetail = () => {
                             name: "jobTitle",
                             placeholder: "Job Title",
                             checkValidation: true,
-                            // value: formik?.values?.contacts?.jobTitle,
+                            value: formik?.values?.contacts[0]?.jobTitle,
                           }}
                           onChange={(e) => {
                             formik.setFieldValue(
@@ -940,7 +941,7 @@ const CustomerDetail = () => {
                             name: "location",
                             placeholder: "Lorem Ipsum",
                             checkValidation: true,
-                            // value: formik?.values?.contacts.location,
+                            value: formik?.values?.contacts[0]?.location,
                           }}
                           onChange={(e) => {
                             formik.setFieldValue(
