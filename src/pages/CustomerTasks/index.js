@@ -31,7 +31,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import dayjs from "dayjs";
 import * as Yup from "yup";
-import { useFormik } from "formik";
+import { Field, useFormik } from "formik";
 import FormData from "form-data";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -59,6 +59,7 @@ import ToDoIcon from "../../assets/icons/toDo.svg";
 import PlusIcon from "../../assets/icons/plus.svg";
 import CalenderIcon from "../../assets/icons/calender.svg";
 import RemainderIcon from "../../assets/icons/Remainder.svg";
+import { getAllTask, getTask, saveTask } from "../../services/task.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -67,6 +68,20 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 let CustomCalendarIcon = (props) => {
   return <img src={CalenderIcon} alt="" {...props} />;
 };
+const categoryOption = [
+  {
+    value: "HIGH",
+    label: "High",
+  },
+  {
+    value: "MODERATE",
+    label: "Moderate",
+  },
+  {
+    value: "LOW",
+    label: "Low",
+  }
+];
 const getDay = (day) => {
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const dayIndex = dayNames.findIndex((name) => name.startsWith(day));
@@ -124,8 +139,6 @@ const AssignTaskColumn = (props) => {
   );
 };
 
-
-
 const CustomerTasks = (props) => {
   const [allCustomers, setAllCustomers] = useState([]);
   const [searchCustomer, setSearchCustomer] = useState();
@@ -153,30 +166,32 @@ const CustomerTasks = (props) => {
 
   const setUpdataForTable = (tasks) => {
     const rows = tasks?.map((item, index) => {
+      debugger;
       return {
         id: index + 1,
-        category: item?.customer?.category,
-        emailAddress: item?.customer?.contacts[0].emailAddress,
-        jobTitle: item?.customer?.contacts[0].jobTitle,
-        location: item?.customer?.contacts[0].location,
-        contactName: item?.customer?.contacts[0].name,
-        customerNotes: item?.customer?.customerNotes,
-        customerSince: item?.customer?.customerSince,
-        customerStage: item?.customer?.customerStage,
-        customerFileId: item?.customer?.fileId,
-        customerId: item?.customer?.id,
-        customerLocation: item?.customer?.location,
-        customerName: item?.customer?.name,
-        website: item?.customer?.website,
-        fileId: item?.fileId,
-        subTaskName:
-          item?.subTask &&
-          item?.subTask?.map((ii) => {
-            return ii.name;
-          })[0],
-        taskName: item?.taskName,
+        // category: item?.customer?.category,
+        // emailAddress: item?.customer?.contacts[0].emailAddress,
+        // jobTitle: item?.customer?.contacts[0].jobTitle,
+        // location: item?.customer?.contacts[0].location,
+        // contactName: item?.customer?.contacts[0].name,
+        // customerNotes: item?.customer?.customerNotes,
+        customerSince: item?.customerSince,
+        customerStage: item?.customerStage,
+        taskPriority:item?.taskPriority,
+        // customerFileId: item?.customer?.fileId,
+        // customerId: item?.customer?.id,
+        // customerLocation: item?.customer?.location,
+        customerName: item?.customerName,
+        // website: item?.customer?.website,
+        // fileId: item?.fileId,
+        // subTaskName:
+        //   item?.subTask &&
+        //   item?.subTask?.map((ii) => {
+        //     return ii.name;
+        //   })[0],
+        taskName: item?.customerTask,
         dueDate: item?.dueDate,
-        time: item?.time,
+        // time: item?.time,
       };
     });
     setTableData(rows);
@@ -243,8 +258,9 @@ const CustomerTasks = (props) => {
     setOpen(false);
   };
   const handleClickOpenModel = (params) => {
+    debugger;
     setSelectedRow(params);
-    formik.setFieldValue("customerId", params?.id);
+    formik.setFieldValue("customerSerialNumber", params?.serialNumber);
     setOpen(true);
     setAnchorEl(null);
   };
@@ -339,10 +355,12 @@ const CustomerTasks = (props) => {
         },
       ],
       taskName: "",
-      customerId: "",
+      taskPriority:"",
+      customerSerialNumber: "",
       dueDate: "",
     },
     onSubmit: async () => {
+      debugger;
       const task = formik?.values;
       const data = new FormData();
       if (file) {
@@ -353,10 +371,10 @@ const CustomerTasks = (props) => {
       }
       const customerJson = JSON.stringify(task);
       const blob = new Blob([customerJson], { type: "application/json" });
-      data.append("task", blob);
-      await CustomerServices.saveTask(data)
+      data.append("customerTask", blob);
+      await saveTask(data)
         .then((res) => {
-          if (res) {
+          if (res.data) {
             getAllTasks();
             toast.success("task saved", {
               position: toast.POSITION.TOP_RIGHT,
@@ -385,17 +403,23 @@ const CustomerTasks = (props) => {
   };
 
   const getAllTasks = async () => {
-    await CustomerServices.getAllTasks().then((res) => {
-      if (res) {
-        setCustomerTask(res);
-        setUpdataForTable(res);
-      }
-    });
+    try {
+      const { data: resp } = await getTask();
+    if (resp) {
+      setCustomerTask(resp);
+      setUpdataForTable(resp);
+    } else {
+    }
+      
+    } catch (error) {
+      
+    }
+    
   };
 
   useEffect(() => {
     getAllCustomers();
-    // getAllTasks();
+    getAllTasks();
   }, []);
 
   const columns = [
@@ -469,6 +493,33 @@ const CustomerTasks = (props) => {
       renderCell: (params) => <span>{params.value}</span>,
     },
     {
+      field: "taskPriority",
+      headerName: "Task Priority",
+      sortable: false,
+      disableColumnMenu: true,
+      flex: 1,
+      renderHeader: () => (
+        <React.Fragment>
+          <span>Task Priority</span>
+          <img src={FilterImg} className="filterImg" />
+        </React.Fragment>
+      ),
+      renderCell: (params) => (
+        <span className="customerTaskBtn">
+          <Box className="badgesHead">
+          {(params?.row?.Status === "high") ?
+          <Badge badgeContent={""} className="toDoBadge"></Badge>:
+          (params?.row?.Status === "moderate")?
+          <Badge badgeContent={""} className="doingBadge"></Badge>:
+          <Badge badgeContent={""} className="doneBadge"></Badge>
+          }
+          </Box>
+
+          {params.value}
+        </span>
+      ),
+    },
+    {
       field: "taskName",
       headerName: "Customer Task",
       sortable: false,
@@ -482,18 +533,6 @@ const CustomerTasks = (props) => {
       ),
       renderCell: (params) => (
         <span className="customerTaskBtn">
-          <Box className="badgesHead">
-            {params?.row?.Status === "todo" ? (
-              <Badge badgeContent={""} className="toDoBadge tableBadge"></Badge>
-            ) : params?.row?.Status === "doing" ? (
-              <Badge
-                badgeContent={""}
-                className="doingBadge tableBadge"
-              ></Badge>
-            ) : (
-              <Badge badgeContent={""} className="doneBadge tableBadge"></Badge>
-            )}
-          </Box>
           {params.value}
         </span>
       ),
@@ -511,33 +550,9 @@ const CustomerTasks = (props) => {
           <img src={FilterImg} className="filterImg" />
         </React.Fragment>
       ),
-      renderCell: (params) => {
-        return (
-          <FormGroup className="customertaskDatePicker">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                orientation="portrait"
-                displayStaticWrapperAs="desktop"
-                openTo="day"
-                value={moment(params.value, "DD/MM/YYYY").toISOString()}
-                showToolbar={false}
-                components={{
-                  OpenPickerIcon: CustomCalendarIcon,
-                  RightArrowButton: ArrowRightRoundedIcon,
-                  LeftArrowButton: ArrowLeftRoundedIcon,
-                }}
-                onChange={(newValue) => {
-                  setValue(newValue);
-                  onDateChange(newValue, params);
-                }}
-                showDaysOutsideCurrentMonth
-                dayOfWeekFormatter={(day) => getDay(day)}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-          </FormGroup>
-        );
-      },
+      // renderCell: (params) => {
+      //   <AssignTaskColumn rows={tableData} row={params.dueDate} />
+      // },
     },
     {
       field: "AssignTask",
@@ -777,11 +792,7 @@ const CustomerTasks = (props) => {
                 <Box>
                   <h6>
                     Customer ID
-                    <span>
-                      {selectedRow?.id < 10
-                        ? `0${selectedRow?.id}`
-                        : selectedRow?.id}
-                    </span>
+                    <span>{selectedRow?.serialNumber}</span>
                   </h6>
                 </Box>
                 <Box>
@@ -832,7 +843,7 @@ const CustomerTasks = (props) => {
                     <p className="input-error">{formik.errors.taskName}</p>
                   )}
                 </FormGroup>
-                <FormGroup className="inputHead">
+                {/* <FormGroup className="inputHead">
                   <label htmlFor="taskDescription" className="taskDescription">
                     Task Description
                   </label>
@@ -840,6 +851,41 @@ const CustomerTasks = (props) => {
                     name="taskDescription"
                     placeholder="Lorem Ipsum"
                   ></textarea>
+                </FormGroup> */}
+                <FormGroup className="inputHead">
+                  <label htmlFor="taskPriority" className="taskPriority">
+                    Priortiy
+                  </label>
+                  <TextField
+                    select
+                    name="taskPriority"
+                    placeholder="Select Priority"
+                    value={formik.values.category}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    InputProps={{
+                      placeholder: "Select Priority",
+                      disableUnderline: true,
+                    }}
+                    SelectProps={{
+                      displayEmpty: true,
+                      renderValue: (label, value) => {
+                        if (!label) {
+                          return <p>Select Priority</p>;
+                        }
+                        return label;
+                      },
+                    }}
+                  >
+                    {categoryOption.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  {formik.touched.taskPriority && formik.errors.taskPriority ? (
+                    <p className="input-error">{formik.errors.taskPriority}</p>
+                  ) : null}
                 </FormGroup>
               </Box>
 
