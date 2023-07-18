@@ -13,16 +13,19 @@ import Appointments from "../../components/Appointments";
 // APIs Services
 import CustomerServices from "../../APIs/Customer";
 import { ToastContainer } from "react-toastify";
-
+import { getTask } from "../../services/task.service";
 const UpcomingItems = () => {
   const [allTasks, setAllTask] = useState([])
   const [allMeetings, setAllMeetings] = useState([])
   const getMyTasks = async () =>{
-    await CustomerServices.getAllTasks().then((res)=>{
-       if(res){
-        setAllTask(res)
-      }
-    })
+    let {data:resp} = await getTask();
+    if(resp){
+      resp = resp.map((x,index)=>{
+        x.id = index +1;
+        return x;
+      })
+      setAllTask(resp)
+    }
   }
 
   const getMyMeetings = async () =>{

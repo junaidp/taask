@@ -23,74 +23,54 @@ import FilterMenuImg from "../../assets/icons/filterMenu.svg";
 // components
 import CustomPagination from "../../components/Pagination";
 import moment from "moment";
+import { DataGrid } from "@mui/x-data-grid";
 
 const UpcomingItemsTable = ({ tasksData }) => {
+  console.log(tasksData);
   const [currentItems, setCurrentItems] = useState([]);
-
+  const columns = [
+    { field: 'id', headerName: 'ID',width: 100, },
+    { field: 'customerName', headerName: 'Client Name',width: 180,},
+    { field: 'customerTask', headerName: 'Task',width: 180,},
+    { field: 'assignedDate', headerName: 'Time',width: 180,
+    renderCell: (params) => (
+      <div>
+        {moment(params.value).format("DD/MM/YYYY hh:mm:ss ")}
+      </div>
+    ),
+  },
+    { field: 'dueDate', headerName: 'Due Date',width: 180,
+    renderCell: (params) => (
+      <div>
+        {moment(params.value).format("DD/MM/YYYY hh:mm:ss ")}
+      </div>
+    ),
+  },
+  ];
   return (
-    <TableContainer component={Paper} className="UpcomingItemsCout">
+    <TableContainer component={Paper}  className="UpcomingItemsCout">
       <Box className="topHead">
         <Box>
           <Typography variant="h2">Upcoming Due Dates</Typography>
         </Box>
-        <Box>
+        {/* <Box>
           <span>
             <img src={SearchImg} />
           </span>
           <span>
             <img src={FilterMenuImg} />
           </span>
-        </Box>
+        </Box> */}
       </Box>
-      <Table aria-label="caption table" className="UpcomingItemsTable">
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              ID <img src={FilterImg} className="filterImg" />
-            </TableCell>
-            <TableCell>
-              Client Name <img src={FilterImg} className="filterImg" />
-            </TableCell>
-            <TableCell>
-              Task <img src={FilterImg} className="filterImg" />
-            </TableCell>
-            <TableCell>
-              Time <img src={FilterImg} className="filterImg" />
-            </TableCell>
-            <TableCell align="right">
-              Due Date <img src={FilterImg} className="filterImg" />
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {currentItems.map((item, index) => (
-            <TableRow key={item.clientName}>
-              <TableCell sx={{ width: 70 }}>
-                {index + 1 < 10 ? `0${index + 1}` : index + 1}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                <Box className="userprofile">
-                  {/* <span>
-                    <img src={item.photoUrl} alt="img not found" />
-                  </span> */}
-                  {item?.customer?.name}
-                </Box>
-              </TableCell>
-              <TableCell>{item?.taskName}</TableCell>
-              <TableCell>{item?.time}</TableCell>
-              <TableCell align="right">{item?.dueDate}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <CustomPagination
-        data={tasksData}
-        count={tasksData?.length}
-        setCurrentItems={setCurrentItems}
-        customInput={true}
-        customSelect={true}
-        paginationDetail={true}
-        buttons={true}
+       <DataGrid style={{ height: 400, width: '100%' }} aria-label="caption table" className="UpcomingItemsTable"
+        rows={tasksData}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[5, 10]}
       />
     </TableContainer>
   );
