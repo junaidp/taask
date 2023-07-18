@@ -100,6 +100,7 @@ export const mainTheme = createTheme({
           "& .MuiDataGrid-cell:focus": {
             outline: "none",
           },
+          
           "& .MuiDataGrid-columnHeaderTitleContainerContent": {
             fontWeight: "600 !important",
             fontStyle: "normal",
@@ -131,6 +132,9 @@ export const mainTheme = createTheme({
           },
           ".MuiDataGrid-row.Mui-selected": {
             background: "#f4fffb !important",
+          },
+          '& .MuiDataGrid-filterForm': {
+            padding: '8px', // Adjust the padding value as needed
           },
         },
       },

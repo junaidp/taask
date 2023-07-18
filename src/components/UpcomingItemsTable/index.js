@@ -48,7 +48,7 @@ const UpcomingItemsTable = ({ tasksData }) => {
   },
   ];
   return (
-    <TableContainer component={Paper}  className="UpcomingItemsCout">
+    <TableContainer component={Paper} className="UpcomingItemsCout">
       <Box className="topHead">
         <Box>
           <Typography variant="h2">Upcoming Due Dates</Typography>
@@ -62,7 +62,7 @@ const UpcomingItemsTable = ({ tasksData }) => {
           </span>
         </Box> */}
       </Box>
-       <DataGrid style={{ height: 400, width: '100%' }} aria-label="caption table" className="UpcomingItemsTable"
+       <DataGrid style={{ height: 450, width: '100%' }} autoHeight aria-label="caption table" className="UpcomingItemsTable"
         rows={tasksData}
         columns={columns}
         initialState={{
@@ -70,7 +70,7 @@ const UpcomingItemsTable = ({ tasksData }) => {
             paginationModel: { page: 0, pageSize: 5 },
           },
         }}
-        pageSizeOptions={[5, 10]}
+        // pageSizeOptions={5}
       />
     </TableContainer>
   );
