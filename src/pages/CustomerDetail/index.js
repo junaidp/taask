@@ -9,6 +9,7 @@ import LinksIcon from "../../assets/icons/Links.svg";
 import PlusIcon from "../../assets/icons/plus.svg";
 import CloseIcon from "../../assets/icons/close.svg";
 import MuiAlert from "@mui/material/Alert";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Avatar,
   Box,
@@ -311,7 +312,7 @@ const CustomerDetail = () => {
   const [value, setValue] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [showDeleteIcon, setShowDeleteIcon] = useState(false);
-  const [mainContacts, setMainContacts] = useState(true);
+  const [mainContacts, setMainContacts] = useState(false);
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [file, setFile] = useState(null);
@@ -375,12 +376,11 @@ const CustomerDetail = () => {
           ],
         });
         debugger;
-        
-        const photoURL = `data:${data.image.contentType};base64,` +data.image.data
+        const photoURL = `data:${data.image.contenttype};base64,` + data.image.data;
         setPhoto(photoURL);
         setShowDeleteIcon(true);
         setUploadedFiles([...data.customerFiles]);
-        setLinks([...data.customerLink]);
+        setLinks([...data.ustomerLink]);
         console.log(customerDetail);
       } else {
         toast.error("Record Not Found", {
@@ -392,7 +392,7 @@ const CustomerDetail = () => {
   };
   const handleAttachmentSubmit = async () => {
     setUploadedFiles([
-      // ...uplodedFiles,
+      ...uplodedFiles,
       {
         file: file,
       },
@@ -551,7 +551,7 @@ const CustomerDetail = () => {
   };
   const handleLinksSubmit = async () => {
     setLinks([
-      // ...Links,
+      ...Links,
       {
         link: link,
         description: linkDescription,
@@ -559,17 +559,17 @@ const CustomerDetail = () => {
     ]);
     try {
       const data =  new FormData();
-      const linkJson = JSON.stringify({
+      const linkJson = JSON.stringify([{
         link: link,
         description: linkDescription,
-      },);
+      }],);
       const blob3 = new Blob([linkJson], { type: "application/json" });
       data.append("link",blob3);
       setLoading(true);
       const { data: resp } = await addResources(customerId,data);
       if(resp){
         setLoading(false);
-        toast.success("File added sucessfully", {
+        toast.success("Link added sucessfully", {
           position: toast.POSITION.TOP_RIGHT,
         });
         setOpen2(false);
@@ -577,7 +577,7 @@ const CustomerDetail = () => {
       }
       else{
         setLoading(false);
-        toast.error("Something went wrong on adding file", {
+        toast.error("Something went wrong on adding Link", {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
@@ -849,7 +849,7 @@ const CustomerDetail = () => {
                 >
                   <img src={PlusIcon} alt="not found" /> Main Contacts
                 </Button>
-                {mainContacts == true && formik?.values?.contacts ? (
+                {mainContacts == true ? (
                   <Box className="mainContactsForm">
                     <Box className="inputGroup">
                       <FormGroup className="inputHead">
@@ -858,10 +858,10 @@ const CustomerDetail = () => {
                           {...{
                             formik,
                             title: "Name",
-                            // name: "contactsName",
+                            name: "contactsName",
                             placeholder: "John Doe",
                             checkValidation: true,
-                            value: formik?.values?.contacts[0].name,
+                            // value: formik?.values?.contacts.name,
                           }}
                           onChange={(e) => {
                             formik.setFieldValue(
@@ -888,7 +888,7 @@ const CustomerDetail = () => {
                             name: "emailAddress",
                             placeholder: "Email Address",
                             checkValidation: true,
-                            value: formik?.values?.contacts[0]?.emailAddress,
+                            // value: formik?.values?.contacts?.emailAddress,
                           }}
                           onChange={(e) => {
                             formik.setFieldValue(
@@ -915,7 +915,7 @@ const CustomerDetail = () => {
                             name: "jobTitle",
                             placeholder: "Job Title",
                             checkValidation: true,
-                            value: formik?.values?.contacts[0]?.jobTitle,
+                            // value: formik?.values?.contacts?.jobTitle,
                           }}
                           onChange={(e) => {
                             formik.setFieldValue(
@@ -941,7 +941,7 @@ const CustomerDetail = () => {
                             name: "location",
                             placeholder: "Lorem Ipsum",
                             checkValidation: true,
-                            value: formik?.values?.contacts[0]?.location,
+                            // value: formik?.values?.contacts.location,
                           }}
                           onChange={(e) => {
                             formik.setFieldValue(
@@ -1039,9 +1039,22 @@ const CustomerDetail = () => {
                   <List className="list">
                     {uplodedFiles?.map((item) => (
                       <ListItem disablePadding>
-                        <p>
+                         <div style={{ display: "flex", alignItems: "center" }}>
+                         <p>
                           {item.file?.name ? item.file?.name : item?.filename}
                         </p>
+                        <MenuItem sx={{ color: "blue" }}>
+                          <EditIcon
+                            sx={{ mr: 2 }}
+                            // onClick={() => {
+                            //   setOpen(true);
+                            //   setAttachment(item);
+                            //   setIndex(index);
+                            //   setisLink(false)
+                            // }}
+                            onClick={handleClickOpenAttachmentsModel}
+                          />
+                        </MenuItem>
                         <MenuItem sx={{ color: "error.main" }}>
                           <DeleteIcon
                             sx={{ mr: 2 }}
@@ -1053,6 +1066,8 @@ const CustomerDetail = () => {
                             }}
                           />
                         </MenuItem>
+                         </div>
+                        
                       </ListItem>
                     ))}
                   </List>
@@ -1080,9 +1095,22 @@ const CustomerDetail = () => {
                       {Links?.map((item) => (
                         <ListItem disablePadding>
                           <p>{item.link}</p>
+                          <div style={{ display: "flex", alignItems: "center" }}>
                           <span title={item.description}>
                             {item.description}
                           </span>
+                          <MenuItem sx={{ color: "blue" }}>
+                          <EditIcon
+                            sx={{ mr: 2 }}
+                            // onClick={() => {
+                            //   setOpen(true);
+                            //   setAttachment(item);
+                            //   setIndex(index);
+                            //   setisLink(false)
+                            // }}
+                            onClick={handleClickOpenLinkModel}
+                          />
+                        </MenuItem>
                           <MenuItem sx={{ color: "error.main" }}>
                           <DeleteIcon
                             sx={{ mr: 2 }}
@@ -1094,6 +1122,7 @@ const CustomerDetail = () => {
                             }}
                           />
                         </MenuItem>
+                          </div>
                         </ListItem>
                       ))}
                     </List>

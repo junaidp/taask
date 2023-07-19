@@ -28,7 +28,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { ToastContainer, toast } from "react-toastify";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -317,12 +317,13 @@ const Customer = () => {
   const [index, setIndex] = useState(null);
   const handleAttachmentSubmit = () => {
     debugger;
-    if(index!=null){
-      setUploadedFiles((prevFiles)=>{
+    if (index != null) {
+      setUploadedFiles((prevFiles) => {
         const updatedFiles = [...prevFiles];
         updatedFiles[index].file = file; // Update the specific element in the array
         return updatedFiles;
-      })
+      });
+      setFile(null);
       setOpen1(false);
       return;
     }
@@ -332,6 +333,7 @@ const Customer = () => {
         file: file,
       },
     ]);
+    setFile(null);
     setOpen1(false);
   };
   const handleCloseLink = () => {
@@ -357,18 +359,28 @@ const Customer = () => {
     setImage(null);
     setShowDeleteIcon(false);
   };
-  const deleteFile = (index) =>{
-    setUploadedFiles((prevFiles)=>{
+  const deleteFile = (index) => {
+    setUploadedFiles((prevFiles) => {
       const updatedFiles = [...prevFiles];
       updatedFiles.splice(index, 1); // Update the specific element in the array
       return updatedFiles;
-    })
-    
-  }
+    });
+  };
   const editFile = (index) => {
     setIndex(index);
     setOpen1(true);
-  }
+  };
+  const editLink = (index) => {
+    setIndex(index);
+    setOpen2(true);
+  };
+  const deleteLink = (index) => {
+    setLinks((prevLinks) => {
+      const updatedprevLinks = [...prevLinks];
+      updatedprevLinks.splice(index, 1); // Update the specific element in the array
+      return updatedprevLinks;
+    });
+  };
   const onUpload = (e) => {
     const file = e.target.files[0];
     debugger;
@@ -397,11 +409,10 @@ const Customer = () => {
     const customer = { ...values };
     customer.contacts = customer.contacts[0];
     const data = new FormData();
-    if (uplodedFiles.length>0) {
-      for(const files of uplodedFiles){
+    if (uplodedFiles.length > 0) {
+      for (const files of uplodedFiles) {
         data.append("file", files.file);
       }
-     
     } else {
       setShowPopup(true);
       return;
@@ -453,19 +464,32 @@ const Customer = () => {
   };
   const handleClickOpenAttachmentsModel = () => {
     // if (uplodedFiles?.length < 3) {
-      setIndex(null);
-      setOpen1(true);
+    setIndex(null);
+    setOpen1(true);
     // }
-  
   };
   const handleClickOpenLinkModel = () => {
     // if (Links?.length < 3) {
-      setOpen2(true);
+    setIndex(null)
+    setOpen2(true);
     // }
   };
   const handleLinksSubmit = () => {
+    debugger;
+    if (index != null) {
+      setLinks((prevLinks) => {
+        const updatedLinks = [...prevLinks];
+        updatedLinks[index] = {
+          link: link,
+          description: linkDescription,
+        }; // Update the specific element in the array
+        return updatedLinks;
+      });
+      setOpen2(false);
+      return;
+    }
     setLinks([
-      // ...Links,
+      ...Links,
       {
         link: link,
         description: linkDescription,
@@ -923,32 +947,32 @@ const Customer = () => {
                 </Box>
                 <Box>
                   <List className="list">
-                    {uplodedFiles?.map((item,index) => (
+                    {uplodedFiles?.map((item, index) => (
                       <ListItem disablePadding>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <p>{item.file?.name}</p>
-                        <IconButton
-                          sx={{
-                            // position: "absolute",
-                            // top: 18,
-                            // right: -40,
-                            color: "blue"
-                          }}
-                          onClick={()=>editFile(index)}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          sx={{
-                            // position: "absolute",
-                            // top: 18,
-                            // right: -40,
-                            color: "red",
-                          }}
-                          onClick={()=>deleteFile(index)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <p>{item.file?.name}</p>
+                          <IconButton
+                            sx={{
+                              // position: "absolute",
+                              // top: 18,
+                              // right: -40,
+                              color: "blue",
+                            }}
+                            onClick={() => editFile(index)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            sx={{
+                              // position: "absolute",
+                              // top: 18,
+                              // right: -40,
+                              color: "red",
+                            }}
+                            onClick={() => deleteFile(index)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
                         </div>
                         {/* <span title={item.description}>{item.description}</span> */}
                       </ListItem>
@@ -975,12 +999,38 @@ const Customer = () => {
                   </h6>
                   <Box>
                     <List className="list">
-                      {Links?.map((item) => (
+                      {Links?.map((item,index) => (
                         <ListItem disablePadding>
                           <p>{item.link}</p>
                           <span title={item.description}>
                             {item.description}
                           </span>
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <IconButton
+                              sx={{
+                                // position: "absolute",
+                                // top: 18,
+                                // right: -40,
+                                color: "blue",
+                              }}
+                              onClick={() => editLink(index)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              sx={{
+                                // position: "absolute",
+                                // top: 18,
+                                // right: -40,
+                                color: "red",
+                              }}
+                              onClick={() => deleteLink(index)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </div>
                         </ListItem>
                       ))}
                     </List>
@@ -1068,6 +1118,9 @@ const Customer = () => {
                 }}
               >
                 <FormGroup className="inputHead">
+                  <label htmlFor="Name" className="Name">
+                    Link
+                  </label>
                   <TextField
                     fullWidth
                     placeholder="www.link.com"
@@ -1076,6 +1129,9 @@ const Customer = () => {
                   />
                 </FormGroup>
                 <FormGroup className="inputHead">
+                  <label htmlFor="Name" className="Name">
+                    Description
+                  </label>
                   <textarea
                     name="description"
                     placeholder="description"
