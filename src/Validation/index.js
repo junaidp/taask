@@ -59,3 +59,13 @@ export const registerSchema = yup.object().shape({
   ),
   email: yup.string().email('Invalid email address').required('Email is required'),
 });
+
+export const profileSchema = yup.object().shape({
+  firstname: yup.string().required('First Name is required').matches(/^[a-zA-Z]*$/, 'Please enter a valid first name'),
+  lastname: yup.string().required('Last Name is required').matches(/^[a-zA-Z]*$/, 'Please enter a valid last name'),
+  password: yup.string().matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,}$/,
+    'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, and one digit'
+  ),
+});
+

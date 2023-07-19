@@ -18,7 +18,8 @@ const UpcomingItems = () => {
   const [allTasks, setAllTask] = useState([])
   const [allMeetings, setAllMeetings] = useState([])
   const getMyTasks = async () =>{
-    let {data:resp} = await getTask();
+    try {
+      let {data:resp} = await getTask();
     if(resp){
       if(typeof resp !="string"){
         resp = resp.map((x,index)=>{
@@ -27,6 +28,9 @@ const UpcomingItems = () => {
         })
         setAllTask(resp)
       }
+    }
+    } catch (error) {
+      
     }
   }
 
@@ -40,7 +44,7 @@ const UpcomingItems = () => {
   
   useEffect(() => {
     getMyTasks()
-    getMyMeetings()
+    // getMyMeetings()
   }, [])
 
   return (

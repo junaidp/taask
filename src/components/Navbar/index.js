@@ -22,7 +22,8 @@ import HelpIcon from "../../assets/icons/help.svg";
 import SettingIcon from "../../assets/icons/setting.svg";
 import UserImg from "../../assets/Images/user.png";
 import IImg from "../../assets/icons/i.svg";
-import {useNavigate} from "react-router-dom"
+import {useNavigate} from "react-router-dom";
+import UserProfile from "../UserProfile";
 
 const fakeNotifications = [
   { id: 1, message: "Lorem ipsum dolor sit amet." },
@@ -53,6 +54,15 @@ const Navbar = ({ activePage }) => {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const [open2, setOpen2] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen2(true);
+  };
+
+  const handleClose2 = () => {
+    setOpen2(false);
   };
   
   const handleLogout = () => {
@@ -188,7 +198,7 @@ const Navbar = ({ activePage }) => {
                 onClose={handleClose}
                 TransitionComponent={Fade}
               >
-                <MenuItem onClick={handleClose}>View Profile</MenuItem>
+                <MenuItem onClick={handleClickOpen}>View Profile</MenuItem>
                 <MenuItem onClick={handleLogout}>Log Out</MenuItem>
               </Menu>
             </Box>
@@ -214,6 +224,7 @@ const Navbar = ({ activePage }) => {
           </Typography>
         </Popover>
       </nav>
+    <UserProfile open={open2} onClose={handleClose2}/>
     </Box>
   );
 };

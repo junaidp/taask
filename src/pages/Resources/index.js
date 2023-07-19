@@ -14,6 +14,8 @@ import {
   DialogContent,
   Button,
   Slide,
+  IconButton,
+  DialogContentText,
 } from "@mui/material";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
@@ -28,6 +30,7 @@ import Loader from "../../components/Loader";
 import CustomPagination from "../../components/Pagination";
 // Images
 import AttachmentsIcon from "../../assets/icons/Attachment.svg";
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SearchIcon from "../../assets/icons/search.svg";
 import PlusIcon from "../../assets/icons/plus.svg";
 import LinksIcon from "../../assets/icons/Links.svg";
@@ -40,6 +43,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const Resources = () => {
+  const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [open3, setOpen3] = useState(false);
@@ -54,13 +58,20 @@ const Resources = () => {
   const [currentItems, setCurrentItems] = useState([]);
   const [allResources, setAllResources] = useState([]);
   const [allLinks, setAllLinks] = useState([]);
+  const [isLink, setisLink] = useState(false);
+  const [uuid, setUuid] = useState(false);
 
   const onUpload = (e) => {
-    const uploadfile = e?.target?.files[0];
-    setFile(uploadfile);
+    debugger;
+    const uploadfile = e?.target?.files;
+    setFile([...uploadfile]);
   };
   const handleCloseAttachments = () => {
     setOpen1(false);
+    setFile([]);
+  };
+  const handleClose = () => {
+    setOpen(false);
   };
   const handleClickOpenAttachmentsModel = () => {
     setOpen1(true);
@@ -79,16 +90,17 @@ const Resources = () => {
   };
 
 
-  const deleteAttachment = async (id) => {
+  const deleteAttachment = async () => {
     try {
       setLoading(true);
-      const { data: resp } = await deleteResource(id,'file');
+      const { data: resp } = await deleteResource(uuid,'file');
       setLoading(false);
       if (resp) {
         toast.success("Attachemnt Deleted Sucessfully", {
           position: toast.POSITION.TOP_RIGHT,
         });
-        allResources.splice(allResources.findIndex((x)=>x.uuid==id), 1);
+        allResources.splice(allResources.findIndex((x)=>x.uuid==uuid), 1);
+        setOpen(false);
       } else {
         toast.error("Something went wrong on deleting attachment", {
           position: toast.POSITION.TOP_RIGHT,
@@ -100,16 +112,17 @@ const Resources = () => {
   };
 
 
-  const deleteLinks = async (id) => {
+  const deleteLinks = async () => {
     try {
       setLoading(true);
-      const { data: resp } = await deleteResource(id,'link');
+      const { data: resp } = await deleteResource(uuid,'link');
       setLoading(false);
       if (resp) {
         toast.success("Link Deleted Sucessfully", {
           position: toast.POSITION.TOP_RIGHT,
         });
-        allLinks.splice(allLinks.findIndex((x)=>x.uuid==id), 1);
+        allLinks.splice(allLinks.findIndex((x)=>x.uuid==uuid), 1);
+        setOpen(false)
       } else {
         toast.error("Something went wrong on deleting link", {
           position: toast.POSITION.TOP_RIGHT,
@@ -137,7 +150,11 @@ const Resources = () => {
   const handleResourcesSave = async () => {
     setLoading(true);
     const data = new FormData();
-    data.append("file", file);
+    if(file?.length>0){
+      for (const f of file) {
+        data.append("file",f);
+      }
+    }
     await addResources('',data)
       .then((res) => {
         setLoading(false);
@@ -146,6 +163,7 @@ const Resources = () => {
           toast.success(`File Added Sucessfully`, {
             position: toast.POSITION.TOP_RIGHT,
           });
+          setFile([]);
           getResources()
         }
         else{
@@ -156,9 +174,6 @@ const Resources = () => {
       })
       .catch((err) => {
         setLoading(false);
-        toast.error(`${err.data.error}`, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
       });
   };
   const handleLinksSave = async () => {
@@ -167,7 +182,7 @@ const Resources = () => {
       description: formik.values.description,
     };
     const formData = new FormData();
-    const linkJson = JSON.stringify(data);
+    const linkJson = JSON.stringify([data]);
     const blob3 = new Blob([linkJson], { type: "application/json" });
     formData.append("link",blob3);
     await addResources('',formData)
@@ -178,6 +193,7 @@ const Resources = () => {
           toast.success(`Link Added Sucessfully`, {
             position: toast.POSITION.TOP_RIGHT,
           });
+          setLinks([])
           getResources()
         }
         else{
@@ -188,9 +204,6 @@ const Resources = () => {
       })
       .catch((err) => {
         setLoading(false);
-        toast.error(`${err.data.error}`, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
       });
   };
   const getResources = async () => {
@@ -202,7 +215,6 @@ const Resources = () => {
         }
       })
       .catch((err) => {
-        console.log(err.data.error);
       });
   };
 
@@ -251,7 +263,7 @@ const Resources = () => {
               </Button>
             </Box>
             <Box>
-              {allResources.map((item, index) => {
+              {allResources?.map((item, index) => {
                 return (
                   <FormGroup className="inputHead">
                     <Box
@@ -265,13 +277,28 @@ const Resources = () => {
                         fullWidth
                         placeholder="Lorem Ipsum"
                         className="taskTitleInput"
+                        InputProps={{
+                          readOnly: true,
+                          style: {
+                            cursor: 'pointer',
+                          },
+                          startAdornment: (
+                            <IconButton component="span">
+                              <AttachFileIcon/>
+                            </IconButton>
+                          ),
+                        }}
                         value={item.filename}
                         onClick={() => downloadFile(item)}
                       />
                       <span>
                         <img
                           src={DeleteIcon}
-                          onClick={() => deleteAttachment(item?.uuid)}
+                          onClick={() =>{
+                            setUuid(item?.uuid)
+                            setOpen(true);
+                            setisLink(false);
+                          }}
                         />
                       </span>
                     </Box>
@@ -320,7 +347,7 @@ const Resources = () => {
               </Button>
             </Box>
             <Box>
-              {allLinks.map((item) => {
+              {allLinks?.map((item) => {
                 return (
                   <FormGroup className="inputHead">
                     <Box
@@ -340,7 +367,11 @@ const Resources = () => {
                       <span>
                         <img
                           src={DeleteIcon}
-                          onClick={() => deleteLinks(item?.uuid)}
+                          onClick={() =>{
+                            setUuid(item?.uuid)
+                            setOpen(true);
+                            setisLink(true);
+                          }}
                         />
                       </span>
                     </Box>
@@ -395,7 +426,7 @@ const Resources = () => {
                   title="file"
                   name="file"
                   placeholder="file"
-                  value={file?.name}
+                  value={file[0]?.name}
                 />
                 <Button
                   variant="contained"
@@ -529,6 +560,22 @@ const Resources = () => {
       </Dialog>
       <ToastContainer />
       <Loader loaderValue={loading} />
+      <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Are you sure you want to delete this {isLink?'Link':'Attachment'}?
+              </DialogContentText>
+            </DialogContent>
+            {/* <DialogActions> */}
+            <Button onClick={handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={isLink?deleteLinks:deleteAttachment} color="secondary" autoFocus>
+              Delete
+            </Button>
+            {/* </DialogActions> */}
+          </Dialog>
     </Box>
   );
 };
