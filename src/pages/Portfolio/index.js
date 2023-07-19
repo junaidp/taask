@@ -41,6 +41,7 @@ import {
   getAllCustomer,
 } from "../../services/customer.service";
 import { ToastContainer, toast } from "react-toastify";
+import { DataGrid } from "@mui/x-data-grid";
 
 const Portfolio = () => {
   const [allCustomers, setAllCustomers] = useState([]);
@@ -48,8 +49,7 @@ const Portfolio = () => {
   const [count, setCount] = useState(0);
   const [currentItems, setCurrentItems] = useState([]);
   const [customer, setCustomer] = useState(null);
-  const [index, setIndex] = useState(null);
-  const [isLoading,setisLoading] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -61,14 +61,15 @@ const Portfolio = () => {
     try {
       setLoading(true);
       const { data: resp } = await deleteCustomerBySerialNumber(
-        customer.serialNumber
+        customer.id
       );
       setLoading(false);
       if (resp) {
         toast.success("Customer Deleted Sucessfully", {
           position: toast.POSITION.TOP_RIGHT,
         });
-        currentItems.splice(index, 1);
+        const index = allCustomers.findIndex((x)=>x.serialNumber==customer.id);
+        allCustomers.splice(index, 1);
         setOpen(false);
       } else {
         toast.error("Something went wrong on deleting customer", {
@@ -79,12 +80,6 @@ const Portfolio = () => {
       setLoading(false);
     }
   };
-  const setSearchQuery = (searchQuery)=>{
-    const data = searchQuery.length>0 ?
-    allCustomers.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase())):
-    allCustomers;
-    setCurrentItems(data);
-  }
   const getAllCustomers = async () => {
     setisLoading(true);
     await getAllCustomer()
@@ -106,6 +101,56 @@ const Portfolio = () => {
       getAllCustomers();
     } catch (error) {}
   }, []);
+  const columns = [
+    { field: "serialNumber", headerName: "ID", width: 100 ,renderCell: (params) => (
+      <div onClick={() => navigate("/customer/" + params.value)}>{allCustomers.findIndex((x)=>x.serialNumber==params.value)+1}</div>
+    )},
+    { field: "name", headerName: "Customer", width: 180 ,renderCell: (params) => (
+      <div onClick={() => navigate("/customer/" + params.id)}>{params.value}</div>
+    )},
+    { field: "contacts", headerName: "Main Contact", width: 180,renderCell: (params) => (
+      <div onClick={() => navigate("/customer/" + params.id)}>{params.value?.name}</div>
+    ), },
+    {
+      field: "customerSince",
+      headerName: "Customer Since",
+      width: 180,
+      renderCell: (params) => (
+        <div onClick={() => navigate("/customer/" + params.id)}>{moment(params.value).format("DD/MM/YYYY hh:mm:ss ")}</div>
+      ),
+    },
+    { field: "customerStage", headerName: "Customer Stage", width: 180 ,renderCell: (params) => (
+      <div onClick={() => navigate("/customer/" + params.id)}>{params.value}</div>
+    )},
+    { field: "location", headerName: "Location", width: 180,renderCell: (params) => (
+      <div onClick={() => navigate("/customer/" + params.id)}>{params.value}</div>
+    ) },
+    { field: "website", headerName: "Website", width: 180,renderCell: (params) => (
+      <div><a href={'https://'+params.value} target="_blank">{params.value}</a></div>
+    ) },
+    {
+      field: "Action",
+      headerName: "Action",
+      sortable: false,
+      disableColumnMenu: true,
+      width: 80,
+      renderCell: (row) => (
+        // <React.Fragment className="actionHead">
+          <MenuItem>
+            <DeleteIcon
+              sx={{ mr: 2 ,color:'red'}}
+              onClick={() => {
+                setOpen(true);
+                console.log(row)
+                setCustomer(row);
+              }}
+            />
+          </MenuItem>
+        // </React.Fragment>
+      ),
+      align: "right",
+    },
+  ];
 
   return (
     <Box>
@@ -129,166 +174,22 @@ const Portfolio = () => {
       </Box>
       <Box className="portfolio">
         <TableContainer component={Paper} className="portfolioCout">
-          <Box className="topHead">
-            <Box>{/* <Typography variant="h2">Portfolio</Typography> */}</Box>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <FormGroup>
-                <TextField variant="outlined" placeholder="Search" onChange={(e) => setSearchQuery(e.target.value)} />
-              </FormGroup>
-              <span>
-                <img src={SearchImg} />
-              </span>
-              <span>
-                <img src={FilterMenuImg} />
-              </span>
-            </Box>
-          </Box>
-          <Table aria-label="caption table" className="portfolioTable">
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  ID <img src={FilterImg} className="filterImg" />
-                </TableCell>
-                <TableCell>
-                  Customer <img src={FilterImg} className="filterImg" />
-                </TableCell>
-                <TableCell>
-                  Main Contact <img src={FilterImg} className="filterImg" />
-                </TableCell>
-                <TableCell>
-                  Customer Since <img src={FilterImg} className="filterImg" />
-                </TableCell>
-                <TableCell>
-                  Customer Stage <img src={FilterImg} className="filterImg" />
-                </TableCell>
-                <TableCell>
-                  Location <img src={FilterImg} className="filterImg" />
-                </TableCell>
-                <TableCell>
-                  Website <img src={FilterImg} className="filterImg" />
-                </TableCell>
-                <TableCell>
-                  Action <img src={FilterImg} className="filterImg" />
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {currentItems.length > 0 &&
-                currentItems.map((item, index) => (
-                  <TableRow
-                    key={item.serialNumber}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <TableCell
-                      onClick={() => navigate("/customer/" + item.serialNumber)}
-                    >
-                      {index + 1}
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      scope="row"
-                      onClick={() => navigate("/customer/" + item.serialNumber)}
-                    >
-                      <Box className="userprofile">
-                        {/* <span>
-                      <img src={item?.imageId} alt="img not found" />
-                    </span> */}
-                        {item?.name}
-                      </Box>
-                    </TableCell>
-                    <TableCell
-                      onClick={() => navigate("/customer/" + item.serialNumber)}
-                    >
-                      {item?.contacts?.name}
-                    </TableCell>
-                    <TableCell
-                      onClick={() => navigate("/customer/" + item.serialNumber)}
-                    >
-                      {moment(item.customerSince).format("DD/MM/YYYY")}
-                    </TableCell>
-                    <TableCell
-                      onClick={() => navigate("/customer/" + item.serialNumber)}
-                    >
-                      {item?.customerStage}
-                    </TableCell>
-                    <TableCell
-                      onClick={() => navigate("/customer/" + item.serialNumber)}
-                    >
-                      {item?.location}
-                    </TableCell>
-                    <TableCell>
-                      <a href="#">{item?.website}</a>
-                    </TableCell>
-                    <TableCell>
-                      <MenuItem sx={{ color: "error.main" }}>
-                        {/* <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }} /> */}
-                        <DeleteIcon
-                          sx={{ mr: 2 }}
-                          onClick={() => {
-                            setOpen(true);
-                            setCustomer(item);
-                            setIndex(index);
-                          }}
-                        />
-                      </MenuItem>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              {!currentItems.length && isLoading &&
-                Array(4)
-                  .fill()
-                  .map((_, index) => (
-                    <TableRow>
-                      <TableCell>
-                        <Skeleton animation="wave" />
-                      </TableCell>
-                      <TableCell component="th" scope="row">
-                        <Skeleton animation="wave" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton animation="wave" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton animation="wave" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton animation="wave" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton animation="wave" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton animation="wave" />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              {!currentItems.length && !isLoading &&(
-                  // <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <Paper
-                          sx={{
-                            textAlign: 'center',
-                          }}
-                        >
-                          <Typography variant="h6" paragraph>
-                            No Record found
-                          </Typography>
-                        </Paper>
-                      </TableCell>
-                    </TableRow>
-                  // </TableBody>
-                )}
-            </TableBody>
-          </Table>
-          <CustomPagination
-            data={allCustomers}
-            count={count}
-            setCurrentItems={setCurrentItems}
-            customInput={true}
-            customSelect={true}
-            paginationDetail={true}
-            buttons={true}
+         
+          
+          <DataGrid
+            style={{ height: 450, width: "100%" }}
+            autoHeight
+            aria-label="caption table"
+            className="UpcomingItemsTable"
+            rows={allCustomers}
+            columns={columns}
+            getRowId={(row) => row.serialNumber}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 10 },
+              },
+            }}
+            disableSelectionOnClick
           />
         </TableContainer>
         <ToastContainer />

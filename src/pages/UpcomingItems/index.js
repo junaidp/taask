@@ -20,11 +20,13 @@ const UpcomingItems = () => {
   const getMyTasks = async () =>{
     let {data:resp} = await getTask();
     if(resp){
-      resp = resp.map((x,index)=>{
-        x.id = index +1;
-        return x;
-      })
-      setAllTask(resp)
+      if(typeof resp !="string"){
+        resp = resp.map((x,index)=>{
+          x.id = index +1;
+          return x;
+        })
+        setAllTask(resp)
+      }
     }
   }
 

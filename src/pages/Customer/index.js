@@ -28,6 +28,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from '@mui/icons-material/Edit';
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { ToastContainer, toast } from "react-toastify";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -36,7 +37,7 @@ import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import { forwardRef } from "react";
 import Slide from "@mui/material/Slide/Slide";
 import Loader from "../../components/Loader";
-import {saveCustomer} from '../../services/customer.service'
+import { saveCustomer } from "../../services/customer.service";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -313,9 +314,20 @@ const Customer = () => {
   const [linkDescription, setLinkDescription] = useState();
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
+  const [index, setIndex] = useState(null);
   const handleAttachmentSubmit = () => {
+    debugger;
+    if(index!=null){
+      setUploadedFiles((prevFiles)=>{
+        const updatedFiles = [...prevFiles];
+        updatedFiles[index].file = file; // Update the specific element in the array
+        return updatedFiles;
+      })
+      setOpen1(false);
+      return;
+    }
     setUploadedFiles([
-      // ...uplodedFiles,
+      ...uplodedFiles,
       {
         file: file,
       },
@@ -345,6 +357,18 @@ const Customer = () => {
     setImage(null);
     setShowDeleteIcon(false);
   };
+  const deleteFile = (index) =>{
+    setUploadedFiles((prevFiles)=>{
+      const updatedFiles = [...prevFiles];
+      updatedFiles.splice(index, 1); // Update the specific element in the array
+      return updatedFiles;
+    })
+    
+  }
+  const editFile = (index) => {
+    setIndex(index);
+    setOpen1(true);
+  }
   const onUpload = (e) => {
     const file = e.target.files[0];
     debugger;
@@ -359,51 +383,53 @@ const Customer = () => {
       return;
     }
   };
-  const resetData = ()=>{
+  const resetData = () => {
     setFile(null);
-      setImage(null);
-      setPhoto(null);
-      setShowDeleteIcon(false);
-      setLinks([]);
-      setlink([]);
-      setUploadedFiles([]);
-  }
+    setImage(null);
+    setPhoto(null);
+    setShowDeleteIcon(false);
+    setLinks([]);
+    setlink([]);
+    setUploadedFiles([]);
+  };
   const handleSubmit = async (values, actions) => {
     debugger;
-    const customer = {...values};
+    const customer = { ...values };
     customer.contacts = customer.contacts[0];
     const data = new FormData();
-    if (file) {
-      data.append("file", file);
+    if (uplodedFiles.length>0) {
+      for(const files of uplodedFiles){
+        data.append("file", files.file);
+      }
+     
     } else {
       setShowPopup(true);
       return;
     }
     if (image) {
       // const photoFile = await fetch(photo).then((res) => res.blob());
-      data.append("image", image); 
-    }
-    else{
-      toast.error(`${'image is required'}`, {
+      data.append("image", image);
+    } else {
+      toast.error(`${"image is required"}`, {
         position: toast.POSITION.TOP_RIGHT,
       });
       return;
     }
-    
+
     const customerJson = JSON.stringify(customer);
     const blob = new Blob([customerJson], { type: "application/json" });
     data.append("customer", blob);
-    if(!Links.length){
-      toast.error(`${'Link is Required'}`, {
+    if (!Links.length) {
+      toast.error(`${"Link is Required"}`, {
         position: toast.POSITION.TOP_RIGHT,
       });
       return;
     }
-    const linkJson = JSON.stringify(Links[0]);
+    const linkJson = JSON.stringify(Links);
     const blob3 = new Blob([linkJson], { type: "application/json" });
-    data.append("link",blob3);
+    data.append("link", blob3);
     setLoading(true);
-    const res = await saveCustomer(data).catch((err)=>{
+    const res = await saveCustomer(data).catch((err) => {
       setLoading(false);
     });
     setLoading(false);
@@ -413,9 +439,8 @@ const Customer = () => {
       toast.success("customer successfully saved!", {
         position: toast.POSITION.TOP_RIGHT,
       });
-    }
-    else{
-      toast.error(`${'Something went wrong on'}`, {
+    } else {
+      toast.error(`${"Something went wrong on"}`, {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
@@ -427,14 +452,16 @@ const Customer = () => {
     setOpen1(false);
   };
   const handleClickOpenAttachmentsModel = () => {
-    if (uplodedFiles?.length < 3) {
+    // if (uplodedFiles?.length < 3) {
+      setIndex(null);
       setOpen1(true);
-    }
+    // }
+  
   };
   const handleClickOpenLinkModel = () => {
-    if (Links?.length < 3) {
+    // if (Links?.length < 3) {
       setOpen2(true);
-    }
+    // }
   };
   const handleLinksSubmit = () => {
     setLinks([
@@ -709,138 +736,142 @@ const Customer = () => {
                   <img src={PlusIcon} alt="not found" /> Main Contacts
                 </Button>
                 {mainContacts == true ? (
-              <Box className="mainContactsForm">
-                <Box className="inputGroup">
-                  <FormGroup className="inputHead">
-                    <label htmlFor="Name">Name *</label>
-                    <TextField
-                      {...{
-                        formik,
-                        title: "Name",
-                        name: "contactsName",
-                        placeholder: "John Doe",
-                        checkValidation: true,
-                        // value: formik?.values?.contacts.name,
-                      }}
-                      onChange={(e) => {
-                        formik.setFieldValue(
-                          "contacts.[0].name",
-                          e.target.value
-                        );
-                      }}
-                    />
+                  <Box className="mainContactsForm">
+                    <Box className="inputGroup">
+                      <FormGroup className="inputHead">
+                        <label htmlFor="Name">Name *</label>
+                        <TextField
+                          {...{
+                            formik,
+                            title: "Name",
+                            name: "contactsName",
+                            placeholder: "John Doe",
+                            checkValidation: true,
+                            // value: formik?.values?.contacts.name,
+                          }}
+                          onChange={(e) => {
+                            formik.setFieldValue(
+                              "contacts.[0].name",
+                              e.target.value
+                            );
+                          }}
+                        />
 
-                    {formik.errors.contacts && formik.errors.contacts[0] && (
-                      <p className="input-error">
-                        {formik.errors.contacts[0].name}
-                      </p>
-                    )}
-                  </FormGroup>
-                  <FormGroup className="inputHead">
-                    <label htmlFor="EmailAddress">Email Address.</label>
-                    <TextField
-                      type="email"
-                      {...{
-                        formik,
-                        title: "EmailAddress",
-                        name: "emailAddress",
-                        placeholder: "Email Address",
-                        checkValidation: true,
-                        // value: formik?.values?.contacts?.emailAddress,
-                      }}
-                      onChange={(e) => {
-                        formik.setFieldValue(
-                          "contacts.0.emailAddress",
-                          e.target.value
-                        );
-                      }}
-                    />
-                    {formik.errors.contacts && formik.errors.contacts[0] && (
-                      <p className="input-error">
-                        {formik.errors.contacts[0].emailAddress}
-                      </p>
-                    )}
-                  </FormGroup>
-                </Box>
-                <Box className="inputGroup">
-                  <FormGroup className="inputHead">
-                    <label htmlFor="JobTitle">Job Title *</label>
-                    <TextField
-                      {...{
-                        formik,
-                        title: "JobTitle",
-                        name: "jobTitle",
-                        placeholder: "Job Title",
-                        checkValidation: true,
-                        // value: formik?.values?.contacts?.jobTitle,
-                      }}
-                      onChange={(e) => {
-                        formik.setFieldValue(
-                          "contacts.0.jobTitle",
-                          e.target.value
-                        );
-                      }}
-                    />
-                    {formik.errors.contacts && formik.errors.contacts[0] && (
-                      <p className="input-error">
-                        {formik.errors.contacts[0].jobTitle}
-                      </p>
-                    )}
-                  </FormGroup>
-                  <FormGroup className="inputHead">
-                    <label htmlFor="location">Location</label>
-                    <TextField
-                      select
-                      {...{
-                        formik,
-                        title: "Location",
-                        name: "location",
-                        placeholder: "Lorem Ipsum",
-                        checkValidation: true,
-                        // value: formik?.values?.contacts.location,
-                      }}
-                      onChange={(e) => {
-                        formik.setFieldValue(
-                          "contacts.0.location",
-                          e.target.value
-                        );
-                      }}
-                      InputProps={{
-                        placeholder: "Select Your Country",
-                        disableUnderline: true,
-                      }}
-                      SelectProps={{
-                        displayEmpty: true,
-                        renderValue: (label, value) => {
-                          if (!label) {
-                            return <p>Select Your Country</p>;
-                          }
-                          return label;
-                        },
-                      }}
-                      MenuProps={{
-                        style: {
-                          maxHeight: "200px !important",
-                        },
-                      }}
-                    >
-                      {countries.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                    {formik.errors.contacts && formik.errors.contacts[0] && (
-                      <p className="input-error">
-                        {formik.errors.contacts[0].location}
-                      </p>
-                    )}
-                  </FormGroup>
-                </Box>
-              </Box>
-            ) : (
-              ""
-            )}
+                        {formik.errors.contacts &&
+                          formik.errors.contacts[0] && (
+                            <p className="input-error">
+                              {formik.errors.contacts[0].name}
+                            </p>
+                          )}
+                      </FormGroup>
+                      <FormGroup className="inputHead">
+                        <label htmlFor="EmailAddress">Email Address.</label>
+                        <TextField
+                          type="email"
+                          {...{
+                            formik,
+                            title: "EmailAddress",
+                            name: "emailAddress",
+                            placeholder: "Email Address",
+                            checkValidation: true,
+                            // value: formik?.values?.contacts?.emailAddress,
+                          }}
+                          onChange={(e) => {
+                            formik.setFieldValue(
+                              "contacts.0.emailAddress",
+                              e.target.value
+                            );
+                          }}
+                        />
+                        {formik.errors.contacts &&
+                          formik.errors.contacts[0] && (
+                            <p className="input-error">
+                              {formik.errors.contacts[0].emailAddress}
+                            </p>
+                          )}
+                      </FormGroup>
+                    </Box>
+                    <Box className="inputGroup">
+                      <FormGroup className="inputHead">
+                        <label htmlFor="JobTitle">Job Title *</label>
+                        <TextField
+                          {...{
+                            formik,
+                            title: "JobTitle",
+                            name: "jobTitle",
+                            placeholder: "Job Title",
+                            checkValidation: true,
+                            // value: formik?.values?.contacts?.jobTitle,
+                          }}
+                          onChange={(e) => {
+                            formik.setFieldValue(
+                              "contacts.0.jobTitle",
+                              e.target.value
+                            );
+                          }}
+                        />
+                        {formik.errors.contacts &&
+                          formik.errors.contacts[0] && (
+                            <p className="input-error">
+                              {formik.errors.contacts[0].jobTitle}
+                            </p>
+                          )}
+                      </FormGroup>
+                      <FormGroup className="inputHead">
+                        <label htmlFor="location">Location</label>
+                        <TextField
+                          select
+                          {...{
+                            formik,
+                            title: "Location",
+                            name: "location",
+                            placeholder: "Lorem Ipsum",
+                            checkValidation: true,
+                            // value: formik?.values?.contacts.location,
+                          }}
+                          onChange={(e) => {
+                            formik.setFieldValue(
+                              "contacts.0.location",
+                              e.target.value
+                            );
+                          }}
+                          InputProps={{
+                            placeholder: "Select Your Country",
+                            disableUnderline: true,
+                          }}
+                          SelectProps={{
+                            displayEmpty: true,
+                            renderValue: (label, value) => {
+                              if (!label) {
+                                return <p>Select Your Country</p>;
+                              }
+                              return label;
+                            },
+                          }}
+                          MenuProps={{
+                            style: {
+                              maxHeight: "200px !important",
+                            },
+                          }}
+                        >
+                          {countries.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                        {formik.errors.contacts &&
+                          formik.errors.contacts[0] && (
+                            <p className="input-error">
+                              {formik.errors.contacts[0].location}
+                            </p>
+                          )}
+                      </FormGroup>
+                    </Box>
+                  </Box>
+                ) : (
+                  ""
+                )}
               </Box>
               <FormGroup
                 className="inputHead"
@@ -892,9 +923,33 @@ const Customer = () => {
                 </Box>
                 <Box>
                   <List className="list">
-                    {uplodedFiles?.map((item) => (
+                    {uplodedFiles?.map((item,index) => (
                       <ListItem disablePadding>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
                         <p>{item.file?.name}</p>
+                        <IconButton
+                          sx={{
+                            // position: "absolute",
+                            // top: 18,
+                            // right: -40,
+                            color: "blue"
+                          }}
+                          onClick={()=>editFile(index)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          sx={{
+                            // position: "absolute",
+                            // top: 18,
+                            // right: -40,
+                            color: "red",
+                          }}
+                          onClick={()=>deleteFile(index)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                        </div>
                         {/* <span title={item.description}>{item.description}</span> */}
                       </ListItem>
                     ))}
