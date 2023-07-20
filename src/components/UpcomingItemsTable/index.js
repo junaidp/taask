@@ -29,10 +29,10 @@ const UpcomingItemsTable = ({ tasksData }) => {
   console.log(tasksData);
   const [currentItems, setCurrentItems] = useState([]);
   const columns = [
-    { field: 'id', headerName: 'ID',width: 100, },
-    { field: 'customerName', headerName: 'Client Name',width: 180,},
-    { field: 'customerTask', headerName: 'Task',width: 180,},
-    { field: 'assignedDate', headerName: 'Time',width: 180,
+    { field: 'id', headerName: 'ID',width: 70 },
+    { field: 'customerName',flex: 1, headerName: 'Client Name'},
+    { field: 'customerTask',flex: 1, headerName: 'Task'},
+    { field: 'assignedDate',flex: 1, headerName: 'Time',
     renderCell: (params) => (
       <div>
         {moment(params.value).format("DD/MM/YYYY hh:mm:ss ")}

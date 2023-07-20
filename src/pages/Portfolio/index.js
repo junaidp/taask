@@ -102,30 +102,30 @@ const Portfolio = () => {
     } catch (error) {}
   }, []);
   const columns = [
-    { field: "serialNumber", headerName: "ID", width: 100 ,renderCell: (params) => (
+    { field: "serialNumber", headerName: "ID", width: 70 ,renderCell: (params) => (
       <div onClick={() => navigate("/customer/" + params.value)}>{allCustomers.findIndex((x)=>x.serialNumber==params.value)+1}</div>
     )},
-    { field: "name", headerName: "Customer", width: 180 ,renderCell: (params) => (
+    { field: "name", headerName: "Customer", flex: 1,renderCell: (params) => (
       <div onClick={() => navigate("/customer/" + params.id)}>{params.value}</div>
     )},
-    { field: "contacts", headerName: "Main Contact", width: 180,renderCell: (params) => (
+    { field: "contacts", headerName: "Main Contact", flex: 1,renderCell: (params) => (
       <div onClick={() => navigate("/customer/" + params.id)}>{params.value?.name}</div>
     ), },
     {
       field: "customerSince",
       headerName: "Customer Since",
-      width: 180,
+      flex: 1,
       renderCell: (params) => (
         <div onClick={() => navigate("/customer/" + params.id)}>{moment(params.value).format("DD/MM/YYYY hh:mm:ss ")}</div>
       ),
     },
-    { field: "customerStage", headerName: "Customer Stage", width: 180 ,renderCell: (params) => (
+    { field: "customerStage", headerName: "Customer Stage", flex: 1,renderCell: (params) => (
       <div onClick={() => navigate("/customer/" + params.id)}>{params.value}</div>
     )},
-    { field: "location", headerName: "Location", width: 180,renderCell: (params) => (
+    { field: "location", headerName: "Location", flex: 1,renderCell: (params) => (
       <div onClick={() => navigate("/customer/" + params.id)}>{params.value}</div>
     ) },
-    { field: "website", headerName: "Website", width: 180,renderCell: (params) => (
+    { field: "website", headerName: "Website", flex: 1,renderCell: (params) => (
       <div><a href={'https://'+params.value} target="_blank">{params.value}</a></div>
     ) },
     {
@@ -133,7 +133,7 @@ const Portfolio = () => {
       headerName: "Action",
       sortable: false,
       disableColumnMenu: true,
-      width: 80,
+      flex: 1,
       renderCell: (row) => (
         // <React.Fragment className="actionHead">
           <MenuItem>

@@ -57,6 +57,7 @@ const Resources = () => {
   let userId = localStorage.getItem("token");
   const [currentItems, setCurrentItems] = useState([]);
   const [allResources, setAllResources] = useState([]);
+  const [allFiles, setAllFiles] = useState([]);
   const [allLinks, setAllLinks] = useState([]);
   const [isLink, setisLink] = useState(false);
   const [uuid, setUuid] = useState(false);
@@ -211,6 +212,7 @@ const Resources = () => {
       .then((res) => {
         if (res.data) {
           setAllResources(res.data.userFiles);
+          setAllFiles(res.data.userFiles);
           setAllLinks(res.data.userLinks)
         }
       })
@@ -230,6 +232,13 @@ const Resources = () => {
   useEffect(() => {
     getResources();
   }, []);
+  const onFileSearch = () => {
+    const data = (description.length>0)?
+    allFiles.filter((x)=>x?.filename?.toLocaleLowerCase().includes(description?.toLocaleLowerCase())):
+    allFiles;
+    setAllResources(data);
+    handleCloseBrowse();
+  };
 
   return (
     <Box className="resources">
@@ -426,7 +435,10 @@ const Resources = () => {
                   title="file"
                   name="file"
                   placeholder="file"
-                  value={file[0]?.name}
+                  InputProps={{
+                      readOnly:true
+                    }}
+                  value={file.map((x)=>x.name)}
                 />
                 <Button
                   variant="contained"
@@ -536,7 +548,7 @@ const Resources = () => {
         aria-describedby="alert-dialog-slide-description"
         className="LinksModel"
       >
-        <DialogTitle className="titleHead">Browse</DialogTitle>
+        <DialogTitle className="titleHead">File Browse</DialogTitle>
         <DialogContent>
           <Box
             sx={{
@@ -544,7 +556,7 @@ const Resources = () => {
             }}
           >
             <FormGroup className="inputHead">
-              <TextField fullWidth placeholder="lorem ipsum" />
+              <TextField onChange={(e)=>{setDescription(e?.target?.value)}} fullWidth placeholder="lorem ipsum" />
             </FormGroup>
           </Box>
           <Box
@@ -554,7 +566,7 @@ const Resources = () => {
               paddingTop: "24px",
             }}
           >
-            <Button className="linksSaveBtn">Browse</Button>
+            <Button className="linksSaveBtn" onClick={onFileSearch}>Browse</Button>
           </Box>
         </DialogContent>
       </Dialog>
