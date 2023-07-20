@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Resources.css";
 // Mui imports
 import {
@@ -17,8 +17,7 @@ import {
   IconButton,
   DialogContentText,
 } from "@mui/material";
-import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
-import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
+import EditIcon from "@mui/icons-material/Edit";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
@@ -48,20 +47,21 @@ const Resources = () => {
   const [open2, setOpen2] = useState(false);
   const [open3, setOpen3] = useState(false);
   const [file, setFile] = useState([]);
-  const [description, setDescription] = useState();
+  const [description, setDescription] = useState('');
   const [attachments, setAttachments] = useState([]);
   const [link, setLink] = useState();
   const [linkDescription, setLinkDescription] = useState();
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(false);
   let userId = localStorage.getItem("token");
-  const [currentItems, setCurrentItems] = useState([]);
+  // const [currentItems, setCurrentItems] = useState([]);
   const [allResources, setAllResources] = useState([]);
   const [allFiles, setAllFiles] = useState([]);
+  const [allLink, setAllLink] = useState([]);
   const [allLinks, setAllLinks] = useState([]);
   const [isLink, setisLink] = useState(false);
   const [uuid, setUuid] = useState(false);
-
+  const text = useRef(null);
   const onUpload = (e) => {
     debugger;
     const uploadfile = e?.target?.files;
@@ -88,6 +88,9 @@ const Resources = () => {
   };
   const handleClickOpenBrowse = () => {
     setOpen3(true);
+  };
+  const handleTextFieldClick = (item) => {
+    window.open(item.link, '_blank');
   };
 
 
@@ -213,7 +216,8 @@ const Resources = () => {
         if (res.data) {
           setAllResources(res.data.userFiles);
           setAllFiles(res.data.userFiles);
-          setAllLinks(res.data.userLinks)
+          setAllLinks(res.data.userLinks);
+          setAllLink(res.data.userLinks)
         }
       })
       .catch((err) => {
@@ -233,10 +237,20 @@ const Resources = () => {
     getResources();
   }, []);
   const onFileSearch = () => {
-    const data = (description.length>0)?
-    allFiles.filter((x)=>x?.filename?.toLocaleLowerCase().includes(description?.toLocaleLowerCase())):
-    allFiles;
-    setAllResources(data);
+    if(isLink){
+      const data = (description.length>0)?
+      allLink.filter((x)=>x?.filename?.toLocaleLowerCase().includes(description?.toLocaleLowerCase())):
+      allLink;
+      setAllLinks(data);
+    }
+    else{
+      const data = (description.length>0)?
+      allFiles.filter((x)=>x?.filename?.toLocaleLowerCase().includes(description?.toLocaleLowerCase())):
+      allFiles;
+      setAllResources(data);
+
+    }
+    setDescription('');
     handleCloseBrowse();
   };
 
@@ -258,7 +272,7 @@ const Resources = () => {
                 <img
                   src={SearchIcon}
                   alt="img not found"
-                  onClick={() => handleClickOpenBrowse()}
+                  onClick={() => {handleClickOpenBrowse();setisLink(false)}}
                 />
               </Box>
             </Box>
@@ -301,6 +315,18 @@ const Resources = () => {
                         onClick={() => downloadFile(item)}
                       />
                       <span>
+                      <EditIcon
+                            sx={{ mr: 2,color:'blue' }}
+                            // onClick={() => {
+                            //   setOpen(true);
+                            //   setAttachment(item);
+                            //   setIndex(index);
+                            //   setisLink(false)
+                            // }}
+                            onClick={handleClickOpenAttachmentsModel}
+                          />
+                      </span>
+                      <span>
                         <img
                           src={DeleteIcon}
                           onClick={() =>{
@@ -315,15 +341,15 @@ const Resources = () => {
                 );
               })}
             </Box>
-            <CustomPagination
+            {/* <CustomPagination
               data={allResources}
               count={allResources?.length}
-              setCurrentItems={setCurrentItems}
+              // setCurrentItems={setAllResources}
               customInput={false}
               customSelect={false}
               paginationDetail={true}
               buttons={true}
-            />
+            /> */}
           </Box>
         </Grid>
         <Grid item xs={6}>
@@ -341,7 +367,7 @@ const Resources = () => {
                 <img
                   src={SearchIcon}
                   alt="img not found"
-                  onClick={() => handleClickOpenBrowse()}
+                  onClick={() =>{ handleClickOpenBrowse();setisLink(true);}}
                 />
               </Box>
             </Box>
@@ -367,12 +393,29 @@ const Resources = () => {
                         paddingBottom: "8px",
                       }}
                     >
+                      
                       <TextField
                         fullWidth
                         placeholder="www.link.com"
                         className="taskTitleInput"
                         value={item.link}
+                        onClick={()=>handleTextFieldClick(item)}
+                        InputProps={{
+                          readOnly:true
+                        }}
                       />
+                      <span>
+                      <EditIcon
+                            sx={{ mr: 2,color:'blue'  }}
+                            // onClick={() => {
+                            //   setOpen(true);
+                            //   setAttachment(item);
+                            //   setIndex(index);
+                            //   setisLink(false)
+                            // }}
+                            onClick={handleClickOpenLinksModel}
+                          />
+                      </span>
                       <span>
                         <img
                           src={DeleteIcon}
@@ -389,20 +432,23 @@ const Resources = () => {
                       placeholder="Description"
                       className="taskTitleInput"
                       value={item.description}
+                      InputProps={{
+                        readOnly:true
+                      }}
                     />
                   </FormGroup>
                 );
               })}
             </Box>
-            <CustomPagination
+            {/* <CustomPagination
               data={allLinks}
               count={allLinks?.length}
-              setCurrentItems={setCurrentItems}
+              // setCurrentItems={setCurrentItems}
               customInput={false}
               customSelect={false}
               paginationDetail={true}
               buttons={true}
-            />
+            /> */}
           </Box>
         </Grid>
       </Grid>
@@ -487,6 +533,9 @@ const Resources = () => {
             }}
           >
             <FormGroup className="inputHead">
+            <label htmlFor="CustomerNotes" className="CustomerNotes">
+                  Link
+                </label>
               <TextField
                 fullWidth
                 {...{
@@ -509,6 +558,9 @@ const Resources = () => {
                 paddingTop: "24px ",
               }}
             >
+              <label htmlFor="CustomerNotes" className="CustomerNotes">
+                  Description
+                </label>
               <textarea
                 name="description"
                 placeholder="Description"
@@ -548,7 +600,7 @@ const Resources = () => {
         aria-describedby="alert-dialog-slide-description"
         className="LinksModel"
       >
-        <DialogTitle className="titleHead">File Browse</DialogTitle>
+        <DialogTitle className="titleHead">Browse</DialogTitle>
         <DialogContent>
           <Box
             sx={{
@@ -556,7 +608,7 @@ const Resources = () => {
             }}
           >
             <FormGroup className="inputHead">
-              <TextField onChange={(e)=>{setDescription(e?.target?.value)}} fullWidth placeholder="lorem ipsum" />
+              <TextField onChange={(e)=>{setDescription(e?.target?.value);}} fullWidth placeholder="Enter Value" />
             </FormGroup>
           </Box>
           <Box
