@@ -38,6 +38,9 @@ import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import { forwardRef } from "react";
 import Slide from "@mui/material/Slide/Slide";
 import Loader from "../../components/Loader";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import ImageIcon from "@mui/icons-material/Image";
+import LinkIcon from "@mui/icons-material/Link";
 import {
   addResources,
   deleteResource,
@@ -376,11 +379,12 @@ const CustomerDetail = () => {
           ],
         });
         debugger;
-        const photoURL = `data:${data.image.contenttype};base64,` + data.image.data;
+        const photoURL =
+          `data:${data.image.contenttype};base64,` + data.image.data;
         setPhoto(photoURL);
         setShowDeleteIcon(true);
         setUploadedFiles([...data.customerFiles]);
-        setLinks([...data.ustomerLink]);
+        setLinks([...data.customerLink]);
         console.log(customerDetail);
       } else {
         toast.error("Record Not Found", {
@@ -406,15 +410,13 @@ const CustomerDetail = () => {
         return;
       }
       setLoading(true);
-      const { data: resp } = await addResources(customerId,data);
-      if(resp){
+      const { data: resp } = await addResources(customerId, data);
+      if (resp) {
         setLoading(false);
         toast.success("File added sucessfully", {
           position: toast.POSITION.TOP_RIGHT,
         });
-
-      }
-      else{
+      } else {
         setLoading(false);
         toast.error("Something went wrong on adding file", {
           position: toast.POSITION.TOP_RIGHT,
@@ -469,7 +471,7 @@ const CustomerDetail = () => {
   const deleteAttachment = async () => {
     try {
       setLoading(true);
-      const { data: resp } = await deleteResource(attachment.uuid,'file');
+      const { data: resp } = await deleteResource(attachment.uuid, "file");
       setLoading(false);
       if (resp) {
         toast.success("Attachemnt Deleted Sucessfully", {
@@ -489,7 +491,7 @@ const CustomerDetail = () => {
   const deleteLink = async () => {
     try {
       setLoading(true);
-      const { data: resp } = await deleteResource(attachment.uuid,'link');
+      const { data: resp } = await deleteResource(attachment.uuid, "link");
       setLoading(false);
       if (resp) {
         toast.success("Link Deleted Sucessfully", {
@@ -558,30 +560,29 @@ const CustomerDetail = () => {
       },
     ]);
     try {
-      const data =  new FormData();
-      const linkJson = JSON.stringify([{
-        link: link,
-        description: linkDescription,
-      }],);
+      const data = new FormData();
+      const linkJson = JSON.stringify([
+        {
+          link: link,
+          description: linkDescription,
+        },
+      ]);
       const blob3 = new Blob([linkJson], { type: "application/json" });
-      data.append("link",blob3);
+      data.append("link", blob3);
       setLoading(true);
-      const { data: resp } = await addResources(customerId,data);
-      if(resp){
+      const { data: resp } = await addResources(customerId, data);
+      if (resp) {
         setLoading(false);
         toast.success("Link added sucessfully", {
           position: toast.POSITION.TOP_RIGHT,
         });
         setOpen2(false);
-
-      }
-      else{
+      } else {
         setLoading(false);
         toast.error("Something went wrong on adding Link", {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
-      
     } catch (error) {
       setLoading(false);
     }
@@ -605,14 +606,19 @@ const CustomerDetail = () => {
             <DialogTitle>Confirm Delete</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Are you sure you want to delete this {isLink?'Link':'Attachment'}?
+                Are you sure you want to delete this{" "}
+                {isLink ? "Link" : "Attachment"}?
               </DialogContentText>
             </DialogContent>
             {/* <DialogActions> */}
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={isLink?deleteLink:deleteAttachment} color="secondary" autoFocus>
+            <Button
+              onClick={isLink ? deleteLink : deleteAttachment}
+              color="secondary"
+              autoFocus
+            >
               Delete
             </Button>
             {/* </DialogActions> */}
@@ -1039,35 +1045,45 @@ const CustomerDetail = () => {
                   <List className="list">
                     {uplodedFiles?.map((item) => (
                       <ListItem disablePadding>
-                         <div style={{ display: "flex", alignItems: "center" }}>
-                         <p>
-                          {item.file?.name ? item.file?.name : item?.filename}
-                        </p>
-                        <MenuItem sx={{ color: "blue" }}>
-                          <EditIcon
-                            sx={{ mr: 2 }}
-                            // onClick={() => {
-                            //   setOpen(true);
-                            //   setAttachment(item);
-                            //   setIndex(index);
-                            //   setisLink(false)
-                            // }}
-                            onClick={handleClickOpenAttachmentsModel}
-                          />
-                        </MenuItem>
-                        <MenuItem sx={{ color: "error.main" }}>
-                          <DeleteIcon
-                            sx={{ mr: 2 }}
-                            onClick={() => {
-                              setOpen(true);
-                              setAttachment(item);
-                              setIndex(index);
-                              setisLink(false)
-                            }}
-                          />
-                        </MenuItem>
-                         </div>
-                        
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <IconButton
+                            component="span"
+                            style={{ width: "10px" }}
+                          >
+                            {item?.filename?.includes(".pdf") ||
+                            item?.file?.name.includes(".pdf") ? (
+                              <PictureAsPdfIcon />
+                            ) : (
+                              <ImageIcon />
+                            )}
+                          </IconButton>
+                          <p>
+                            {item.file?.name ? item.file?.name : item?.filename}
+                          </p>
+                          <MenuItem sx={{ color: "blue" }}>
+                            <EditIcon
+                              sx={{ mr: 2 }}
+                              // onClick={() => {
+                              //   setOpen(true);
+                              //   setAttachment(item);
+                              //   setIndex(index);
+                              //   setisLink(false)
+                              // }}
+                              onClick={handleClickOpenAttachmentsModel}
+                            />
+                          </MenuItem>
+                          <MenuItem sx={{ color: "error.main" }}>
+                            <DeleteIcon
+                              sx={{ mr: 2 }}
+                              onClick={() => {
+                                setOpen(true);
+                                setAttachment(item);
+                                setIndex(index);
+                                setisLink(false);
+                              }}
+                            />
+                          </MenuItem>
+                        </div>
                       </ListItem>
                     ))}
                   </List>
@@ -1094,34 +1110,46 @@ const CustomerDetail = () => {
                     <List className="list">
                       {Links?.map((item) => (
                         <ListItem disablePadding>
-                          <p>{item.link}</p>
-                          <div style={{ display: "flex", alignItems: "center" }}>
-                          <span title={item.description}>
-                            {item.description}
-                          </span>
-                          <MenuItem sx={{ color: "blue" }}>
-                          <EditIcon
-                            sx={{ mr: 2 }}
-                            // onClick={() => {
-                            //   setOpen(true);
-                            //   setAttachment(item);
-                            //   setIndex(index);
-                            //   setisLink(false)
-                            // }}
-                            onClick={handleClickOpenLinkModel}
-                          />
-                        </MenuItem>
-                          <MenuItem sx={{ color: "error.main" }}>
-                          <DeleteIcon
-                            sx={{ mr: 2 }}
-                            onClick={() => {
-                              setOpen(true);
-                              setAttachment(item);
-                              setIndex(index);
-                              setisLink(true)
-                            }}
-                          />
-                        </MenuItem>
+                          <div style={{ display: "flex" }}>
+                          <LinkIcon />
+                            <a
+                              style={{ paddingLeft: "5px" }}
+                              href={item.link}
+                              target="_blank"
+                            >
+                              <p>{item.link}</p>
+                            </a>
+                          </div>
+                          {/* <p>{item.link}</p> */}
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <span title={item.description}>
+                              {item.description}
+                            </span>
+                            <MenuItem sx={{ color: "blue" }}>
+                              <EditIcon
+                                sx={{ mr: 2 }}
+                                // onClick={() => {
+                                //   setOpen(true);
+                                //   setAttachment(item);
+                                //   setIndex(index);
+                                //   setisLink(false)
+                                // }}
+                                onClick={handleClickOpenLinkModel}
+                              />
+                            </MenuItem>
+                            <MenuItem sx={{ color: "error.main" }}>
+                              <DeleteIcon
+                                sx={{ mr: 2 }}
+                                onClick={() => {
+                                  setOpen(true);
+                                  setAttachment(item);
+                                  setIndex(index);
+                                  setisLink(true);
+                                }}
+                              />
+                            </MenuItem>
                           </div>
                         </ListItem>
                       ))}

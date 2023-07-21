@@ -9,6 +9,9 @@ import LinksIcon from "../../assets/icons/Links.svg";
 import PlusIcon from "../../assets/icons/plus.svg";
 import CloseIcon from "../../assets/icons/close.svg";
 import MuiAlert from "@mui/material/Alert";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import LinkIcon from "@mui/icons-material/Link";
+import ImageIcon from "@mui/icons-material/Image";
 import {
   Avatar,
   Box,
@@ -470,7 +473,7 @@ const Customer = () => {
   };
   const handleClickOpenLinkModel = () => {
     // if (Links?.length < 3) {
-    setIndex(null)
+    setIndex(null);
     setOpen2(true);
     // }
   };
@@ -950,6 +953,16 @@ const Customer = () => {
                     {uplodedFiles?.map((item, index) => (
                       <ListItem disablePadding>
                         <div style={{ display: "flex", alignItems: "center" }}>
+                          <IconButton
+                            component="span"
+                            style={{ width: "10px" }}
+                          >
+                            {item.file?.name.includes(".pdf") ? (
+                              <PictureAsPdfIcon />
+                            ) : (
+                              <ImageIcon />
+                            )}
+                          </IconButton>
                           <p>{item.file?.name}</p>
                           <IconButton
                             sx={{
@@ -999,38 +1012,46 @@ const Customer = () => {
                   </h6>
                   <Box>
                     <List className="list">
-                      {Links?.map((item,index) => (
+                      {Links?.map((item, index) => (
                         <ListItem disablePadding>
-                          <p>{item.link}</p>
+                          <div style={{ display: "flex" }}>
+                            <LinkIcon />
+                            <a
+                              style={{ paddingLeft: "5px" }}
+                              href={item.link}
+                              target="_blank"
+                            >
+                              <p>{item.link}</p>
+                            </a>
+                          </div>
+
                           <span title={item.description}>
                             {item.description}
                           </span>
-                          <div
-                            style={{ display: "flex", alignItems: "center" }}
+                          <div style={{flex:1}}>
+                          <IconButton
+                            sx={{
+                              // position: "absolute",
+                              // top: 18,
+                              // right: -40,
+                              color: "blue",
+                            }}
+                            onClick={() => editLink(index)}
                           >
-                            <IconButton
-                              sx={{
-                                // position: "absolute",
-                                // top: 18,
-                                // right: -40,
-                                color: "blue",
-                              }}
-                              onClick={() => editLink(index)}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                            <IconButton
-                              sx={{
-                                // position: "absolute",
-                                // top: 18,
-                                // right: -40,
-                                color: "red",
-                              }}
-                              onClick={() => deleteLink(index)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </div>
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            sx={{
+                              // position: "absolute",
+                              // top: 18,
+                              // right: -40,
+                              color: "red",
+                            }}
+                            onClick={() => deleteLink(index)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                            </div>
                         </ListItem>
                       ))}
                     </List>
