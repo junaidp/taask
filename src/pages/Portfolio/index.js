@@ -103,30 +103,30 @@ const Portfolio = () => {
   }, []);
   const columns = [
     { field: "serialNumber", headerName: "ID", width: 70 ,renderCell: (params) => (
-      <div onClick={() => navigate("/customer/" + params.value)}>{allCustomers.findIndex((x)=>x.serialNumber==params.value)+1}</div>
+      <div style={{cursor:'pointer'}} onClick={() => navigate("/customer/" + params.value)}>{allCustomers.findIndex((x)=>x.serialNumber==params.value)+1}</div>
     )},
     { field: "name", headerName: "Customer", flex: 1,renderCell: (params) => (
-      <div onClick={() => navigate("/customer/" + params.id)}>{params.value}</div>
+      <div style={{cursor:'pointer'}} onClick={() => navigate("/customer/" + params.id)}>{params.value}</div>
     )},
     { field: "contacts", headerName: "Main Contact", flex: 1,renderCell: (params) => (
-      <div onClick={() => navigate("/customer/" + params.id)}>{params.value?.name}</div>
+      <div style={{cursor:'pointer'}} onClick={() => navigate("/customer/" + params.id)}>{params.value?.name}</div>
     ), },
     {
       field: "customerSince",
       headerName: "Customer Since",
       flex: 1,
       renderCell: (params) => (
-        <div onClick={() => navigate("/customer/" + params.id)}>{moment(params.value).format("DD/MM/YYYY hh:mm:ss ")}</div>
+        <div style={{cursor:'pointer'}} onClick={() => navigate("/customer/" + params.id)}>{moment(params.value).format("DD/MM/YYYY hh:mm:ss ")}</div>
       ),
     },
     { field: "customerStage", headerName: "Customer Stage", flex: 1,renderCell: (params) => (
-      <div onClick={() => navigate("/customer/" + params.id)}>{params.value}</div>
+      <div style={{cursor:'pointer'}} onClick={() => navigate("/customer/" + params.id)}>{params.value}</div>
     )},
     { field: "location", headerName: "Location", flex: 1,renderCell: (params) => (
-      <div onClick={() => navigate("/customer/" + params.id)}>{params.value}</div>
+      <div style={{cursor:'pointer'}} onClick={() => navigate("/customer/" + params.id)}>{params.value}</div>
     ) },
     { field: "website", headerName: "Website", flex: 1,renderCell: (params) => (
-      <div><a href={'https://'+params.value} target="_blank">{params.value}</a></div>
+      <div style={{cursor:'pointer'}}><a href={'https://'+params.value} target="_blank">{params.value}</a></div>
     ) },
     {
       field: "Action",
@@ -177,7 +177,7 @@ const Portfolio = () => {
          
           
           <DataGrid
-            style={{ height: 450, width: "100%" }}
+            style={{ height: 450, width: "100%"}}
             autoHeight
             aria-label="caption table"
             className="UpcomingItemsTable"
