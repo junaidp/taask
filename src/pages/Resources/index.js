@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Resources.css";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import ImageIcon from '@mui/icons-material/Image';
 // Mui imports
 import {
   Box,
@@ -307,7 +309,8 @@ const Resources = () => {
                           },
                           startAdornment: (
                             <IconButton component="span">
-                              <AttachFileIcon/>
+                              {item?.filename?.includes('.pdf')?
+                               <PictureAsPdfIcon/>:<ImageIcon/>}
                             </IconButton>
                           ),
                         }}
