@@ -1,0 +1,84 @@
+.integrations {
+  padding-right: 10px;
+}
+.integrations .topHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.integrations .topHead span {
+  margin-left: 24px !important;
+  display: inline-block;
+  cursor: pointer;
+}
+.integrations .topHead .MuiOutlinedInput-root {
+  padding: 10px 16px !important;
+  width: 294px !important;
+}
+.integrationsCard .MuiCard-root {
+  padding: 40px;
+  text-align: center;
+  background: #ffffff !important;
+  box-shadow: 4px 2px 15px rgba(55, 63, 65, 0.06) !important;
+  border-radius: 10px !important;
+  cursor: pointer;
+}
+
+.integrationsCard h4 {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #214b5a;
+}
+.integrationsCard .imgHead {
+  width: 100%;
+  height: 80px !important;
+}
+.integrationsCard .imgHead img {
+  object-fit: contain !important;
+  width: 50%;
+  height: 100%;
+}
+.integrationsCard .MuiCardContent-root:last-child {
+  padding: 0 !important;
+  padding-top: 24px !important;
+}
+
+.selectCustomerMenu .MuiMenu-paper {
+  padding: 24px !important;
+}
+.selectCustomerMenu .MuiMenu-paper h3 {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  color: #1c3035;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #3a606e;
+  margin-bottom: 16px !important;
+}
+
+.selectCustomerMenu .MuiSelect-icon {
+  display: none !important;
+}
+.selectCustomerMenu .MuiSelect-select {
+  background: #ffffff !important;
+  box-shadow: 4px 2px 15px rgba(58, 96, 110, 0.06) !important;
+  border-radius: 8px !important;
+  border: unset !important;
+  padding: 10px 16px !important;
+}
+.selectCustomerMenu .MuiFormControl-root{
+  width: 100% !important;
+}
+.selectCustomerMenu .MuiCheckbox-root{
+  padding: 0 !important;
+  border: unset !important;
+  margin-right: 16px !important;
+}
+.selectCustomerMenu .avatar{
+  margin-right: 8px !important;
+}
+/* Mui-focused */

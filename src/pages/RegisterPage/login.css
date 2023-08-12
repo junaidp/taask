@@ -1,0 +1,65 @@
+.loginPage {
+  height: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loginPage .formHead {
+  width: 500px;
+  max-width: 500px;
+  padding: 30px;
+  background: #ffffff;
+  box-shadow: 0px 4px 15px rgba(58, 96, 110, 0.15);
+  border-radius: 16px;
+}
+.loginPage .logoHead {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px !important;
+}
+.loginPage .formHead .logo {
+  width: 70px;
+  cursor: pointer;
+  margin: 0 auto;
+}
+.loginPage .formHead .inputHead {
+  margin-bottom: 20px !important;
+  width: 100% !important;
+}
+.loginPage .btn {
+  height: 40px !important;
+  width: 100% !important;
+  background: linear-gradient(180deg, #2e6073 0%, #214b5a 100%) !important;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.12) !important;
+  border-radius: 8px !important;
+  font-style: normal !important;
+  font-size: 16px !important;
+  text-align: center !important;
+  color: #ffffff !important;
+  text-transform: capitalize !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.01em !important;
+  margin-top: 20px !important;
+}
+.loginPage p {
+  font-style: normal !important;
+  font-size: 16px !important;
+  text-align: center !important;
+  font-weight: 400 !important;
+  margin-top: 10px !important;
+}
+.loginPage a {
+  font-style: normal !important;
+  font-size: 16px !important;
+  text-align: center !important;
+  font-weight: 400 !important;
+  color: #214b5a !important;
+  margin-top: 10px !important;
+  text-decoration: none !important;
+}
+
+.loginPage .MuiIconButton-root{
+  padding: 0 !important;
+}

@@ -1,0 +1,401 @@
+.customerTasks {
+  background: #ffffff;
+  box-shadow: 4px 2px 15px rgba(55, 63, 65, 0.06);
+  border-radius: 10px;
+  padding: 24px;
+}
+.customerTaskPage {
+  padding-right: 10px;
+}
+.customerTasks .topHead {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+}
+.customerTasks .topHead span {
+  margin-left: 24px !important;
+  cursor: pointer;
+}
+.customerTasks .AssignsImg {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(4px 4px 15px rgba(0, 0, 0, 0.05));
+  border-radius: 50px;
+  margin-right: 8px !important;
+  display: inline-block;
+}
+.para {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  text-transform: capitalize;
+  color: #1c3035;
+  padding: 20px 0 10px;
+  text-align: center;
+  border-bottom: 1px solid #3a606e;
+}
+.customerTasks .CustomerNameHead {
+  display: flex;
+  align-items: center;
+}
+.CustomerNameHead img {
+  width: 32px;
+  height: 32px;
+  display: block;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 8px !important;
+}
+.AssignsImg {
+  width: 32px;
+  height: 32px;
+  display: block;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 8px !important;
+}
+.customerTasks .filterImg {
+  margin-left: 8px !important;
+}
+.customerTasks .MuiSelect-select {
+  padding: 0 !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  letter-spacing: 0.01em !important;
+  text-transform: capitalize !important;
+  color: #152428 !important;
+}
+.customerTasks .MuiSelect-select img {
+  width: 32px;
+  height: 32px;
+}
+.customerTasks .MuiInputBase-root {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+.customerTasks .MuiOutlinedInput-notchedOutline {
+  border: unset !important;
+}
+.customerTasks .DeleteIcon,
+.customerTaskModel .DeleteIcon,
+.RemainderIcon {
+  margin-left: 14px !important;
+  cursor: pointer;
+}
+.customerTasks .customerTaskBtn {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.customerTasks .customerTaskBtn img {
+  margin-right: 8px !important;
+}
+/* model */
+
+.customerTaskModel .MuiPaper-root {
+  max-width: 834px !important;
+  width: 834px !important;
+  background: #ffffff;
+  box-shadow: 4px 2px 15px rgba(55, 63, 65, 0.06) !important;
+  border-radius: 10px !important;
+  padding: 30px 36px !important;
+}
+.customerTaskModel .MuiDialogContent-root {
+  padding: 0 8px 0 0 !important;
+}
+.customerTaskModel .titleHead {
+  border-bottom: 1px solid #3a606e !important;
+  text-align: center;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  font-size: 18px !important;
+  text-transform: capitalize;
+  color: #1c3035;
+  padding: 0 0 14px !important;
+}
+.customerTaskModel .topHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid #ebebeb;
+}
+.customerTaskModel .topHead h6 {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  color: #3a606e;
+}
+.customerTaskModel .topHead h6 span {
+  font-weight: 600;
+  color: #214b5a;
+  margin-left: 16px !important;
+  display: inline-block;
+}
+
+.customerTasks .MuiBadge-root {
+  position: unset !important;
+}
+.customerTasks .MuiBadge-badge,
+.customerTaskModel .MuiBadge-badge {
+  width: 16px !important;
+  min-width: 16px !important;
+  height: 20px !important;
+  border-radius: 4px !important;
+  padding: 0 !important;
+  transform: unset !important;
+  position: unset !important;
+  margin-left: 4px !important;
+  cursor: pointer;
+}
+
+.customerTaskBtn .MuiBadge-badge {
+  width: 10px !important;
+  min-width: 10px !important;
+  height: 14px !important;
+  margin-right: 8px !important;
+  transform: translateY(-1px) !important;
+}
+
+.customerTasks .toDoBadge .MuiBadge-badge,
+.customerTaskModel .toDoBadge .MuiBadge-badge {
+  background: #ff0000 !important;
+}
+.customerTasks .doingBadge .MuiBadge-badge,
+.customerTaskModel .doingBadge .MuiBadge-badge {
+  background: #ffbf00 !important;
+}
+.customerTasks .doneBadge .MuiBadge-badge,
+.customerTaskModel .doneBadge .MuiBadge-badge {
+  background: #00d936 !important;
+}
+
+.customerTaskModel .actionsHead {
+  display: flex;
+  align-items: center;
+}
+.customerTaskModel .actionsHead img {
+  cursor: pointer !important;
+}
+.customerTaskModel .inputHead {
+  margin-bottom: 16px !important;
+}
+.customerTaskModel .inputHead label {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #214b5a;
+  margin-bottom: 8px !important;
+}
+.customerTaskModel .inputHead img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+.customerTaskModel .inputHead .MuiButtonBase-root {
+  padding: 0 !important;
+}
+.customerTaskModel .inputHead textarea {
+  height: 80px;
+  background: #ffffff;
+  border: 1px solid #3a606e;
+  box-shadow: 4px 2px 15px rgba(58, 96, 110, 0.06);
+  border-radius: 8px;
+  padding: 16px;
+  resize: none;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #3a606e;
+  outline: none;
+}
+.customerTaskModel .inputHead textarea::placeholder {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #3a606e;
+}
+.customerTaskModel .SubtaskHead label,
+.customerTaskModel .AttachmentHead label {
+  color: #152428 !important;
+}
+.customerTaskModel .AttachmentHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+.customerTaskModel .AttachmentHead .inputHead{
+  width: 48% !important;
+}
+.customerTaskModel .SubtaskHead h5 {
+  display: flex;
+  align-items: center;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #214b5a;
+  margin-bottom: 16px !important;
+}
+.customerTaskModel .SubtaskHead h5 img {
+  cursor: pointer;
+  margin-right: 16px !important;
+}
+.customerTaskModel .uploadFileHead {
+  position: relative;
+}
+.customerTaskModel .uploadFileHead .uploadFileBtn {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  height: 100% !important;
+  max-width: 120px !important;
+  width: 120px !important;
+  background: linear-gradient(180deg, #2e6073 0%, #214b5a 100%) !important;
+  border-radius: 8px !important;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  text-align: center;
+  color: #ffffff !important;
+}
+
+.customerTaskModel .SaveBtn,
+.customerTasks .btn,
+.reminderBtn {
+  height: 40px !important;
+  max-width: 354px !important;
+  width: 354px !important;
+  background: linear-gradient(180deg, #2e6073 0%, #214b5a 100%) !important;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.12) !important;
+  border-radius: 8px !important;
+  font-style: normal !important;
+  font-size: 16px !important;
+  text-align: center !important;
+  color: #ffffff !important;
+  text-transform: capitalize !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+}
+.reminderBtn {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin-top: 20px !important;
+}
+.customerTasks .btn {
+  width: 180px !important;
+  font-size: 12px !important;
+}
+.customerTasks .btn img {
+  margin-right: 8px !important;
+  filter: saturate(0%) brightness(350%) !important;
+}
+.customerTasks .AssignsSelect .MuiSelect-icon {
+  display: none !important;
+}
+.customerTasks .AssignsIcon {
+  margin-left: 10px !important;
+  color: #3a606e !important;
+}
+.customerTasks .MuiSelect-icon {
+  color: #3a606e !important;
+}
+
+.customerTasks .MuiDataGrid-footerContainer {
+  display: none !important;
+}
+.selectCustomer {
+  max-height: 260px !important;
+  overflow: auto !important;
+}
+.customertaskDatePicker .MuiOutlinedInput-root {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: unset !important;
+  padding: 0 !important;
+}
+.ArchiveModel .MuiPaper-root {
+  max-width: 400px !important;
+  width: 400px !important;
+
+  background: #ffffff;
+  box-shadow: 4px 2px 15px rgba(55, 63, 65, 0.06) !important;
+  border-radius: 10px !important;
+  padding: 20px !important;
+}
+.ArchiveModel .titleHead,
+.reminderdateAndTime h6 {
+  border-bottom: 1px solid #3a606e !important;
+  text-align: center;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  font-size: 18px !important;
+  text-transform: capitalize;
+  color: #1c3035;
+  padding: 0 0 4px !important;
+}
+.ArchiveModel .MuiDialogContent-root {
+  padding: 0 !important;
+}
+.ArchiveModel .ArchiveContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0 !important;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #3a606e36 !important;
+}
+.ArchiveModel .ArchiveContent h4 {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: capitalize;
+  color: #1c3035;
+}
+.ArchiveModel .ArchiveContent p {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  color: #1c3035e2;
+}
+.ReminderDatePicker .css-epd502 {
+  width: 100% !important;
+}
+.ReminderDatePicker .MuiCalendarPicker-root {
+  width: 100% !important;
+}
+
+.ReminderModel .remainderHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-top: 1px solid #3a606e;
+}
+.ReminderModel .remainderHead h6 {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  color: #214b5a;
+}
+.ReminderModel .remainderHead h6 img {
+  margin-right: 8px !important;
+  transform: translateY(3px);
+  cursor: pointer;
+}
+.reminderdateAndTime .inputGroup {
+  padding: 16px 0 !important;
+}
+.MuiDataGrid-virtualScrollerContent{
+  max-height: 640px !important;
+  height: 640px !important;
+  padding-bottom: 200px !important;
+}

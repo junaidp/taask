@@ -1,0 +1,337 @@
+.projects {
+  background: #ffffff;
+  box-shadow: 4px 2px 15px rgba(55, 63, 65, 0.06);
+  border-radius: 10px;
+  padding: 24px;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+.project {
+  padding-right: 10px;
+}
+.projects .topHead {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center;
+}
+.projects .topHead span {
+  margin-left: 24px !important;
+  cursor: pointer;
+}
+.projects .AssignsImg {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(4px 4px 15px rgba(0, 0, 0, 0.05));
+  border-radius: 50px;
+  margin-right: 8px !important;
+  display: inline-block;
+}
+.para {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  text-transform: capitalize;
+  color: #1c3035;
+  padding: 20px 0 10px;
+  text-align: center;
+  border-bottom: 1px solid #3a606e;
+}
+.projects .CustomerNameHead {
+  display: flex;
+  align-items: center;
+}
+.CustomerNameHead img {
+  width: 32px;
+  height: 32px;
+  display: block;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 8px !important;
+}
+.AssignsImg {
+  width: 32px;
+  height: 32px;
+  display: block;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 8px !important;
+}
+.projects .filterImg {
+  margin-left: 8px !important;
+}
+.projects .MuiSelect-select {
+  padding: 0 !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  letter-spacing: 0.01em !important;
+  text-transform: capitalize !important;
+  color: #152428 !important;
+}
+.projects .MuiSelect-select img {
+  width: 32px;
+  height: 32px;
+}
+.projects .MuiInputBase-root {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+.projects .MuiOutlinedInput-notchedOutline {
+  border: unset !important;
+}
+.projects .DeleteIcon,
+.ProjectTaskModel .DeleteIcon {
+  margin-left: 14px !important;
+}
+.projects .customerTaskBtn {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.projects .customerTaskBtn img {
+  margin-right: 8px !important;
+}
+/* model */
+
+.ProjectTaskModel .MuiPaper-root {
+  max-width: 834px !important;
+  width: 834px !important;
+  background: #ffffff;
+  box-shadow: 4px 2px 15px rgba(55, 63, 65, 0.06) !important;
+  border-radius: 10px !important;
+  padding: 30px 36px !important;
+}
+.ProjectTaskModel .MuiDialogContent-root {
+  padding: 0 8px 0 0 !important;
+}
+.ProjectTaskModel .titleHead {
+  border-bottom: 1px solid #3a606e !important;
+  text-align: center;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  font-size: 18px !important;
+  text-transform: capitalize;
+  color: #1c3035;
+  padding: 0 0 16px !important;
+}
+.ProjectTaskModel .inputHead {
+  margin-bottom: 16px !important;
+}
+.ProjectTaskModel .inputHead label {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #214b5a;
+  margin-bottom: 8px !important;
+}
+.ProjectTaskModel .inputHead img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+.ProjectTaskModel .inputHead .MuiButtonBase-root {
+  padding: 0 !important;
+}
+.ProjectTaskModel .inputHead textarea {
+  height: 80px;
+  background: #ffffff;
+  border: 1px solid #3a606e;
+  box-shadow: 4px 2px 15px rgba(58, 96, 110, 0.06);
+  border-radius: 8px;
+  padding: 16px;
+  resize: none;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #3a606e;
+  outline: none;
+}
+.ProjectTaskModel .inputHead textarea::placeholder {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #3a606e;
+}
+.ProjectTaskModel .SubtaskHead label,
+.ProjectTaskModel .AttachmentHead label {
+  color: #152428 !important;
+}
+.ProjectTaskModel .AttachmentHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+.ProjectTaskModel .AttachmentHead .inputHead {
+  width: 48%;
+}
+.ProjectTaskModel .SubtaskHead h5 {
+  display: flex;
+  align-items: center;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #214b5a;
+  margin-bottom: 16px !important;
+}
+.ProjectTaskModel .SubtaskHead h5 img {
+  cursor: pointer;
+  margin-right: 16px !important;
+}
+.ProjectTaskModel .uploadFileHead {
+  position: relative;
+}
+.ProjectTaskModel .uploadFileHead .uploadFileBtn {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  max-width: 120px !important;
+  width: 120px !important;
+  background: linear-gradient(180deg, #2e6073 0%, #214b5a 100%) !important;
+  border-radius: 8px !important;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  text-align: center;
+  color: #ffffff !important;
+  padding: 10.5px 16px !important;
+  height: unset !important;
+}
+
+.SaveBtn,
+.projects .btn,
+.ProjectTaskModel .btn  {
+  height: 40px !important;
+  max-width: 65% !important;
+  width: 65% !important;
+  background: linear-gradient(180deg, #2e6073 0%, #214b5a 100%) !important;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.12) !important;
+  border-radius: 8px !important;
+  font-style: normal !important;
+  font-size: 16px !important;
+  text-align: center !important;
+  color: #ffffff !important;
+  text-transform: capitalize !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+}
+.projects .btn,
+.ProjectTaskModel .btn  {
+  width: 240px !important;
+  font-size: 12px !important;
+}
+.ProjectTaskModel .btn{
+  margin-top: 10px !important;
+}
+.projects .btn img,
+.ProjectTaskModel .btn img {
+  margin-right: 8px !important;
+  filter: saturate(0%) brightness(350%) !important;
+}
+.projects .AssignsSelect .MuiSelect-icon {
+  display: none !important;
+}
+
+.projects .AssignsIcon {
+  margin-left: 10px !important;
+  color: #3a606e !important;
+}
+.projects .MuiSelect-icon {
+  color: #3a606e !important;
+}
+
+.projects .MuiDataGrid-footerContainer {
+  display: none !important;
+}
+.projectModel .MuiPaper-root {
+  max-width: 834px !important;
+  width: 834px !important;
+  background: #ffffff !important;
+  box-shadow: 4px 2px 15px rgba(55, 63, 65, 0.06) !important;
+  border-radius: 10px !important;
+  padding: 30px 36px !important;
+}
+.projectModel label {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: #214b5a;
+  margin-bottom: 8px !important;
+}
+.projectModel textarea {
+  width: 100%;
+  height: 80px;
+  background: #ffffff;
+  border: 1px solid #3a606e;
+  box-shadow: 4px 2px 15px rgba(58, 96, 110, 0.06);
+  border-radius: 8px;
+  resize: none;
+  padding: 16px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #3a606e;
+  outline: none;
+}
+.projectModel textarea::placeholder {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #3a606e;
+}
+.projectModel .MuiDialogContent-root {
+  padding: 0 !important;
+}
+.projectModel .titleHead {
+  border-bottom: 1px solid #3a606e !important;
+  text-align: center;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  font-size: 18px !important;
+  text-transform: capitalize;
+  color: #1c3035;
+  padding: 0 0 16px !important;
+  position: relative;
+}
+.projectModel .titleHead img {
+  position: absolute;
+  right: 0;
+  top: 20%;
+  cursor: pointer;
+}
+.projectModel .topHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 27px 0;
+  border-bottom: 1px solid #ebebeb;
+}
+.projectModel .topHead h6 {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  color: #3a606e;
+}
+.projectModel .topHead h6 span {
+  font-weight: 600;
+  color: #214b5a;
+  margin-left: 16px !important;
+  display: inline-block;
+}
+.projectsMain {
+  width: 100% !important;
+  overflow-x: scroll !important;
+}
+.projectTable {
+  min-width: 1100px !important;
+  max-width: 100% !important;
+}

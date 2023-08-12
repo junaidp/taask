@@ -1,0 +1,52 @@
+.portfolioTable .userprofile {
+  display: flex;
+  align-items: center;
+}
+.portfolio {
+  padding-right: 10px !important;
+}
+.portfolioCout {
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  box-shadow: 0px 4px 15px rgba(58, 96, 110, 0.15) !important;
+  padding: 24px;
+}
+.portfolioTable .userprofile span {
+  width: 32px;
+  height: 32px;
+  display: block;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 8px !important;
+}
+.portfolioTable a {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: #214b5a;
+}
+.portfolioTable .userprofile span img {
+  width: 100%;
+  height: 100%;
+}
+.portfolioTable .filterImg {
+  margin-left: 10px !important;
+  display: inline-block;
+  cursor: pointer;
+}
+.portfolioCout .topHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.portfolioCout .topHead span {
+  margin-left: 24px !important;
+  display: inline-block;
+  cursor: pointer;
+}
+.portfolioCout .MuiTableRow-root .MuiTableCell-root:first-child {
+    max-width: 50px !important;
+    width: 50px !important;
+  }
