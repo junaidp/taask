@@ -1,0 +1,169 @@
+.calender {
+  padding: 24px !important;
+  background: #ffffff !important;
+  box-shadow: 0px 4px 15px rgba(58, 96, 110, 0.15) !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  margin-bottom: 16px !important;
+}
+.calender .css-epd502 {
+  width: 100% !important;
+  max-height: fit-content !important;
+}
+.calender .css-169iwlq-MuiCalendarPicker-root {
+  max-height: fit-content !important;
+}
+.calender .css-169iwlq-MuiCalendarPicker-root {
+  width: 100% !important;
+}
+.calender .css-nk89i7-MuiPickersCalendarHeader-root {
+  padding: 17px 0 !important;
+  position: relative !important;
+  max-height: fit-content !important;
+  min-height: fit-content !important;
+  border-bottom: 1px solid #3a606e !important;
+}
+.calender .css-6t5f1e-MuiDayPicker-monthContainer {
+  border-bottom: 1px solid #3a606e !important;
+}
+.calender .css-uqhnbz-MuiTypography-root-MuiDayPicker-weekDayLabel {
+  font-style: normal !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  color: #152428 !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+.calender .css-1sgabab-MuiButtonBase-root-MuiPickersDay-root {
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-size: 16px !important;
+  align-items: center !important;
+  text-align: center !important;
+  color: #152428 !important;
+  border-radius: 4px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+.calender .css-1sgabab-MuiButtonBase-root-MuiPickersDay-root.Mui-selected {
+  background: #a0ecd0 !important;
+}
+.calender .css-1xpvoil-MuiButtonBase-root-MuiPickersDay-root {
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-size: 16px !important;
+  height: 24px !important;
+  color: #3a606e !important;
+  width: 24px !important;
+}
+.calender .css-qklzlb-MuiDayPicker-header {
+  justify-content: space-between !important;
+  padding: 8px 0 !important;
+}
+.calender .css-ghi3gg-MuiDayPicker-weekContainer {
+  justify-content: space-between !important;
+}
+.calender .css-dwefha-MuiPickersCalendarHeader-labelContainer {
+  text-align: center !important;
+  width: 70% !important;
+  position: relative !important;
+  z-index: 1 !important;
+  max-width: 70% !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 0 auto !important;
+  transform: translateY(6px) !important;
+}
+.calender .css-31ca4x-MuiPickersFadeTransitionGroup-root {
+  width: 70% !important;
+}
+.calender .css-9reuh9-MuiPickersArrowSwitcher-root {
+  position: absolute !important;
+  width: 100% !important;
+  left: 0 !important;
+  top: 30% !important;
+  justify-content: space-between !important;
+}
+.calender .css-dwefha-MuiPickersCalendarHeader-labelContainer {
+  width: 100% !important;
+}
+.calender
+  .css-12mkn7b-MuiButtonBase-root-MuiIconButton-root-MuiPickersCalendarHeader-switchViewButton {
+  display: none !important;
+}
+.calender .css-1yt7806-MuiDayPicker-slideTransition {
+  min-height: unset !important;
+}
+.css-sf5t6v-PrivatePickersSlideTransition-root-MuiDayPicker-slideTransition {
+  min-height: 218px !important;
+}
+.calender .css-ghi3gg-MuiDayPicker-weekContainer {
+  padding: 6px 0 !important;
+}
+.calender .css-xelq0e-MuiPickerStaticWrapper-content {
+  min-width: 100% !important;
+}
+.calender .css-bsllzc-MuiSvgIcon-root-MuiPickersArrowSwitcher-button {
+  color: #3a606e !important;
+  width: 35px !important;
+  height: 35px !important;
+  cursor: pointer !important;
+}
+.calender .eventHead {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding: 10px 0 6px !important;
+}
+.calender .eventHead > span {
+  display: flex !important;
+  align-items: center !important;
+  position: relative !important;
+}
+.calender .eventHead > span svg {
+  width: 35px !important;
+  cursor: pointer !important;
+  height: 35px !important;
+  color: #3a606e !important;
+}
+.calender .eventHead span:nth-child(1) svg {
+  transform: translateX(-10px) !important;
+}
+.calender .eventHead span:nth-child(3) svg {
+  transform: translateX(10px) !important;
+}
+.calender .eventDetail {
+  display: flex !important;
+  align-items: center !important;
+  flex: 1 !important;
+}
+
+.calender .eventDetail span {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #3a606e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-right: 16px !important;
+  cursor: pointer;
+}
+.calender .eventDetail span h6 {
+  margin: 0;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  color: #ffffff;
+}
+.calender .eventDetail span p {
+  margin: 0;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  color: #ffffff;
+  opacity: 0.7;
+}

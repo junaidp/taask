@@ -1,0 +1,145 @@
+/* .customPagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0 0;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+.customPagination .entries span {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  color: #3a606e;
+}
+.customPagination .PaginationHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.customPagination .paginationBox {
+  width: fit-content;
+}
+.customPagination .addbutton{
+  display: flex;
+  align-items: center;
+}
+.customPagination .addbutton img{
+  margin-right: 4px !important;
+  width: 12px !important;
+  cursor: pointer;
+  transform: translateY(1px);
+}
+.customPagination
+  .paginationBox
+  .MuiPagination-ul
+  li:first-child
+  .MuiPaginationItem-root {
+  border: unset !important;
+  width: 13px !important;
+  min-width: 13px !important;
+  margin: 0 !important;
+}
+
+.customPagination
+  .paginationBox
+  .MuiPagination-ul
+  li:last-child
+  .MuiPaginationItem-root {
+  border: unset !important;
+  width: 13px !important;
+  min-width: 13px !important;
+  margin: 0 !important;
+}
+.customPagination .selectPageBox {
+  width: 94px;
+  margin-left: 16px !important;
+}
+.customPagination .selectPageBox .MuiSelect-select {
+  padding: 0 16px !important;
+  height: 24px !important;
+  border: 1px solid #373f41 !important;
+}
+.customPagination .selectPageBox .MuiSelect-select.Mui-selected {
+  border: 1px solid #373f41 !important;
+}
+
+.customPagination .selectPageBox .MuiFormControl-root {
+  position: relative !important;
+}
+.customPagination .selectPageBox .MuiInputBase-root {
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  color: #152428 !important;
+}
+
+.customPagination .selectPageBox .MuiSelect-select .MuiOutlinedInput-input {
+  border-radius: 5px !important;
+  outline: none !important;
+}
+.customPagination .GotoBox {
+  width: 91px;
+  margin-left: 16px !important;
+}
+.customPagination .GotoBox .MuiFormGroup-root {
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: space-between !important;
+  align-items: center;
+}
+.customPagination .GotoBox .MuiInputBase-input {
+  width: 40px !important;
+  padding: 0 10px !important;
+  border: 1px solid #3a606e !important;
+  border-radius: 5px !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-size: 12px !important;
+  height: 24px !important;
+  color: #152428 !important;
+}
+.customPagination .GotoBox .MuiInputBase-input.Mui-selected {
+  background-color: white !important;
+}
+.css-zffor1-MuiButtonBase-root-MuiMenuItem-root.Mui-selected:hover {
+  background-color: transparent !important;
+}
+.css-zffor1-MuiButtonBase-root-MuiMenuItem-root.Mui-selected {
+  background-color: transparent !important;
+}
+.customPagination .GotoBox .label {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  color: #3a606e;
+}
+.customPagination .GotoBox input {
+  border: 1px solid #3a606e;
+  border-radius: 5px;
+  outline: none;
+  margin-left: 18px;
+}
+.customPagination .MuiOutlinedInput-root {
+  padding: 0 !important;
+  border: unset !important;
+} */
+
+.customPagination {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.paginationWrapper {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 60%;
+}
+
+.GotoBox {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 4px !important;
+}
