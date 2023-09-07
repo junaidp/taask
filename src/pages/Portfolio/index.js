@@ -6,34 +6,22 @@ import { useDispatch } from "react-redux";
 // Mui imports
 import {
   Box,
-  Table,
-  TableBody,
-  TableCell,
   TableContainer,
-  TableHead,
-  TableRow,
   Paper,
-  Skeleton,
   MenuItem,
-  Popover,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
   DialogContentText,
   Button,
-  FormGroup,
   TextField,
-  Typography,
+  InputAdornment,
 } from "@mui/material";
 
 // images
-import FilterImg from "../../assets/icons/filter.svg";
 import SearchImg from "../../assets/icons/search.svg";
-import FilterMenuImg from "../../assets/icons/filterMenu.svg";
 // component
 import Loader from "../../components/Loader";
-import CustomPagination from "../../components/Pagination";
 import moment from "moment";
 // APIs Services
 import { useNavigate } from "react-router-dom";
@@ -53,11 +41,16 @@ const Portfolio = () => {
   const [customer, setCustomer] = useState(null);
   const [isLoading, setisLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   const handleClose = () => {
     setOpen(false);
   };
+
+  const filteredCustomers = allCustomers.filter((customer) =>
+    customer.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const getAllCustomers = async () => {
     setisLoading(true);
@@ -123,7 +116,24 @@ const Portfolio = () => {
           style={{ cursor: "pointer" }}
           onClick={() => navigate("/customer/" + params.value)}
         >
-          {allCustomers.findIndex((x) => x.serialNumber == params.value) + 1}
+          {allCustomers.findIndex((x) => x.serialNumber === params.value) + 1}
+        </div>
+      ),
+    },
+    {
+      field: "image",
+      headerName: "Image",
+      width: 70,
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/customer/" + params.value)}
+        >
+          <img
+            src={`data:${params.value.contentType};base64,${params.value.data}`}
+            alt="img"
+            style={{ width: "30px", height: "30px", borderRadius: "50%" }}
+          />
         </div>
       ),
     },
@@ -195,7 +205,7 @@ const Portfolio = () => {
       flex: 1,
       renderCell: (params) => (
         <div style={{ cursor: "pointer" }}>
-          <a href={"https://" + params.value} target="_blank">
+          <a href={"https://" + params.value} target="_blank" rel="noreferrer">
             {params.value}
           </a>
         </div>
@@ -211,7 +221,7 @@ const Portfolio = () => {
         // <React.Fragment className="actionHead">
         <MenuItem>
           <DeleteIcon
-            sx={{ mr: 2, color: "red" }}
+            sx={{ mr: 2, color: "red", textAlign: "center" }}
             onClick={() => {
               setOpen(true);
               console.log(row);
@@ -221,7 +231,7 @@ const Portfolio = () => {
         </MenuItem>
         // </React.Fragment>
       ),
-      align: "right",
+      align: "left",
     },
   ];
 
@@ -232,27 +242,47 @@ const Portfolio = () => {
           <DialogTitle>Confirm Delete</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Are you sure you want to delete this customer?
+              Are you sure you want to delete this customer? All data related to
+              the customer will also be deleted.
             </DialogContentText>
           </DialogContent>
-          {/* <DialogActions> */}
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={deleteCustomer} color="secondary" autoFocus>
-            Delete
-          </Button>
-          {/* </DialogActions> */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button onClick={handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={deleteCustomer} color="secondary" autoFocus>
+              Delete
+            </Button>
+          </div>
         </Dialog>
       </Box>
       <Box className="portfolio">
         <TableContainer component={Paper} className="portfolioCout">
+          <TextField
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search Customers"
+            className="searchInput"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment>
+                  <img src={SearchImg} alt="Search Icon" />
+                </InputAdornment>
+              ),
+            }}
+            style={{ marginBottom: "16px" }} // Add some spacing
+          />
           <DataGrid
-            style={{ height: 450, width: "100%" }}
+            style={{ height: 550, width: "100%" }}
             autoHeight
             aria-label="caption table"
             className="UpcomingItemsTable"
-            rows={allCustomers}
+            rows={filteredCustomers}
             columns={columns}
             getRowId={(row) => row.serialNumber}
             initialState={{

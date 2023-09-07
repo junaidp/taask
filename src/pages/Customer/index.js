@@ -69,7 +69,7 @@ const Customer = () => {
   const [mainContacts, setMainContacts] = useState(false);
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
   const [uplodedFiles, setUploadedFiles] = useState([]);
   const [Links, setLinks] = useState([]);
   const [activeLink, setActiveLink] = useState("");
@@ -80,24 +80,18 @@ const Customer = () => {
   const [index, setIndex] = useState(null);
 
   const handleAttachmentSubmit = () => {
-    debugger;
     if (index != null) {
       setUploadedFiles((prevFiles) => {
         const updatedFiles = [...prevFiles];
-        updatedFiles[index].file = file; // Update the specific element in the array
+        updatedFiles[index] = files[0]; // Update the specific element in the array
         return updatedFiles;
       });
-      setFile(null);
+      setFiles([]);
       setOpen1(false);
       return;
     }
-    setUploadedFiles([
-      ...uplodedFiles,
-      {
-        file: file,
-      },
-    ]);
-    setFile(null);
+    setUploadedFiles([...uplodedFiles, ...files]);
+    setFiles([]);
     setOpen1(false);
   };
   const handleCloseLink = () => {
@@ -133,7 +127,7 @@ const Customer = () => {
   const editFile = (index) => {
     setIndex(index);
     setOpen1(true);
-    setFile(uplodedFiles[index]);
+    // setFile(uplodedFiles[index]);
   };
 
   let [isEditLink, setIsEditLink] = useState(false);
@@ -168,13 +162,25 @@ const Customer = () => {
     });
   };
 
+  const verifyFileType = (files) => {
+    files.forEach((file) => {
+      if (!file.type.startsWith("application/pdf")) {
+        return false;
+      }
+    });
+    return true;
+  };
+
   console.log(Links);
   const onUpload = (e) => {
-    const file = e.target.files[0];
-    debugger;
-    if (file && file.type.startsWith("application/pdf")) {
-      setFile(file);
-      e.target.value = "";
+    let fileList = e.target.files;
+    //convert object to array
+    fileList = Object.values(fileList).map((file) => {
+      return file;
+    });
+    if (fileList.length > 0 && verifyFileType(fileList)) {
+      setFiles(fileList);
+      e.target.files = null;
     } else {
       e.target.value = "";
       toast.error("Only pdf file is allowed", {
@@ -183,8 +189,9 @@ const Customer = () => {
       return;
     }
   };
+
   const resetData = () => {
-    setFile(null);
+    setFiles([]);
     setImage(null);
     setPhoto(null);
     setShowDeleteIcon(false);
@@ -217,8 +224,8 @@ const Customer = () => {
     customer.contacts = customer.contacts[0];
     const data = new FormData();
     if (uplodedFiles.length > 0) {
-      for (const files of uplodedFiles) {
-        data.append("file", files.file);
+      for (const file of uplodedFiles) {
+        data.append("file", file);
       }
     } else {
       setShowPopup(true);
@@ -294,11 +301,11 @@ const Customer = () => {
   };
   const handleCloseAttachments = () => {
     setOpen1(false);
-    setFile();
+    setFiles([]);
   };
   const handleClickOpenAttachmentsModel = () => {
     // if (uplodedFiles?.length < 3) {
-    setFile(null);
+    setFiles([]);
     fileRef.current.value = null;
     setIndex(null);
     setOpen1(true);
@@ -782,13 +789,13 @@ const Customer = () => {
                             component="span"
                             style={{ width: "10px" }}
                           >
-                            {item.file?.name.includes(".pdf") ? (
+                            {item.name.includes(".pdf") ? (
                               <PictureAsPdfIcon />
                             ) : (
                               <ImageIcon />
                             )}
                           </IconButton>
-                          <p>{item.file?.name}</p>
+                          <p>{item.name}</p>
                           <IconButton
                             sx={{
                               color: "blue",
@@ -842,6 +849,7 @@ const Customer = () => {
                               style={{ paddingLeft: "5px" }}
                               href={item.link}
                               target="_blank"
+                              rel="noreferrer"
                             >
                               <p>{item.link}</p>
                             </a>
@@ -906,8 +914,12 @@ const Customer = () => {
                   <Box className="uploadFileHead">
                     <TextField
                       fullWidth
-                      placeholder="Lorem Ipsum"
-                      value={file?.name}
+                      placeholder="No Files Selected"
+                      value={
+                        !!!index || files.length > 0
+                          ? files?.map((item) => item.name).join(", ") || ""
+                          : uplodedFiles[index]?.name || ""
+                      }
                       id="file"
                       ref={fileRef}
                     />
@@ -917,7 +929,12 @@ const Customer = () => {
                       className="uploadFileBtn"
                     >
                       Browse
-                      <input hidden multiple type="file" onChange={onUpload} />
+                      <input
+                        hidden
+                        multiple={!!!index}
+                        type="file"
+                        onChange={onUpload}
+                      />
                     </Button>
                   </Box>
                 </FormGroup>
