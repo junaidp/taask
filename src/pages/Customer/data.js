@@ -202,28 +202,68 @@ const countries = [
 
 const customerOption = [
   {
-    value: "PreBoarding",
-    label: "Pre-Boarding",
+    value: "Prospect",
+    label: "Prospect",
   },
   {
-    value: "Onboaring",
-    label: "Onboaring",
+    value: "Qualification",
+    label: "Qualification",
   },
   {
-    value: "Contract",
-    label: "Contract",
+    value: "DisqualifiedProspect",
+    label: "Disqualified Prospect",
   },
   {
-    value: "Renewal",
-    label: "Renewal",
+    value: "QualifiedProspect",
+    label: "Qualified Prospect",
   },
   {
-    value: "Adoption",
-    label: "Adoption",
+    value: "ProposalDevelopment/Presentation",
+    label: "Proposal Development/Presentation",
   },
   {
-    value: "Growth",
-    label: "Growth",
+    value: "LostDeal",
+    label: "Lost Deal",
+  },
+  {
+    value: "WonDeal",
+    label: "Won Deal",
+  },
+  {
+    value: "Contractsigning",
+    label: "Contract signing",
+  },
+  {
+    value: "LostDeal",
+    label: "Lost Deal",
+  },
+  {
+    value: "Contracted ",
+    label: "Contracted ",
+  },
+  {
+    value: "Preboarding ",
+    label: "Pre-boarding ",
+  },
+  {
+    value: "Onboarding ",
+    label: "On-boarding ",
+  },
+  {
+    value: "Live ",
+    label: "Live ",
+  },
+  {
+    value: "Renewal ",
+    label: "Renewal ",
+  },
+  {
+    value: "Adoption ",
+    label: "Adoption ",
+  },
+  {
+    value: "Growth ",
+    label: "Growth ",
   },
 ];
 

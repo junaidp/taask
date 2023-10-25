@@ -32,20 +32,60 @@ const categoryData = [
 
 const stageData = [
   {
-    category: "Contract",
+    category: "Prospect",
     customers: 10,
   },
   {
-    category: "Onboarding",
+    category: "Qualification",
     customers: 2,
   },
   {
-    category: "Adoption",
+    category: "Disqualified Prospect",
     customers: 1,
   },
   {
-    category: "Renewal",
+    category: "Qualified Prospect",
     customers: 5,
+  },
+  {
+    category: "Proposal Development/Presentation",
+    customers: 50,
+  },
+  {
+    category: "Lost Deal",
+    customers: 3,
+  },
+  {
+    category: "Won Deal",
+    customers: 4,
+  },
+  {
+    category: "Contract signing",
+    customers: 6,
+  },
+  {
+    category: "Contracted",
+    customers: 50,
+  },
+  {
+    category: "Pre-boarding",
+    customers: 50,
+  },
+  {
+    category: "On-boarding",
+    customers: 50,
+  },
+  {
+    category: "Live",
+    customers: 50,
+  },
+  {
+    category: "Renewal",
+    customers: 50,
+  },
+  {
+    category: "Adoption",
+    customers: 50,
   },
   {
     category: "Growth",
@@ -163,14 +203,16 @@ const Snapshots = () => {
   const [allSnapShot, setAllSnapShot] = useState([]);
   const [loading, setLoading] = useState(true);
   const getSnapShot = async () => {
-    await CustomerServices.getSnapShot().then((res) => {
-      if (res) {
-        setAllSnapShot(res);
+    await CustomerServices.getSnapShot()
+      .then((res) => {
+        if (res) {
+          setAllSnapShot(res);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
         setLoading(false);
-      }
-    }).catch((err) => {
-      setLoading(false);
-    });;
+      });
   };
   const customerSnapShotDTO = allSnapShot.customerSnapShotDTO;
   const projectSnapShotDTO = allSnapShot.projectSnapShotDTO;
@@ -263,37 +305,107 @@ const Snapshots = () => {
               <List className="snapList snapListTypeTwo">
                 <h6>Stage</h6>
                 <ListItem disablePadding>
-                  <p>Contract</p>
+                  <p>Prospect</p>
                   <Typography variant="h5">
-                    {customerSnapShotDTO?.contract}
+                    {customerSnapShotDTO?.Prospect}
                     <span>Customers</span>
                   </Typography>
                 </ListItem>
                 <ListItem disablePadding>
-                  <p>Onboarding</p>
+                  <p>Qualification</p>
                   <Typography variant="h5">
-                    {customerSnapShotDTO?.onboarding}
+                    {customerSnapShotDTO?.Qualification}
                     <span>Customers</span>
                   </Typography>
                 </ListItem>
                 <ListItem disablePadding>
-                  <p>Adoption</p>
+                  <p>Disqualified Prospect</p>
                   <Typography variant="h5">
-                    {customerSnapShotDTO?.adoption}
+                    {customerSnapShotDTO?.Disqualified}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Qualified Prospect</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.Qualified}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Proposal Development/Presentation</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.ProposalDevelopmentPresentation}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Lost Deal</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.LostDeal}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Won Deal</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.WonDeal}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Contract signing</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.Contractsigning}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Contracted </p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.Contracted}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Pre-boarding</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.Preboarding}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>On-boarding</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.Onboarding}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Live</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.Live}
                     <span>Customers</span>
                   </Typography>
                 </ListItem>
                 <ListItem disablePadding>
                   <p>Renewal</p>
                   <Typography variant="h5">
-                    {customerSnapShotDTO?.renewal}
+                    {customerSnapShotDTO?.Renewal}
+                    <span>Customers</span>
+                  </Typography>
+                </ListItem>
+                <ListItem disablePadding>
+                  <p>Adoption</p>
+                  <Typography variant="h5">
+                    {customerSnapShotDTO?.Adoption}
                     <span>Customers</span>
                   </Typography>
                 </ListItem>
                 <ListItem disablePadding>
                   <p>Growth</p>
                   <Typography variant="h5">
-                    {customerSnapShotDTO?.growth}
+                    {customerSnapShotDTO?.Growth}
                     <span>Customers</span>
                   </Typography>
                 </ListItem>
