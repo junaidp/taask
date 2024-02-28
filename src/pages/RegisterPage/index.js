@@ -137,9 +137,6 @@ const Register = () => {
             <Button className="btn" onClick={formik.handleSubmit}>
               Register
             </Button>
-            <p>
-              already have an account? <a href="/login">SignIn</a>
-            </p>
           </form>
           <ToastContainer />
           <Loader loaderValue={loading} />
