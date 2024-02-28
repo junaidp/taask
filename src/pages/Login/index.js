@@ -106,9 +106,6 @@ const Login = () => {
             <Button className="btn" onClick={formik.handleSubmit}>
               Sign in
             </Button>
-            <p>
-              not a member? <a href="/register">Signup</a>
-            </p>
           </form>
           <ToastContainer />
           <Loader loaderValue={loading} />
