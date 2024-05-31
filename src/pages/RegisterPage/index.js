@@ -1,21 +1,15 @@
 import React, { useState } from "react";
-// import VisibilityIcon from "@mui/icons-material/Visibility";
-// import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import "./login.css";
 import { Box, TextField, FormGroup, Button } from "@mui/material";
 import { Formik } from "formik";
-
-// image
 import Logo from "../../assets/icons/logo.svg";
 import { registerSchema } from "../../Validation";
 import { toast, ToastContainer } from "react-toastify";
 import Loader from "../../components/Loader";
-// import { register } from "../../services/auth.service";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Register = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -28,7 +22,6 @@ const Register = () => {
         "https://taaskserver.herokuapp.com/register",
         values
       );
-      // const { data } = await register(values);
       setLoading(false);
       if (typeof data == "string") {
         toast.error(data, {
@@ -112,28 +105,28 @@ const Register = () => {
             <FormGroup className="inputHead">
               <TextField
                 id="password-input"
-                type={showPassword ? "text" : "password"}
+                type="password"
                 autoComplete="current-password"
                 placeholder="Password"
                 value={formik.values.password}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // InputProps={{
-                //   endAdornment: (
-                //     <InputAdornment position="end">
-                //       <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                //       {showPassword ?<VisibilityIcon/>:<VisibilityOffIcon/>}
-                //       </IconButton>
-                //     </InputAdornment>
-                //   ),
-                // }}
                 name="password"
               />
               {formik.touched.password && formik.errors.password ? (
                 <p className="input-error">{formik.errors.password}</p>
               ) : null}
             </FormGroup>
-            <Box>{/* <a href="#">Forgot Password?</a> */}</Box>
+            <Box className="fxt-switcher-description">
+              Already a Member?
+              <a
+                className="fxt-switcher-text ms-1"
+                href="/login"
+                style={{ marginLeft: "10px" }}
+              >
+                Go to Sign In
+              </a>
+            </Box>
             <Button className="btn" onClick={formik.handleSubmit}>
               Register
             </Button>
