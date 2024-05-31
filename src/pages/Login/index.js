@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import VisibilityIcon from "@mui/icons-material/Visibility";
-// import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import "./login.css";
 import { Box, TextField, FormGroup, Button } from "@mui/material";
 import { Formik } from "formik";
@@ -14,7 +12,6 @@ import { login } from "../../services/auth.service";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -79,29 +76,30 @@ const Login = () => {
             <FormGroup className="inputHead">
               <TextField
                 id="password-input"
-                type={showPassword ? "text" : "password"}
+                type="password"
                 autoComplete="current-password"
                 placeholder="Password"
                 value={formik.values.password}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // InputProps={{
-                //   endAdornment: (
-                //     <InputAdornment position="end">
-                //       <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                //       {showPassword ?<VisibilityIcon/>:<VisibilityOffIcon/>}
-                //       </IconButton>
-                //     </InputAdornment>
-                //   ),
-                // }}
                 name="password"
               />
               {formik.touched.password && formik.errors.password ? (
                 <p className="input-error">{formik.errors.password}</p>
               ) : null}
             </FormGroup>
-            <Box>
-              <a href="#">Forgot Password?</a>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <Box>
+                <a>Forgot Password?</a>
+              </Box>
+              <Box>
+                <a href="/register">Sign Up</a>
+              </Box>
             </Box>
             <Button className="btn" onClick={formik.handleSubmit}>
               Sign in
