@@ -8,8 +8,8 @@ export async function saveCustomer(formData) {
   });
 }
 
-export async function updateCustomer(formData, userId) {
-  return await api.put("/customer/updateCustomer?userid=" + userId, formData, {
+export async function updateCustomer(formData) {
+  return await api.put("/customer/updateCustomer", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
