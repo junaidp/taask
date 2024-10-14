@@ -1,7 +1,4 @@
-// Customer Stage
-// badgesHead
-// Customer ID
-import { Formik, useFormik, useFormikContext } from "formik";
+import { Formik } from "formik";
 import { customerSchema } from "../../Validation";
 import "./customer.css";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -51,12 +48,12 @@ import {
   addResources,
   deleteResource,
   getCustomerBySerialNumber,
-  saveCustomer,
   updateCustomer,
 } from "../../services/customer.service";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { changeActiveIndex } from "../../features/slice";
+import axios from "axios";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -119,7 +116,6 @@ const CustomerDetail = () => {
       const { data } = await getCustomerBySerialNumber(serialNumber);
       console.log(data);
       setLoading(false);
-      debugger;
       if (typeof data == "object") {
         setCustomerId(data.serialNumber);
         setValue(data.customerSince);
@@ -140,7 +136,6 @@ const CustomerDetail = () => {
             },
           ],
         });
-        debugger;
         const photoURL =
           `data:${data.image.contenttype};base64,` + data.image.data;
         setPhoto(photoURL);
@@ -214,7 +209,6 @@ const CustomerDetail = () => {
   };
   const onUpload = (e) => {
     const file = e.target.files[0];
-    debugger;
     if (file && file.type.startsWith("application/pdf")) {
       setFile(file);
       e.target.value = "";
@@ -226,12 +220,6 @@ const CustomerDetail = () => {
       return;
     }
   };
-
-  // const editFile = (index) => {
-  //   setIndex(index);
-  //   setOpen1(true);
-  //   setFile(uplodedFiles[index]);
-  // };
 
   const handleClose = () => {
     setOpen(false);
@@ -333,19 +321,19 @@ const CustomerDetail = () => {
   };
 
   const handleSubmit = async (values, actions) => {
-    debugger;
     const customer = { ...values };
     customer.contacts = customer.contacts[0];
     const data = new FormData();
-    if (image) {
-      data.append("image", image);
-    }
+    // if (image) {
+    // data.append("file", image);
+    // }
 
     const customerJson = JSON.stringify(customer);
     const blob = new Blob([customerJson], { type: "application/json" });
     data.append("customer", blob);
+    data.append("userid", customerId);
     setLoading(true);
-    const res = await updateCustomer(data, customerId).catch((err) => {
+    const res = await updateCustomer(data).catch((err) => {
       setLoading(false);
     });
     setLoading(false);
@@ -395,13 +383,11 @@ const CustomerDetail = () => {
   }
 
   const handleClickOpenLinkModel = () => {
-    // if (Links?.length < 3) {
     setOpen2(true);
     setlink("");
     setLinkDescription("");
     setEditLinkId("");
     setIsEditLink(false);
-    // }
   };
   const handleLinksSubmit = async () => {
     setLinks([
@@ -446,6 +432,7 @@ const CustomerDetail = () => {
     }
     setShowPopup(false);
   };
+
   return (
     <Formik
       enableReinitialize={true}
@@ -463,7 +450,6 @@ const CustomerDetail = () => {
                 {isLink ? "Link" : "Attachment"}?
               </DialogContentText>
             </DialogContent>
-            {/* <DialogActions> */}
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
@@ -474,7 +460,6 @@ const CustomerDetail = () => {
             >
               Delete
             </Button>
-            {/* </DialogActions> */}
           </Dialog>
           <Grid container>
             <Grid item xs={8} className="customerPart1">
@@ -899,7 +884,7 @@ const CustomerDetail = () => {
                     {uplodedFiles?.map((item) => (
                       <ListItem disablePadding>
                         <div style={{ display: "flex", alignItems: "center" }}>
-                          <IconButton
+                          {/* <IconButton
                             component="span"
                             style={{ width: "10px" }}
                           >
@@ -909,19 +894,13 @@ const CustomerDetail = () => {
                             ) : (
                               <ImageIcon />
                             )}
-                          </IconButton>
+                          </IconButton> */}
                           <p>
                             {item.file?.name ? item.file?.name : item?.filename}
                           </p>
                           <MenuItem sx={{ color: "blue" }}>
                             <EditIcon
                               sx={{ mr: 2 }}
-                              // onClick={() => {
-                              //   setOpen(true);
-                              //   setAttachment(item);
-                              //   setIndex(index);
-                              //   setisLink(false)
-                              // }}
                               onClick={() => handleClickOpenUpdateModel(item)}
                             />
                           </MenuItem>
@@ -973,7 +952,6 @@ const CustomerDetail = () => {
                               <p>{item.link}</p>
                             </a>
                           </div>
-                          {/* <p>{item.link}</p> */}
                           <div
                             style={{ display: "flex", alignItems: "center" }}
                           >
@@ -983,15 +961,7 @@ const CustomerDetail = () => {
                             <MenuItem sx={{ color: "blue" }}>
                               <EditIcon
                                 sx={{ mr: 2 }}
-                                // onClick={() => {
-                                //   setOpen(true);
-                                //   setAttachment(item);
-                                //   setIndex(index);
-                                //   setisLink(false)
-                                // }}
                                 onClick={() => editLink(index)}
-
-                                // onClick={handleClickOpenLinkModel}
                               />
                             </MenuItem>
                             <MenuItem sx={{ color: "error.main" }}>
@@ -1054,13 +1024,6 @@ const CustomerDetail = () => {
                     </Button>
                   </Box>
                 </FormGroup>
-                {/* <FormGroup className="inputHead">
-              <textarea
-                name="description"
-                placeholder="Description"
-                onChange={(e) => setDescription(e.target.value)}
-              ></textarea>
-            </FormGroup> */}
               </Box>
             </DialogContent>
             <DialogActions sx={{ justifyContent: "end" }}>
@@ -1139,13 +1102,6 @@ const CustomerDetail = () => {
                   Edit Link
                 </Button>
               )}
-              {/* <Button
-                className="btn2 btn3"
-                sx={{ fontSize: "10px", width: "150px !important" }}
-                onClick={handleLinksSubmit}
-              >
-                save Link
-              </Button> */}
             </DialogActions>
           </Dialog>
           <Snackbar
