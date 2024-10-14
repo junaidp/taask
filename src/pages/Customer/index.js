@@ -33,7 +33,7 @@ import {
   Snackbar,
   TextField,
 } from "@mui/material";
-import { useEffect, useReducer, useState } from "react";
+import { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
@@ -127,7 +127,6 @@ const Customer = () => {
   const editFile = (index) => {
     setIndex(index);
     setOpen1(true);
-    // setFile(uplodedFiles[index]);
   };
 
   let [isEditLink, setIsEditLink] = useState(false);
@@ -171,7 +170,6 @@ const Customer = () => {
     return true;
   };
 
-  console.log(Links);
   const onUpload = (e) => {
     let fileList = e.target.files;
     //convert object to array
@@ -219,20 +217,30 @@ const Customer = () => {
   });
 
   const handleSubmit = async (values, actions) => {
-    debugger;
     const customer = { ...values };
+    if (
+      !customer.contacts[0]?.name ||
+      !customer.contacts[0]?.emailAddress ||
+      !customer.contacts[0]?.jobTitle ||
+      !customer.contacts[0]?.location
+    ) {
+      toast.error(`${"please provide Main Contacts"}`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return;
+    }
     customer.contacts = customer.contacts[0];
     const data = new FormData();
     if (uplodedFiles.length > 0) {
       for (const file of uplodedFiles) {
         data.append("file", file);
       }
-    } else {
-      setShowPopup(true);
-      return;
     }
+    //  else {
+    //   setShowPopup(true);
+    //   return;
+    // }
     if (image) {
-      // const photoFile = await fetch(photo).then((res) => res.blob());
       data.append("image", image);
     } else {
       toast.error(`${"image is required"}`, {
@@ -259,8 +267,6 @@ const Customer = () => {
     });
     setLoading(false);
     if (res.data.includes("saved")) {
-      // actions.resetForm();
-      // resetData();
       resetData();
       setInitialValues({
         category: "",
@@ -304,31 +310,26 @@ const Customer = () => {
     setFiles([]);
   };
   const handleClickOpenAttachmentsModel = () => {
-    // if (uplodedFiles?.length < 3) {
     setFiles([]);
     fileRef.current.value = null;
     setIndex(null);
     setOpen1(true);
-    // }
   };
   const handleClickOpenLinkModel = () => {
-    // if (Links?.length < 3) {
     setIndex(null);
     setOpen2(true);
     setIsEditLink(false);
     setActiveLink("");
     setLinkDescription("");
-    // }
   };
   const handleLinksSubmit = () => {
-    debugger;
     if (index != null) {
       setLinks((prevLinks) => {
         const updatedLinks = [...prevLinks];
         updatedLinks[index] = {
           link: activeLink,
           description: linkDescription,
-        }; // Update the specific element in the array
+        };
         return updatedLinks;
       });
       setOpen2(false);
@@ -594,143 +595,132 @@ const Customer = () => {
                 >
                   <img src={PlusIcon} alt="not found" /> Main Contacts
                 </Button>
-                {mainContacts == true ? (
-                  <Box className="mainContactsForm">
-                    <Box className="inputGroup">
-                      <FormGroup className="inputHead">
-                        <label htmlFor="Name">Name *</label>
-                        <TextField
-                          {...{
-                            formik,
-                            title: "Name",
-                            name: "contactsName",
-                            placeholder: "John Doe",
-                            checkValidation: true,
-                            // value: formik?.values?.contacts.name,
-                          }}
-                          onChange={(e) => {
-                            formik.setFieldValue(
-                              "contacts.[0].name",
-                              e.target.value
-                            );
-                          }}
-                        />
+                <Box className="mainContactsForm">
+                  <Box className="inputGroup">
+                    <FormGroup className="inputHead">
+                      <label htmlFor="Name">Name *</label>
+                      <TextField
+                        {...{
+                          formik,
+                          title: "Name",
+                          name: "contactsName",
+                          placeholder: "John Doe",
+                          checkValidation: true,
+                          // value: formik?.values?.contacts.name,
+                        }}
+                        onChange={(e) => {
+                          formik.setFieldValue(
+                            "contacts.[0].name",
+                            e.target.value
+                          );
+                        }}
+                      />
 
-                        {formik.errors.contacts &&
-                          formik.errors.contacts[0] && (
-                            <p className="input-error">
-                              {formik.errors.contacts[0].name}
-                            </p>
-                          )}
-                      </FormGroup>
-                      <FormGroup className="inputHead">
-                        <label htmlFor="EmailAddress">Email Address.</label>
-                        <TextField
-                          type="email"
-                          {...{
-                            formik,
-                            title: "EmailAddress",
-                            name: "emailAddress",
-                            placeholder: "Email Address",
-                            checkValidation: true,
-                            // value: formik?.values?.contacts?.emailAddress,
-                          }}
-                          onChange={(e) => {
-                            formik.setFieldValue(
-                              "contacts.0.emailAddress",
-                              e.target.value
-                            );
-                          }}
-                        />
-                        {formik.errors.contacts &&
-                          formik.errors.contacts[0] && (
-                            <p className="input-error">
-                              {formik.errors.contacts[0].emailAddress}
-                            </p>
-                          )}
-                      </FormGroup>
-                    </Box>
-                    <Box className="inputGroup">
-                      <FormGroup className="inputHead">
-                        <label htmlFor="JobTitle">Job Title *</label>
-                        <TextField
-                          {...{
-                            formik,
-                            title: "JobTitle",
-                            name: "jobTitle",
-                            placeholder: "Job Title",
-                            checkValidation: true,
-                            // value: formik?.values?.contacts?.jobTitle,
-                          }}
-                          onChange={(e) => {
-                            formik.setFieldValue(
-                              "contacts.0.jobTitle",
-                              e.target.value
-                            );
-                          }}
-                        />
-                        {formik.errors.contacts &&
-                          formik.errors.contacts[0] && (
-                            <p className="input-error">
-                              {formik.errors.contacts[0].jobTitle}
-                            </p>
-                          )}
-                      </FormGroup>
-                      <FormGroup className="inputHead">
-                        <label htmlFor="location">Location</label>
-                        <TextField
-                          select
-                          {...{
-                            formik,
-                            title: "Location",
-                            name: "location",
-                            placeholder: "Lorem Ipsum",
-                            checkValidation: true,
-                            // value: formik?.values?.contacts.location,
-                          }}
-                          onChange={(e) => {
-                            formik.setFieldValue(
-                              "contacts.0.location",
-                              e.target.value
-                            );
-                          }}
-                          InputProps={{
-                            placeholder: "Select Your Country",
-                            disableUnderline: true,
-                          }}
-                          SelectProps={{
-                            displayEmpty: true,
-                            renderValue: (label, value) => {
-                              if (!label) {
-                                return <p>Select Your Country</p>;
-                              }
-                              return label;
-                            },
-                          }}
-                          MenuProps={{
-                            style: {
-                              maxHeight: "200px !important",
-                            },
-                          }}
-                        >
-                          {countries.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                        {formik.errors.contacts &&
-                          formik.errors.contacts[0] && (
-                            <p className="input-error">
-                              {formik.errors.contacts[0].location}
-                            </p>
-                          )}
-                      </FormGroup>
-                    </Box>
+                      {formik.errors.contacts && formik.errors.contacts[0] && (
+                        <p className="input-error">
+                          {formik.errors.contacts[0].name}
+                        </p>
+                      )}
+                    </FormGroup>
+                    <FormGroup className="inputHead">
+                      <label htmlFor="EmailAddress">Email Address.</label>
+                      <TextField
+                        type="email"
+                        {...{
+                          formik,
+                          title: "EmailAddress",
+                          name: "emailAddress",
+                          placeholder: "Email Address",
+                          checkValidation: true,
+                        }}
+                        onChange={(e) => {
+                          formik.setFieldValue(
+                            "contacts.0.emailAddress",
+                            e.target.value
+                          );
+                        }}
+                      />
+                      {formik.errors.contacts && formik.errors.contacts[0] && (
+                        <p className="input-error">
+                          {formik.errors.contacts[0].emailAddress}
+                        </p>
+                      )}
+                    </FormGroup>
                   </Box>
-                ) : (
-                  ""
-                )}
+                  <Box className="inputGroup">
+                    <FormGroup className="inputHead">
+                      <label htmlFor="JobTitle">Job Title *</label>
+                      <TextField
+                        {...{
+                          formik,
+                          title: "JobTitle",
+                          name: "jobTitle",
+                          placeholder: "Job Title",
+                          checkValidation: true,
+                        }}
+                        onChange={(e) => {
+                          formik.setFieldValue(
+                            "contacts.0.jobTitle",
+                            e.target.value
+                          );
+                        }}
+                      />
+                      {formik.errors.contacts && formik.errors.contacts[0] && (
+                        <p className="input-error">
+                          {formik.errors.contacts[0].jobTitle}
+                        </p>
+                      )}
+                    </FormGroup>
+                    <FormGroup className="inputHead">
+                      <label htmlFor="location">Location</label>
+                      <TextField
+                        select
+                        {...{
+                          formik,
+                          title: "Location",
+                          name: "location",
+                          placeholder: "Lorem Ipsum",
+                          checkValidation: true,
+                        }}
+                        onChange={(e) => {
+                          formik.setFieldValue(
+                            "contacts.0.location",
+                            e.target.value
+                          );
+                        }}
+                        InputProps={{
+                          placeholder: "Select Your Country",
+                          disableUnderline: true,
+                        }}
+                        SelectProps={{
+                          displayEmpty: true,
+                          renderValue: (label, value) => {
+                            if (!label) {
+                              return <p>Select Your Country</p>;
+                            }
+                            return label;
+                          },
+                        }}
+                        MenuProps={{
+                          style: {
+                            maxHeight: "200px !important",
+                          },
+                        }}
+                      >
+                        {countries.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                      {formik.errors.contacts && formik.errors.contacts[0] && (
+                        <p className="input-error">
+                          {formik.errors.contacts[0].location}
+                        </p>
+                      )}
+                    </FormGroup>
+                  </Box>
+                </Box>
               </Box>
               <FormGroup
                 className="inputHead"
@@ -806,9 +796,6 @@ const Customer = () => {
                           </IconButton>
                           <IconButton
                             sx={{
-                              // position: "absolute",
-                              // top: 18,
-                              // right: -40,
                               color: "red",
                             }}
                             onClick={() => deleteFile(index)}
@@ -816,7 +803,6 @@ const Customer = () => {
                             <DeleteIcon />
                           </IconButton>
                         </div>
-                        {/* <span title={item.description}>{item.description}</span> */}
                       </ListItem>
                     ))}
                   </List>
@@ -870,9 +856,6 @@ const Customer = () => {
 
                             <IconButton
                               sx={{
-                                // position: "absolute",
-                                // top: 18,
-                                // right: -40,
                                 color: "red",
                               }}
                               onClick={() => deleteLink(index)}
@@ -938,13 +921,6 @@ const Customer = () => {
                     </Button>
                   </Box>
                 </FormGroup>
-                {/* <FormGroup className="inputHead">
-              <textarea
-                name="description"
-                placeholder="Description"
-                onChange={(e) => setDescription(e.target.value)}
-              ></textarea>
-            </FormGroup> */}
               </Box>
             </DialogContent>
             <DialogActions sx={{ justifyContent: "end" }}>
@@ -1021,7 +997,7 @@ const Customer = () => {
               )}
             </DialogActions>
           </Dialog>
-          <Snackbar
+          {/* <Snackbar
             open={showPopup}
             autoHideDuration={4000}
             onClose={handlePopupClose}
@@ -1034,7 +1010,7 @@ const Customer = () => {
             >
               Please select a Attachment.
             </MuiAlert>
-          </Snackbar>
+          </Snackbar> */}
           <ToastContainer />
           <Loader loaderValue={loading} />
         </Box>
