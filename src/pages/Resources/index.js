@@ -354,7 +354,7 @@ const Resources = () => {
       form.append("linkUuid", editLinkId);
 
       try {
-        let res = await fetch("https://taaskserver.herokuapp.com/resources", {
+        let res = await fetch("https://testjava.javaserver.eu/resources", {
           method: "PUT",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -404,7 +404,7 @@ const Resources = () => {
     if (file.length > 0) {
       setLoading(true);
       try {
-        let res = await fetch("https://taaskserver.herokuapp.com/resources", {
+        let res = await fetch("https://testjava.javaserver.eu/resources", {
           method: "PUT",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

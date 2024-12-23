@@ -303,7 +303,7 @@ const CustomerDetail = () => {
         form.append("linkUuid", editLinkId);
 
         let res = await fetch(
-          `https://taaskserver.herokuapp.com/resources?customerId=${customerId}`,
+          `https://testjava.javaserver.eu/resources?customerId=${customerId}`,
           {
             method: "PUT",
             headers: {

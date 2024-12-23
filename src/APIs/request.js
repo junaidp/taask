@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
  */
 
 const client = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL,
+  baseURL: "https://testjava.javaserver.eu",
 });
 
 client.interceptors.request.use((req) => {

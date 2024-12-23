@@ -12,7 +12,7 @@ const CustomerServices = {
   saveCustomer: async (data) => {
     try {
       const response = await axios.post(
-        process.env.REACT_APP_BASE_URL + "/customer/saveCustomer",
+        "https://testjava.javaserver.eu/customer/saveCustomer",
         data,
         {
           headers: {

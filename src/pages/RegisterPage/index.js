@@ -19,7 +19,7 @@ const Register = () => {
     try {
       setLoading(true);
       let { data } = await axios.post(
-        "https://taaskserver.herokuapp.com/register",
+        "https://testjava.javaserver.eu/register",
         values
       );
       setLoading(false);
