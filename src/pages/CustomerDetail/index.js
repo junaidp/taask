@@ -190,6 +190,14 @@ const CustomerDetail = () => {
   const handlePhotoUpload = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
+      // Checking if the file size exceeds 50 KB
+      if (file.size > 50 * 1024) {
+        toast.error("Image size must be less than 50 KB", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        event.target.value = "";
+        return;
+      }
       setPhoto(URL.createObjectURL(file));
       setImage(file);
       setShowDeleteIcon(true);
